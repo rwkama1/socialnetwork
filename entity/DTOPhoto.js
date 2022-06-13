@@ -15,6 +15,7 @@ class DTOPhoto
     active=true;
 
     //time elapsed since publication date
+    
     diffsecond=0;
     diffminutes=0;
     diffhour=0;

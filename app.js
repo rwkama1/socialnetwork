@@ -424,40 +424,44 @@ let images=async()=>
     //     }
     // }
     // await addImage();
+    
     // async function updateVisibilityPhoto() {
-    //     if (!await DataPhoto.existImageById(1)) {
+    
+    //     let updateVisibilityPhoto = await DataPhoto.updateVisibilityPhoto(2,'Friend');
+    //     if (updateVisibilityPhoto===-1) {
     //         throw new Error("The image does not exists");
-    //     }
-    //     let updateVisibilityPhoto = await DataPhoto.updateVisibilityPhoto(1,'Private');
-    //     if (updateVisibilityPhoto) {
+    //         }
     //         console.log("The visibility was updated successfully");
-    //     }
+        
     // }
-    // await updateVisibilityPhoto();
+    // await updateVisibilityPhoto(); 
 
     //  async function updateTitleDescriptionPhoto() {
-    //     if (!await DataPhoto.existImageById(1)) {
+    
+    //     let updateTitleDescriptionPhoto = await DataPhoto.updateTitleDescriptionPhoto(90,'Description Update','TitleImageUpdated');
+    //        if (updateTitleDescriptionPhoto===-1) {
     //         throw new Error("The image does not exists");
-    //     }
-    //     let updateTitleDescriptionPhoto = await DataPhoto.updateTitleDescriptionPhoto(1,'Description Update','TitleImageUpdated');
-    //     if (updateTitleDescriptionPhoto) {
+    //         }
     //         console.log("The image was updated successfully");
-    //     }
+        
     // }
     // await updateTitleDescriptionPhoto();
       
-    //  async function deletePhoto() {
-    //     if (!await DataPhoto.existImageById(1)) {
+    // async function deletePhoto() {
+     
+    //     let deletePhoto = await DataPhoto.deletePhoto(50);
+    //     if (deletePhoto===-1) {
     //         throw new Error("The image does not exists");
-    //     }
-    //     let deletePhoto = await DataPhoto.deletePhoto(1);
-    //     if (deletePhoto) {
+    //         }
     //         console.log("The image was deleted successfully");
-    //     }
+        
     // }
-    // await deletePhoto();
+    // await deletePhoto(); 
 
-    // let getImage = await DataPhoto.getImage(29);
+    // let getImage = await DataPhoto.getImage(25);
+    // if (getImage===-1) {
+    //      throw new Error("The image does not exists");
+    //   }
     // getImage.DiffDatePublishDateNow();
     // getImage.showDiffDatePublishDateNow();
     // console.log(getImage);
@@ -520,7 +524,38 @@ let images=async()=>
     // await getImagesbyFriendUser();
 
 
+    //  async function getImagesVisibilityFriendUser() {
+    //     let array=await DataPhoto.getImagesVisibilityFriendUser(25);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+   
+    // }
+    // await getImagesVisibilityFriendUser();
+  
+    //  async function getImagesVisibilityPublicUser() {
+    //     let array=await DataPhoto.getImagesVisibilityPublicUser(25);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+   
+    // }
+    // await getImagesVisibilityPublicUser();
 
+    //  async function getImagesVisibilityByUserRelation() {
+    //     let array=await DataPhoto.getImagesVisibilityByUserRelation(1,2);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+   
+    // }
+    // await getImagesVisibilityByUserRelation();
    
 
    

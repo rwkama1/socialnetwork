@@ -11,6 +11,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 {
    let resultquery;
     let queryinsert = `
+
     IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
     BEGIN
     select -1 as notexistuser
@@ -24,6 +25,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
     insert into UserImages values  (@IdUser,@IdAlbumImages,@Title,@Descriptionn ,@Likes,@Urlimage,'Public',GETUTCDATE(),1)
     select 1 as addedphoto
     END
+
     `
     let pool = await Conection.conection();
 
@@ -50,48 +52,89 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 }
  static updateVisibilityPhoto=async(idimage,visibility)=>
 {
-
-    let queryupdate = "update UserImages set " 
-    queryupdate+="Visibility=@Visibility where IdUserImages=@IdUserImages"
+   let resultquery;
+    let queryupdate = `
+    IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@IdUserImages and Active=1)
+    BEGIN
+    select -1 as notexistimage
+    END
+    ELSE
+    BEGIN
+    update UserImages set Visibility=@Visibility where IdUserImages=@IdUserImages
+    select 1 as updatedphoto
+    END
+    `
     let pool = await Conection.conection();
-
-    const result = await pool.request()
+         const result = await pool.request()
         .input('Visibility', VarChar,visibility)
-        .input('IdUserImages', Int, idimage)
-     
+        .input('IdUserImages', Int, idimage)   
         .query(queryupdate)
+        resultquery = result.recordset[0].notexistimage;
+        if(resultquery===undefined)
+        {
+          resultquery = result.recordset[0].updatedphoto;
+        }
     pool.close();
-    return true;
+    return resultquery;
     
 }
  static updateTitleDescriptionPhoto=async(idimage,description,title)=>
 {
-
-    let queryupdate = "update UserImages set " 
-    queryupdate+="Title=@Title,Descriptionn=@Descriptionn where IdUserImages=@IdUserImages"
+   let resultquery;
+    let queryupdate = `
+    IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@IdUserImages and Active=1)
+    BEGIN
+    select -1 as notexistimage
+    END
+    ELSE
+    BEGIN
+    update UserImages set Title=@Title,Descriptionn=@Descriptionn where IdUserImages=@IdUserImages
+    select 1 as updatedphoto
+    END
+    `
     let pool = await Conection.conection();
 
     const result = await pool.request()
         .input('Title', VarChar,title)
         .input('Descriptionn', VarChar,description)
         .input('IdUserImages', Int, idimage)
-     
         .query(queryupdate)
+        resultquery = result.recordset[0].notexistimage;
+        if(resultquery===undefined)
+        {
+          resultquery = result.recordset[0].updatedphoto;
+        }
     pool.close();
-    return true;
+    return resultquery;
     
 }
  static deletePhoto=async(idimage)=>
 {
+   let resultquery;
+    let queryupdate = `
 
-    let queryupdate = "update UserImages set " 
-    queryupdate+="Active=0 where IdUserImages=@IdUserImages"
+    IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@IdUserImages and Active=1)
+    BEGIN
+    select -1 as notexistimage
+    END
+    ELSE
+    BEGIN
+    update UserImages set Active=0 where IdUserImages=@IdUserImages
+    select 1 as deletephoto
+    END
+
+    `
     let pool = await Conection.conection();
     const result = await pool.request()
-        .input('IdUserImages', Int, idimage)
-        .query(queryupdate)
+   .input('IdUserImages', Int, idimage)
+   .query(queryupdate)
+        resultquery = result.recordset[0].notexistimage;
+        if(resultquery===undefined)
+        {
+          resultquery = result.recordset[0].deletephoto;
+        }
     pool.close();
-    return true;
+    return resultquery;
     
 }
 
@@ -121,32 +164,44 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 
  static getImage=async(idimage)=>
 {
-   
-        let querysearch = `     
-        select 
-        UserImages.*, 
-        AlbumUserImages.Title as AlbumTitle, 
-        Userr.Name, 
-        Userr.Nick, 
-        Userr.Email, 
-        Userr.Imagee 
-      from 
-        UserImages 
-        inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-        inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-      where 
-        Userr.Active = 1 
-        and AlbumUserImages.Active = 1 
-        and UserImages.Active = 1 
-        and UserImages.IdUserImages = ${idimage}
+        let resultquery;
+        let querysearch = `  
+        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=${idimage} and Active=1)
+         BEGIN
+         select -1 as notexistimage
+         END
+         ELSE
+         BEGIN
+            select 
+            UserImages.*, 
+            AlbumUserImages.Title as AlbumTitle, 
+            Userr.Name, 
+            Userr.Nick, 
+            Userr.Email, 
+            Userr.Imagee 
+            from 
+            UserImages 
+            inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+            inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+            where 
+            Userr.Active = 1 
+            and AlbumUserImages.Active = 1 
+            and UserImages.Active = 1 
+            and UserImages.IdUserImages = ${idimage}
+        END
         `  
         let pool = await Conection.conection();
         const result = await pool.request()
         .query(querysearch)
-       let image = new DTOPhoto();
-        DataPhoto.getinformation(image, result);
+        resultquery = result.recordset[0].notexistimage;
+        if (resultquery===undefined) {
+         let image = new DTOPhoto();
+         DataPhoto.getinformation(image, result);
+         resultquery=image;
+        }     
+      
        pool.close();
-       return image;
+       return resultquery;
  }
 
 //*********************************** */
@@ -286,6 +341,139 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
          pool.close();
          return arrayphoto;
    }
+   static getImagesVisibilityFriendUser=async(iduser)=>
+   {
+      let arrayphoto=[];
+           let querysearch = `   
+             SELECT 
+             UserImages.*, 
+             AlbumUserImages.Title as AlbumTitle, 
+             Userr.Name, 
+             Userr.Nick, 
+             Userr.Email, 
+             Userr.Imagee 
+             from 
+             UserImages 
+             inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+             inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+             where 
+             Userr.Active = 1 
+             and AlbumUserImages.Active = 1 
+             and UserImages.Active = 1 
+             and  UserImages.Visibility='Friend'
+             and UserImages.IdUser = ${iduser}
+        `  
+           let pool = await Conection.conection();
+           const result = await pool.request()      
+           .query(querysearch)
+           for (var p of result.recordset) {
+              let photo = new DTOPhoto();   
+               this.getinformationList(photo,p);
+            arrayphoto.push(photo);
+           }
+        
+          pool.close();
+          return arrayphoto;
+    }
+    static getImagesVisibilityByUserRelation=async(iduserlogin,iduser)=>
+    {
+       let arrayphoto=[];
+       let querysearch = `   
+
+    IF EXISTS ( SELECT UserrRelations.* FROM  UserrRelations 
+               INNER JOIN Userr ON Userr.IdUser = UserrRelations.IdFriend 
+              WHERE 
+               Userr.Active = 1 
+                AND UserrRelations.IdUser =${iduserlogin}
+               AND UserrRelations.IdFriend =${iduser}
+               AND UserrRelations.Statee = 'Confirmed' 
+          )
+   BEGIN
+     SELECT 
+         UserImages.*, 
+         AlbumUserImages.Title as AlbumTitle, 
+         Userr.Name, 
+         Userr.Nick, 
+         Userr.Email, 
+         Userr.Imagee 
+         FROM 
+         UserImages 
+         INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+         INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
+         WHERE 
+         Userr.Active = 1 
+         AND AlbumUserImages.Active = 1 
+         AND UserImages.Active = 1 
+         AND  (UserImages.Visibility='Friend' OR UserImages.Visibility='Public')
+         AND UserImages.IdUser = ${iduser}
+  END
+  ELSE
+  BEGIN
+     SELECT 
+         UserImages.*, 
+         AlbumUserImages.Title as AlbumTitle, 
+         Userr.Name, 
+         Userr.Nick, 
+         Userr.Email, 
+         Userr.Imagee 
+         FROM 
+         UserImages 
+         INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+         INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
+         WHERE 
+         Userr.Active = 1 
+         AND AlbumUserImages.Active = 1 
+         AND UserImages.Active = 1 
+         AND  UserImages.Visibility='Public'
+         AND UserImages.IdUser = ${iduser}
+      END
+               `  
+            let pool = await Conection.conection();
+            const result = await pool.request()      
+            .query(querysearch)
+            for (var p of result.recordset) {
+            let photo = new DTOPhoto();   
+             this.getinformationList(photo,p);
+             arrayphoto.push(photo);
+            }
+         
+           pool.close();
+           return arrayphoto;
+     }
+    static getImagesVisibilityPublicUser=async(iduser)=>
+    {
+       let arrayphoto=[];
+            let querysearch = `   
+              SELECT 
+              UserImages.*, 
+              AlbumUserImages.Title as AlbumTitle, 
+              Userr.Name, 
+              Userr.Nick, 
+              Userr.Email, 
+              Userr.Imagee 
+              from 
+              UserImages 
+              inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+              inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+              where 
+              Userr.Active = 1 
+              and AlbumUserImages.Active = 1 
+              and UserImages.Active = 1 
+              and  UserImages.Visibility='Public'
+              and UserImages.IdUser = ${iduser}
+         `  
+            let pool = await Conection.conection();
+            const result = await pool.request()      
+            .query(querysearch)
+            for (var p of result.recordset) {
+               let photo = new DTOPhoto();   
+                this.getinformationList(photo,p);
+             arrayphoto.push(photo);
+            }
+         
+           pool.close();
+           return arrayphoto;
+     }
    static getImagesbyFriendUser=async(iduser)=>  //Query when the user enters the main page
    {
       let arrayphoto=[];
@@ -307,6 +495,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
                 and AlbumUserImages.Active = 1 
                 and UserImages.Active = 1 
                 and UserrRelations.Statee = 'Confirmed' 
+                and (UserImages.Visibility='Public' or UserImages.Visibility='Friend') 
                 and UserrRelations.IdUser = ${iduser}
          `  
            let pool = await Conection.conection();

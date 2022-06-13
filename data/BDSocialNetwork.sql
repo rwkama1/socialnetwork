@@ -214,55 +214,6 @@ select * from  UserImages
 
 --	delete from Userr 
  
-FROM 
-  existusername
-
-
-IF EXISTS (   SELECT *FROM Userr WHERE IdUser = 2 and Active=1 )
-BEGIN
-select -1 as existusername
- 
-END
-else
-begin
-  Update 
-  Userr 
-Set 
-  Name = @Name, 
-  Nick = @Nick, 
-  BirthDate = @BirthDate, 
-  Email = @Email, 
-  Addresss = @Addresss, 
-  Occupation = @Occupation, 
-  MartailStatus = @MartailStatus, 
-  WebSite = @WebSite, 
-  Gender = @Gender, 
-  UrlFacebook = @UrlFacebook, 
-  UrlInstagram = @UrlInstagram, 
-  UrlLinkedin = @UrlLinkedin, 
-  UrlTwitter = @UrlTwitter, 
-  City = @City, 
-  Province = @Province, 
-  Descriptionn = @Descriptionn, 
-  Country = @Country 
-where 
-  IdUser = @IdUser
-
-  select 1 as insertsuccess
-end 
-  
-  select * from userr
-
-  delete from userr where iduser in(33,34,35,36,37,42,43,44)
-	     SELECT 
-         CASE WHEN EXISTS (
-   
-		  )
-     THEN CAST( 1 as bit)
-     ELSE CAST(0 AS BIT) END as Exist  
-
-
-	 select  getutcdate()
 
 
 select * from userr
@@ -277,97 +228,8 @@ update userr set Active=1
 				   AND userrrelations.iduser = 25
 				   AND userrrelations.statee = 'Confirmed' 
 
-SELECT 
-  userimages.*, 
-  --Gets images of friends user
-  albumuserimages.title AS AlbumTitle, 
-  userr.NAME, 
-  userr.nick, 
-  userr.email, 
-  userr.imagee 
-FROM 
-  userimages 
-  INNER JOIN albumuserimages ON albumuserimages.idalbumimages = userimages.idalbumimages 
-  INNER JOIN userr ON userr.iduser = albumuserimages.iduser 
-  INNER JOIN userrrelations ON userrrelations.idfriend = userr.iduser 
-WHERE 
-  userr.active = 1 
-  AND albumuserimages.active = 1 
-  AND userimages.active = 1 
-  AND userrrelations.statee = 'Confirmed' 
-  AND userrrelations.iduser = 26
 
 
-		SELECT userimages.*,
-       albumuserimages.title AS AlbumTitle,
-       userr.NAME,
-       userr.nick,
-       userr.email,
-       userr.imagee
-		FROM   userimages
-       INNER JOIN albumuserimages
-               ON albumuserimages.idalbumimages = userimages.idalbumimages
-       INNER JOIN userr
-               ON userr.iduser = albumuserimages.iduser
-		WHERE  userr.active = 1
-       AND albumuserimages.active = 1
-       AND userimages.active = 1
-       AND userimages.iduser = 26
-	   
-
-SELECT 
-  userr.* 
-FROM 
-  userrrelations 
-  INNER JOIN userr ON userr.iduser = userrrelations.idfriend 
-WHERE 
-  userr.active = 1 
-  AND userrrelations.iduser = 26
-  AND userrrelations.statee = 'Confirmed'
-
-
-	select * from userr
-
-	select* from AlbumUserImages 
-
-	select * from UserImages
-	select * from UserrRelations
-
-BEGIN TRANSACTION  
-    insert into UserrRelations values (1,29,'Pending') 
-    insert into UserrRelations values (50,1,'Pending')  
-
-IF(@@ERROR > 0)  
-BEGIN  
-    ROLLBACK TRANSACTION  
-END  
-ELSE  
-BEGIN  
-   COMMIT TRANSACTION  
-END   
-
-select * from userrrelations
-delete from userrrelations 
-		select AlbumUserImages.*,Userr.Name,Userr.UserrName,Userr.Imagee,Userr.Email
-	from AlbumUserImages inner join Userr on Userr.IdUser=AlbumUserImages.IdUser
-	 where Userr.Active=1 and AlbumUserImages.Active=1 and AlbumUserImages.Title like '%%'
-	 order by IdAlbumImages 
-
-			SELECT *
-              FROM Userr
-              WHERE  
-                 BirthDate between '' and '1980-06-02'  
-                   
-
-					 	SELECT *
-              FROM Userr
-              WHERE  Name = 'User0'
-                     or Nick = ''
-                     or UserrName = ''
-                     or Email = ''
-                     or WebSite = ''
-                     or Occupation = ''
-                     or Active=1;
 	--select * from UserImages
 	--delete from userrrelations
 	--select UserImages.*,AlbumUserImages.Title as TitleAlbum,Userr.Name as NameUser,Userr.UserrName,Userr.Imagee as UserImage,Userr.Email as UserEmail from UserImages inner join AlbumUserImages on AlbumUserImages.IdAlbumImages=UserImages.IdAlbumImages
@@ -384,86 +246,11 @@ where
   and UserrRelations.IdUser = 15 
 
 
-select 
-  distinct u.*, 
-  urel2.Statee --Friends of Friends, not my friends 
-from 
-  UserrRelations as urel1 
-  inner join UserrRelations as urel2 on urel1.IdFriend = urel2.IdUser 
-  inner join Userr as u on u.IdUser = urel2.IdFriend 
-where 
-  urel2.IdFriend not in (
-    select 
-      UserrRelations.IdFriend 
-    from 
-      UserrRelations 
-      inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
-    where 
-      Userr.Active = 1 
-      and UserrRelations.IdUser = 14 
-      and UserrRelations.Statee = 'Confirmed'
-  ) 
-  and urel1.IdUser = 14 
-  and urel1.Statee = 'Confirmed' 
-  and u.Active = 1 
-
-
-SELECT 
-  count(*) as NumberMutualFriends 
-FROM 
-  UserrRelations as urel1 --Mutual Friends
-  INNER JOIN UserrRelations as urel2 ON urel2.IdFriend = urel1.IdFriend 
-  and urel2.IdUser = 14 
-  and urel2.IdFriend != 11 
-WHERE 
-  urel1.IdUser = 11 
-  and urel2.IdFriend != 14 --and  urel1.Statee='Confirmed' and urel2.Statee='Confirmed
-
-
-select 
-  userr.* --Friends of Friends
-from 
-  UserrRelations 
-  inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
-where 
-  Userr.Active = 1 
-  and UserrRelations.IdUser = 14 
-  and UserrRelations.Statee = 'Confirmed' 
-select 
-  userr.* --Friends of Friends
-from 
-  UserrRelations 
-  inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
-where 
-  Userr.Active = 1 
-  and UserrRelations.IdUser = 12 
 
 
 
-select 
-  distinct u.* 
-from 
-  UserrRelations as urel1 
-  inner join UserrRelations as urel2 on urel1.IdFriend = urel2.IdUser 
-  inner join Userr as u on u.IdUser = urel2.IdFriend 
-where 
-  urel1.IdUser = 14 
-select 
-  UserImages.*, 
-  AlbumUserImages.Title as AlbumTitle, 
-  Userr.Name, 
-  Userr.Nick, 
-  Userr.Email, 
-  Userr.Imagee 
-from 
-  UserImages 
-  inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-  inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-where 
-  Userr.Active = 1 
-  and AlbumUserImages.Active = 1 
-  and UserImages.Active = 1 
-  and UserImages.IdUserImages = 2
+
+
 
 
   delete from UserrRelations
@@ -486,143 +273,69 @@ where
 	select * from userr
 	select * from userpost
 
-	select * from userrrelations where iduser=14
-
-	SELECT 
-	CASE WHEN EXISTS (
-    SELECT *
-    FROM Userr
-    WHERE UserrName ='UserName2' and Active=1 and iduser=4
-)
-THEN CAST( 1 as bit)
-ELSE CAST(0 AS BIT) END as Exist
+	select * from UserImages where iduser=3
 
 select * from userr
 
- update Userr set Country='USA'
+ update Userr set Country='USA' where iduser in (60,61,62,63,64,55,54,53)
 
-	SELECT 
-	CASE WHEN EXISTS (
-    SELECT *
-    FROM UserrRelations
-    WHERE  IdUser=1 and IdFriend=2
-)
-THEN CAST( 1 as bit)
-ELSE CAST(0 AS BIT) END as Exist
+  update UserImages set Visibility='Friend' where iduserimages in (25,30)
+	select * from UserrRelations
 
-
-
-SELECT DATEDIFF(second, '2022/06/09 10:46',getdate()) AS DateDiff;
-
-SELECT GETUTCDATE();
-
-SELECT GETdate()
-
-Select CAST((getdate()-'2022/06/08 10:46'))
-
-
-SELECT  DATEDIFF(second, '2022/06/09 10:46',getdate() ) as diffsecond,
-       DATEDIFF(minute, '2022/06/09 10:46',getdate()) as diffminutes ,
-	   DATEDIFF(hour, '2022/06/09 10:46',getdate()) as diffhours,
-	   DATEDIFF(day, '2022/06/09 10:46',getdate()) as diffdays,
-	   DATEDIFF(month, '2022/06/09 10:46',getdate()) as diffmonth,
-	   DATEDIFF(year, '2022/06/09 10:46',getdate()) as diffyear,
-	CASE 
-		WHEN diffsecond>=60 THEN  DATEDIFF(minute, '2022/06/09 10:46',getdate())
-		END AS diff
-
-
-
-		
-		WITH
-		 differencee AS ( 
-		 SELECT DATEDIFF(second, '2022/06/09 22:02:50',GETUTCDATE() ) AS seconds,
-				DATEDIFF(minute, '2022/06/09 22:02:50', GETUTCDATE()) AS minutess,
-				 DATEDIFF(hour, '2022/06/09 22:02:50',GETUTCDATE()) AS hourss,
-				DATEDIFF(day, '2022/06/09 22:02:50',GETUTCDATE()) AS dayss,
-				 DATEDIFF(month, '2022/06/09 22:02:50',GETUTCDATE()) AS months,
-				 DATEDIFF(year, '2022/06/09 22:02:50',GETUTCDATE()) AS years
-		)
-		SELECT 	
-		CASE  WHEN seconds<60   THEN (select seconds )  END  AS difsecond ,
-		CASE  WHEN seconds>=60 and minutess<60   THEN (select minutess )  END  AS difminutes ,
-		CASE WHEN minutess>=60 and hourss<24 THEN  (SELECT hourss ) END AS difhour,
-		CASE  WHEN hourss>=24 and dayss<31 THEN  (SELECT dayss) END AS difdays,
-		CASE  WHEN dayss>=31 and months<12 THEN  (SELECT months) END AS difmonth,
-		CASE  WHEN months>=12  THEN  (SELECT years) END AS difyears	
-		FROM differencee
-
-
-
-		WITH
-		 difference_in_seconds AS (
-		 SELECT DATEDIFF(second, '2022/06/09 13:09:50','2022/06/09 18:06:30' ) AS seconds
-		),
-		differences AS (
-		 SELECT
-		 seconds, 
-		seconds % 60 AS seconds_part,
-		seconds % 3600 AS minutes_part,
-		seconds % (3600 * 24) AS hours_part
-		 FROM difference_in_seconds
-		)
-		 SELECT
-			FLOOR(seconds / 3600 / 24),
-			FLOOR(hours_part / 3600),
-			FLOOR(minutes_part / 60) as minutespart,
-			seconds_part
-		FROM differences;
-
-
-
-	   THEN (SELECT DATEDIFF(hour, '2022/06/09 10:46',getdate()))
-	--WHEN DATEDIFF(second, '2022/06/09 10:46',getdate()) >= 60 THEN (SELECT DATEDIFF(hour, '2022/06/09 10:46',getdate()))
-	--WHEN DATEDIFF(second, '2022/06/09 10:46',getdate()) >= 60 THEN (SELECT DATEDIFF(hour, '2022/06/09 10:46',getdate()))
-		WITH
-		 differencee AS ( 
-		 SELECT DATEDIFF(second, '2022/06/09 22:02:50',GETUTCDATE() ) AS seconds,
-				DATEDIFF(minute, '2022/06/09 22:02:50', GETUTCDATE()) AS minutess,
-				 DATEDIFF(hour, '2022/06/09 22:02:50',GETUTCDATE()) AS hourss,
-				DATEDIFF(day, '2022/06/09 22:02:50',GETUTCDATE()) AS dayss,
-				 DATEDIFF(month, '2022/06/09 22:02:50',GETUTCDATE()) AS months,
-				 DATEDIFF(year, '2022/06/09 22:02:50',GETUTCDATE()) AS years
-		)
-	   select UserImages.*,AlbumUserImages.Title as AlbumTitle,Userr.Name,Userr.Nick,Userr.Email,Userr.Imagee 
-       from UserImages inner join AlbumUserImages on AlbumUserImages.IdAlbumImages=UserImages.IdAlbumImages
-     inner join Userr on Userr.IdUser=AlbumUserImages.IdUser
-    where Userr.Active=1 and AlbumUserImages.Active=1 and UserImages.Active=1
+			
+		IF EXISTS ( SELECT UserrRelations.* FROM  UserrRelations 
+						 INNER JOIN Userr ON Userr.IdUser = UserrRelations.IdFriend 
+						WHERE 
+						 Userr.Active = 1 
+					     AND UserrRelations.IdUser =1
+						 AND UserrRelations.IdFriend =2
+						 AND UserrRelations.Statee = 'Confirmed' 
+				  )
+		BEGIN
+			SELECT 
+             UserImages.*, 
+             AlbumUserImages.Title as AlbumTitle, 
+             Userr.Name, 
+             Userr.Nick, 
+             Userr.Email, 
+             Userr.Imagee 
+             FROM 
+             UserImages 
+             INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+             INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
+             WHERE 
+             Userr.Active = 1 
+             AND AlbumUserImages.Active = 1 
+             AND UserImages.Active = 1 
+			 AND  (UserImages.Visibility='Friend' OR UserImages.Visibility='Public')
+             AND UserImages.IdUser = 2
+		END
+		ELSE
+		BEGIN
+			SELECT 
+				 UserImages.*, 
+				 AlbumUserImages.Title as AlbumTitle, 
+				 Userr.Name, 
+				 Userr.Nick, 
+				 Userr.Email, 
+				 Userr.Imagee 
+				 FROM 
+				 UserImages 
+				 INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+				 INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
+				 WHERE 
+				 Userr.Active = 1 
+				 AND AlbumUserImages.Active = 1 
+				 AND UserImages.Active = 1 
+				 AND  UserImages.Visibility='Public'
+				 AND UserImages.IdUser = 2
+		END
 
 
 
 
-	 IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser =1 and Active=1)
-    BEGIN
-    select -1 as notexistuser
-    END
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser = 25 and  Active=1)
-    BEGIN
-    select -2 as notexistfriend
-    END
-    IF  EXISTS ( SELECT * FROM UserrRelations WHERE  IdUser=1  and IdFriend=25)
-    BEGIN
-    select -3 as existduplicate
-    END
-    ELSE
-    BEGIN
-    BEGIN TRANSACTION  
-    insert into UserrRelations values (1,25,'Pending') 
-    insert into UserrRelations values (25,1,'Pending') 
-      IF(@@ERROR > 0)  
-      BEGIN  
-          ROLLBACK TRANSACTION  
-      END  
-      ELSE  
-      BEGIN  
-        COMMIT TRANSACTION  
-      END 
-    END 
 
-	select * from userrrelations
-	select * from userr
 
-	delete from userrrelations where iduser in(61,62,63)
+
+
+	
