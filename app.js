@@ -11,14 +11,13 @@ const { HashPassword } = require("./security/hashPassword");
 const { LoginUser } = require("./security/LoginUser");
 
 
-
 //#region User
 let usermaintenance=async()=>
 {
    
-    
+  
     // async function registerUser() {
-    //     for (let index = 30; index < 50; index++) {
+    //     for (let index = 66; index < 100; index++) {
 
     //         let dtouser = new DTOUser();
     //         dtouser.name = "User" + index.toString();
@@ -26,7 +25,7 @@ let usermaintenance=async()=>
     //         dtouser.userrname = "UserName" + index.toString();
     //         dtouser.password = "Password2" + index.toString();
     //         let year = 1960 + index;
-      
+    //         dtouser.country="United Kingdom";
     //         dtouser.datebirth = new Date(year, 05, 02);
           
     //         dtouser.email = "email" + index.toString() + "@gmail.com";
@@ -409,6 +408,7 @@ let images=async()=>
     //         dtophoto.title = "Image" + index.toString();
     //         dtophoto.description = "Description" + index.toString(); 
     //         dtophoto.DateTimePublish = new Date();
+
     //         dtophoto.urlimage = "Urlimage" + index.toString();
     //         let addImage = await DataPhoto.addImages(dtophoto);
     //         if (addImage===-1) {
@@ -535,8 +535,9 @@ let images=async()=>
     // }
     // await getImagesVisibilityFriendUser();
   
-    //  async function getImagesVisibilityPublicUser() {
-    //     let array=await DataPhoto.getImagesVisibilityPublicUser(25);
+    //  async function getImagesMainPage() {
+    //     let array=await DataPhoto.getImagesMainPage(60,'USA');
+       
     //     for (const image of array) {
     //       image.DiffDatePublishDateNow()
     //       image.showDiffDatePublishDateNow()
@@ -544,18 +545,13 @@ let images=async()=>
     //     }
    
     // }
-    // await getImagesVisibilityPublicUser();
+   
+    
+    
+    // await getImagesMainPage();
+ 
 
-    //  async function getImagesVisibilityByUserRelation() {
-    //     let array=await DataPhoto.getImagesVisibilityByUserRelation(1,2);
-    //     for (const image of array) {
-    //       image.DiffDatePublishDateNow()
-    //       image.showDiffDatePublishDateNow()
-    //         console.log(image);
-    //     }
-   
-    // }
-    // await getImagesVisibilityByUserRelation();
+    
    
 
    
@@ -563,7 +559,64 @@ let images=async()=>
   images().then()
   
 //#endregion
+//#region AlbumVideos
+let albumvideo=async()=>
+{
+   // async function addAlbum() {
+   //     for (let index = 50; index < 100; index++) {
+   //         let dtoalbumimage = new DTOAlbumPhoto();
+   //         dtoalbumimage.user.iduser = index;        
+   //         dtoalbumimage.title = "AlbumImage" + index.toString();
+   //         let registerAlbumImage = await DataAlbumImages.addAlbumImage(dtoalbumimage);
+   //         if (registerAlbumImage===-1) {
+   //            throw new Error("The user does not exists");
+   //             }
+   //            console.log("The album of images was registered successfully");
 
+   //         }
+   //     }
+   
+   //  await addAlbum();
+
+   // async function updateTitleAlbumImages() {
+
+   //     let updateTitleAlbumImage = await DataAlbumImages.updateTitleAlbum(3, "AlbumUpdated");
+   //      if (updateTitleAlbumImage===-1) {
+   //         throw new Error("The album of images does not exists");
+   //          }
+
+   //     console.log("The title was updated successfully");
+      
+   // }
+   // await updateTitleAlbumImages();
+    
+//  async function deleteAlbum() {
+   
+//         let deleteAlbum = await DataAlbumImages.deleteAlbum(3);
+//            if (deleteAlbum===-1) {
+//               throw new Error("The album of images does not exists");
+//             }
+//             console.log("The album was deleted successfully");      
+//     }
+//     await deleteAlbum();
+    
+// let getAlbumImage = await DataAlbumImages.getAlbumImage(2);
+// if (getAlbumImage===-1) {
+//       throw new Error("The album of images does not exists");
+//   }
+// console.log(getAlbumImage);
+// let getAlbumImagebyUser = await DataAlbumImages.getAlbumImagebyUser(5);
+// console.log(getAlbumImagebyUser);
+// let getsAlbumImages = await DataAlbumImages.getsAlbumImages();
+// console.log(getsAlbumImages);
+// let getAlbumImageByTitleUser = await DataAlbumImages.getAlbumImageByTitleUser("",3);
+// console.log(getAlbumImageByTitleUser);
+
+
+
+}
+albumvideo().then()
+//#endregion
 //#region Others
 // let conexion=async()=>
 // {

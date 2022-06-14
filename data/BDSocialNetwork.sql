@@ -110,8 +110,7 @@ CREATE TABLE UserVideos(
 	Active bit not null,
 )
 go
-	CREATE TABLE UserEvent(
-
+CREATE TABLE UserEvent(
 	IdUserEvent int NOT NULL PRIMARY KEY Identity(1,1) ,
 	IdUser int not null Foreign Key References Userr(IdUser),
 	Typee varchar(50) NOT NULL,
@@ -164,9 +163,10 @@ CREATE TABLE UserrCommentsEvent(
 )
 go
 CREATE TABLE UserrSubComments(
-	IdSubUserComment int NOT NULL PRIMARY KEY ,
+	IdSubUserComment int NOT NULL PRIMARY KEY Identity(1,1) ,
 	IdUser int not null Foreign Key References Userr(IdUser),
    IdUserComment int not null Foreign Key References UserrComments(IdUserComment),
+   	Likes int NOT NULL,
 	Textt varchar(700) NOT NULL,
     DatePublish DateTime  not null
 )
@@ -178,14 +178,61 @@ CREATE TABLE UserrImageTags(
 	IdUserImages int not null Foreign Key References UserImages(IdUserImages),
 )
 go
+CREATE TABLE LikeImage(
+	IdLikeImage int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	IdUserImages int not null Foreign Key References UserImages(IdUserImages),
+)
+go
+CREATE TABLE LikeVideo(
+	IdLikeVideo int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	IdUserVideos int not null Foreign Key References UserVideos(IdUserVideos),
+)
+go
+CREATE TABLE LikePost(
+	IdLikePost int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	IdPost int not null Foreign Key References UserPost(IdPost),
+)
+go
+CREATE TABLE LikeEvent(
+	IdLikeEvent int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	IdUserEvent int not null Foreign Key References UserEvent(IdUserEvent),
+)
+go
+CREATE TABLE LikeComment(
+	IdLikeComment int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	IdUserComment int not null Foreign Key References UserrComments(IdUserComment),
+)
+go
+CREATE TABLE LikeSubComment(
+	IdLikeSubComment int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	IdSubUserComment int not null Foreign Key References UserrSubComments(IdSubUserComment),
+)
+go
 
---drop table UserrRelations
---drop table UserrImageTags
+--drop table LikeSubComment
+--drop table LikeComment
+--drop table LikePost
+--drop table LikeVideo
+--drop table LikeImage
+--drop table LikeEvent
+
+--drop table UserrSubComments
 --drop table UserrCommentsImage
 --drop table UserrCommentsEvent
 --drop table UserrCommentsVideo
---drop table UserrSubComments
+--drop table UserrCommentsPost
 --drop table UserrComments
+
+--drop table UserrImageTags
+
+
+--drop table UserrMessage
 --drop table UserEventInvitation
 --drop table UserEvent
 --drop table UserVideos
@@ -193,16 +240,24 @@ go
 --drop table AlbumUserVideos
 --drop table AlbumUserImages
 
-
---drop table UserrMessage
-
-select * from userr where iduser=6
+--drop table UserrRelations
+--drop table Userr
+select * from userr
+ where iduser=6
 select * from AlbumUserImages
 select * from  UserImages
---drop table Userr
 
 
 
+  select 
+        Count(Userr.IdUser) as NumberFriend 
+      from 
+        UserrRelations 
+        inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+      where 
+        Userr.Active = 1 
+        and UserrRelations.IdUser = ${iduser} 
+        and UserrRelations.Statee = 'Confirmed'
 
 --ALTER TABLE UserImages
 --  alter column  Likes int not NULL 
@@ -277,59 +332,218 @@ where
 
 select * from userr
 
- update Userr set Country='USA' where iduser in (60,61,62,63,64,55,54,53)
+ update Userr set Country='United Kingdom' where iduser between 1 and 29
 
   update UserImages set Visibility='Friend' where iduserimages in (25,30)
 	select * from UserrRelations
-
+	select * from userr
 			
-		IF EXISTS ( SELECT UserrRelations.* FROM  UserrRelations 
-						 INNER JOIN Userr ON Userr.IdUser = UserrRelations.IdFriend 
-						WHERE 
-						 Userr.Active = 1 
-					     AND UserrRelations.IdUser =1
-						 AND UserrRelations.IdFriend =2
-						 AND UserrRelations.Statee = 'Confirmed' 
+			-- 45 no tiene amigos
+					
+
+		IF EXISTS (
+				select 
+				  UserrRelations.*
+				from 
+				  UserrRelations 
+				  inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+				where 
+				  Userr.Active = 1 
+				  and UserrRelations.IdUser =60
+				  and UserrRelations.Statee = 'Confirmed'
 				  )
+
 		BEGIN
-			SELECT 
-             UserImages.*, 
-             AlbumUserImages.Title as AlbumTitle, 
-             Userr.Name, 
-             Userr.Nick, 
-             Userr.Email, 
-             Userr.Imagee 
-             FROM 
-             UserImages 
-             INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-             INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
-             WHERE 
-             Userr.Active = 1 
-             AND AlbumUserImages.Active = 1 
-             AND UserImages.Active = 1 
-			 AND  (UserImages.Visibility='Friend' OR UserImages.Visibility='Public')
-             AND UserImages.IdUser = 2
+			    SELECT 
+                UserImages.*, 
+                AlbumUserImages.Title as AlbumTitle, 
+                Userr.Name, 
+                Userr.Nick, 
+                Userr.Email, 
+                Userr.Imagee 
+                from 
+                UserImages 
+                inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+                inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+                inner join UserrRelations on UserrRelations.IdFriend = Userr.IdUser 
+                where 
+                Userr.Active = 1 
+                and AlbumUserImages.Active = 1 
+                and UserImages.Active = 1 
+                and UserrRelations.Statee = 'Confirmed' 
+                and (UserImages.Visibility='Public' or UserImages.Visibility='Friend') 
+                and UserrRelations.IdUser = 60
+				
+				union
+				SELECT 
+					UserImages.*, 
+					AlbumUserImages.Title as AlbumTitle, 
+					Userr.Name, 
+					Userr.Nick, 
+					Userr.Email, 
+					Userr.Imagee 
+					from 
+					UserImages 
+					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+					where 
+					Userr.Active = 1 
+					and AlbumUserImages.Active = 1 
+					and UserImages.Active = 1 
+					and UserImages.Visibility='Public'
+					and Userr.Country = 'United Kingdom'
+					ORDER BY DATEPUBLISH DESC
 		END
 		ELSE
 		BEGIN
-			SELECT 
-				 UserImages.*, 
-				 AlbumUserImages.Title as AlbumTitle, 
-				 Userr.Name, 
-				 Userr.Nick, 
-				 Userr.Email, 
-				 Userr.Imagee 
-				 FROM 
-				 UserImages 
-				 INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-				 INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
-				 WHERE 
-				 Userr.Active = 1 
-				 AND AlbumUserImages.Active = 1 
-				 AND UserImages.Active = 1 
-				 AND  UserImages.Visibility='Public'
-				 AND UserImages.IdUser = 2
+						
+			IF EXISTS (
+				SELECT 
+                UserImages.*
+                from 
+                UserImages 
+                inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+                inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+                where 
+                Userr.Active = 1 
+                and AlbumUserImages.Active = 1 
+                and UserImages.Active = 1 
+                and UserImages.Visibility='Public'
+				and Userr.Country = 'USAA'
+				)
+			BEGIN			
+					SELECT 
+					UserImages.*, 
+					AlbumUserImages.Title as AlbumTitle, 
+					Userr.Name, 
+					Userr.Nick, 
+					Userr.Email, 
+					Userr.Imagee 
+					from 
+					UserImages 
+					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+					where 
+					Userr.Active = 1 
+					and AlbumUserImages.Active = 1 
+					and UserImages.Active = 1 
+					and UserImages.Visibility='Public'
+					and Userr.Country = 'USA'
+		    END
+            ELSE 
+			BEGIN
+				SELECT 
+					UserImages.*, 
+					AlbumUserImages.Title as AlbumTitle, 
+					Userr.Name, 
+					Userr.Nick, 
+					Userr.Email, 
+					Userr.Imagee 
+					from 
+					UserImages 
+					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+					where 
+					Userr.Active = 1 
+					and AlbumUserImages.Active = 1 
+					and UserImages.Active = 1 
+					and UserImages.Visibility='Public'
+			END 		  
 		END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				SELECT 
+                UserImages.*, 
+                AlbumUserImages.Title as AlbumTitle, 
+                Userr.Name, 
+                Userr.Nick, 
+                Userr.Email, 
+                Userr.Imagee 
+                from 
+                UserImages 
+                inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+                inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+                where 
+                Userr.Active = 1 
+                and AlbumUserImages.Active = 1 
+                and UserImages.Active = 1 
+                and UserImages.Visibility='Public'
+				and Userr.Country = 'USA'
+               
+
+
+			select * from userimages where userimages.iduser=26
+		
+
+			select * from userr  where country='USA' 
+
+				select * from userr  where iduser=
+				  
+				  update 
+
+
+
+
+		--IF EXISTS ( SELECT UserrRelations.* FROM  UserrRelations 
+		--				 INNER JOIN Userr ON Userr.IdUser = UserrRelations.IdFriend 
+		--				WHERE 
+		--				 Userr.Active = 1 
+		--			     AND UserrRelations.IdUser =1
+		--				 AND UserrRelations.IdFriend =2
+		--				 AND UserrRelations.Statee = 'Confirmed' 
+		--		  )
+		--BEGIN
+		--	SELECT 
+  --           UserImages.*, 
+  --           AlbumUserImages.Title as AlbumTitle, 
+  --           Userr.Name, 
+  --           Userr.Nick, 
+  --           Userr.Email, 
+  --           Userr.Imagee 
+  --           FROM 
+  --           UserImages 
+  --           INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+  --           INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
+  --           WHERE 
+  --           Userr.Active = 1 
+  --           AND AlbumUserImages.Active = 1 
+  --           AND UserImages.Active = 1 
+		--	 AND  (UserImages.Visibility='Friend' OR UserImages.Visibility='Public')
+  --           AND UserImages.IdUser = 2
+		--END
+		--ELSE
+		--BEGIN
+		--	SELECT 
+		--		 UserImages.*, 
+		--		 AlbumUserImages.Title as AlbumTitle, 
+		--		 Userr.Name, 
+		--		 Userr.Nick, 
+		--		 Userr.Email, 
+		--		 Userr.Imagee 
+		--		 FROM 
+		--		 UserImages 
+		--		 INNER JOIN AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+		--		 INNER JOIN Userr on Userr.IdUser = AlbumUserImages.IdUser 
+		--		 WHERE 
+		--		 Userr.Active = 1 
+		--		 AND AlbumUserImages.Active = 1 
+		--		 AND UserImages.Active = 1 
+		--		 AND  UserImages.Visibility='Public'
+		--		 AND UserImages.IdUser = 2
+		--END
 
 
 

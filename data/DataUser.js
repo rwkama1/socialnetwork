@@ -14,7 +14,7 @@ class DataUser {
     END
     else
     begin
-        insert into Userr values (@Name,@Nick,@UserrName,@Passwordd,@Hashh,@BirthDate,getutcdate(),1,@Email,'','','','','','','','','','','','','','','','Public')
+        insert into Userr values (@Name,@Nick,@UserrName,@Passwordd,@Hashh,@BirthDate,getutcdate(),1,@Email,'','','','','','','','',@Country,'','','','','','','Public')
         select 1 insertsuccess
     end
     `
@@ -27,6 +27,7 @@ class DataUser {
         .input('Hashh', VarChar, dtuser.hash)
         .input('BirthDate', Date, dtuser.datebirth)
         .input('Email', VarChar, dtuser.email)
+        .input('Country', VarChar, dtuser.country)
         .query(queryinsert)
         resultquery = result.recordset[0].existusername;
          if(resultquery===undefined)
