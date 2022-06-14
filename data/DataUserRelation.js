@@ -235,7 +235,7 @@ static  blockFriend=async(iduser,idfriend)=>
     return resultquery;
     
 }
-
+//#endregion
     //#region Exists
 static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
 {
@@ -563,8 +563,6 @@ static  NumberMutualFriends=async(iduser1login,iduser2)=>
     
 }
     //#endregion
-    //#region GetInformation
   
-    //#endregion
 }
 module.exports = { DataUserRelation };
