@@ -176,9 +176,7 @@ const { VarChar,Int ,Date} = require("mssql");
           and Userr.Active = 1 
           and AlbumUserImages.Active = 1 
         order by 
-          IdAlbumImages
-        
-                 
+          IdAlbumImages      
           `;
    
         let pool = await Conection.conection();
@@ -187,7 +185,7 @@ const { VarChar,Int ,Date} = require("mssql");
             .query(querysearch)
             for (var album of result.recordset) {
                 let albumphoto = new DTOAlbumPhoto();   
-              await  this.getinformationList(albumphoto,album);
+                this.getinformationList(albumphoto,album);
                 arrayalbumphoto.push(albumphoto);
              }
        pool.close();
@@ -224,7 +222,7 @@ const { VarChar,Int ,Date} = require("mssql");
              .query(querysearch)
              for (var album of result.recordset) {
                  let albumphoto = new DTOAlbumPhoto();   
-               await  this.getinformationList(albumphoto,album);
+                 this.getinformationList(albumphoto,album);
                  arrayalbumphoto.push(albumphoto);
               }
         pool.close();
@@ -259,7 +257,7 @@ const { VarChar,Int ,Date} = require("mssql");
              .query(querysearch)
         for (var album of result.recordset) {
             let albumphoto = new DTOAlbumPhoto();   
-           await  this.getinformationList(albumphoto,album);
+            this.getinformationList(albumphoto,album);
             arrayalbumphoto.push(albumphoto);
          }
       
@@ -283,7 +281,7 @@ const { VarChar,Int ,Date} = require("mssql");
     albumphoto.active = result.recordset[0].Active;
    
 }
- static async getinformationList(albumphoto, album) {
+ static  getinformationList(albumphoto, album) {
       
     albumphoto.idalbumphoto = album.IdAlbumImages;
     albumphoto.user.iduser = album.IdUser;

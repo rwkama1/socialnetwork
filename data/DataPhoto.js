@@ -14,17 +14,21 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 
     IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
     BEGIN
-    select -1 as notexistuser
-    END
-    IF NOT EXISTS ( SELECT * FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
-    BEGIN
-    select -2 as notexistalbum
+      select -1 as notexistuser
     END
     ELSE
     BEGIN
-    insert into UserImages values  (@IdUser,@IdAlbumImages,@Title,@Descriptionn ,@Likes,@Urlimage,'Public',GETUTCDATE(),1)
-    select 1 as addedphoto
+      IF NOT EXISTS ( SELECT * FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
+      BEGIN
+         select -2 as notexistalbum
+      END
+      ELSE
+      BEGIN
+         insert into UserImages values  (@IdUser,@IdAlbumImages,@Title,@Descriptionn ,@Likes,@Urlimage,'Public',GETUTCDATE(),1)
+         select 1 as addedphoto
+      END
     END
+    
 
     `
     let pool = await Conection.conection();
@@ -137,7 +141,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
     return resultquery;
     
 }
-
+//#endregion
 //#region Exists
  static existImageById=async(idimage)=>
 {
@@ -659,15 +663,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
           return arrayphoto;
     }
 
-   
-   
-    
-  
- 
- 
-
-
-//#endregion
+   //#endregion
 //#region Others
 // static DiffDatePublishDateNow=async(dtophoto)=>
 // {

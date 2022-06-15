@@ -30,33 +30,41 @@ static  addUserRelation=async(dtousderelation)=>
 
     let resultquery=0;
     let queryinsert = `
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
-    BEGIN
-    select -1 as notexistuser
-    END
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdFriend and Active=1)
-    BEGIN
+  
+	IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
+  BEGIN
+  select -1 as notexistuser
+  END
+ELSE
+BEGIN
+  IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdFriend and Active=1)
+  BEGIN
     select -2 as notexistfriend
-    END
+  END
+  ELSE
+  BEGIN
     IF  EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
     BEGIN
-    select -3 as existduplicate
+      select -3 as existduplicate
     END
     ELSE
     BEGIN
-    BEGIN TRANSACTION  
-    insert into UserrRelations values (@IdUser,@IdFriend,'Pending') 
-    insert into UserrRelations values (@IdFriend,@IdUser,'Pending') 
-    select 1 as insertsuccess
+      BEGIN TRANSACTION  
+      insert into UserrRelations values (@IdUser,@IdFriend,'Pending') 
+      insert into UserrRelations values (@IdFriend,@IdUser,'Pending') 
+      select 1 as insertsuccess
       IF(@@ERROR > 0)  
       BEGIN  
           ROLLBACK TRANSACTION  
-      END  
-      ELSE  
+        END  
+        ELSE  
       BEGIN  
-        COMMIT TRANSACTION  
+      COMMIT TRANSACTION  
       END 
     END 
+  END
+  END
+
     `;
 
       let pool = await Conection.conection();
@@ -88,29 +96,39 @@ let resultquery;
     BEGIN
     select -1 as notexistuser
     END
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${idfriend} and Active=1)
-    BEGIN
-    select -2 as notexistfriend
-    END
-    IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
-    BEGIN
-    select -3 as notexistduplicate
-    END
-    ELSE
-    BEGIN
-    BEGIN TRANSACTION 
-    delete from UserrRelations where IdUser=${iduser} and IdFriend=${idfriend} 
-    delete from UserrRelations where IdUser=${idfriend} and IdFriend=${iduser} 
-    select 1 as deletedsuccess
-    IF(@@ERROR > 0)  
-    BEGIN  
-        ROLLBACK TRANSACTION  
-    END  
-    ELSE  
-    BEGIN  
-      COMMIT TRANSACTION  
-    END
-    END  
+	ELSE
+	BEGIN 
+		 IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${idfriend} and Active=1)
+		BEGIN
+		select -2 as notexistfriend
+		END
+		ELSE
+		BEGIN 
+			IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
+			BEGIN
+			select -3 as notexistduplicate
+			END
+			ELSE
+			BEGIN		 
+				BEGIN TRANSACTION 
+				delete from UserrRelations where IdUser=${iduser} and IdFriend=${idfriend} 
+				delete from UserrRelations where IdUser=${idfriend} and IdFriend=${iduser} 
+				select 1 as deletedsuccess
+				IF(@@ERROR > 0)  
+				BEGIN  
+					ROLLBACK TRANSACTION  
+				END  
+				ELSE  
+				BEGIN  
+				  COMMIT TRANSACTION  
+				END  
+			END
+		END 
+	END 
+   
+   
+
+
     `
     let pool = await Conection.conection();
     const result = await pool.request()
@@ -139,29 +157,35 @@ let resultquery;
     BEGIN
     select -1 as notexistuser
     END
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdFriend and Active=1)
-    BEGIN
-    select -2 as notexistfriend
-    END
-    IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
-    BEGIN
-    select -3 as notexistduplicate
-    END
     ELSE
     BEGIN
-    BEGIN TRANSACTION 
-    update UserrRelations set Statee='Confirmed' where IdUser=@IdUser and IdFriend=@IdFriend
-    update UserrRelations set Statee='Confirmed' where IdUser=@IdFriend and IdFriend=@IdUser
-    select 1 as updatesuccess
-    IF(@@ERROR > 0)  
-    BEGIN  
-        ROLLBACK TRANSACTION  
-    END  
-    ELSE  
-    BEGIN  
-      COMMIT TRANSACTION  
-    END 
-    END  
+      IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdFriend and Active=1)
+      BEGIN
+      select -2 as notexistfriend
+      END
+      ELSE
+      BEGIN
+        IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
+        BEGIN
+        select -3 as notexistduplicate
+        END
+        ELSE
+        BEGIN
+          BEGIN TRANSACTION 
+          update UserrRelations set Statee='Confirmed' where IdUser=@IdUser and IdFriend=@IdFriend
+          update UserrRelations set Statee='Confirmed' where IdUser=@IdFriend and IdFriend=@IdUser
+          select 1 as updatesuccess
+          IF(@@ERROR > 0)  
+          BEGIN  
+              ROLLBACK TRANSACTION  
+          END  
+          ELSE  
+          BEGIN  
+            COMMIT TRANSACTION  
+          END 
+        END
+      END
+    END
 
     `
     let pool = await Conection.conection();
@@ -193,29 +217,35 @@ static  blockFriend=async(iduser,idfriend)=>
     BEGIN
     select -1 as notexistuser
     END
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${idfriend} and Active=1)
-    BEGIN
-    select -2 as notexistfriend
+    ELSE 
+    BEGIN 
+      IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${idfriend} and Active=1)
+      BEGIN
+      select -2 as notexistfriend
+      END
+      ELSE
+      BEGIN        
+        IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
+        BEGIN
+        select -3 as notexistduplicate
+        END
+        ELSE
+        BEGIN
+          BEGIN TRANSACTION 
+          update UserrRelations set Statee='Blocked' where IdUser=${iduser} and IdFriend=${idfriend}
+          update UserrRelations set Statee='Blocked' where IdUser=${idfriend} and IdFriend=${iduser}
+          select 1 as blockedsuccess
+          IF(@@ERROR > 0)  
+          BEGIN  
+              ROLLBACK TRANSACTION  
+          END  
+          ELSE  
+          BEGIN  
+            COMMIT TRANSACTION  
+          END 
+        END 
+      END 
     END
-    IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
-    BEGIN
-    select -3 as notexistduplicate
-    END
-    ELSE
-    BEGIN
-   BEGIN TRANSACTION 
-    update UserrRelations set Statee='Blocked' where IdUser=${iduser} and IdFriend=${idfriend}
-    update UserrRelations set Statee='Blocked' where IdUser=${idfriend} and IdFriend=${iduser}
-    select 1 as blockedsuccess
-    IF(@@ERROR > 0)  
-    BEGIN  
-        ROLLBACK TRANSACTION  
-    END  
-    ELSE  
-    BEGIN  
-      COMMIT TRANSACTION  
-    END 
-    END 
     `
     let pool = await Conection.conection();
     const result = await pool.request()

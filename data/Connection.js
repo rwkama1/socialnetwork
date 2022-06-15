@@ -5,10 +5,10 @@ const sql  = require("mssql");
 {
      static conection=async () => {
         let sqlconfig = {
-           user: 'rwkama63_SQLLogin_1',
-            password:'67bu3zb26y',
-            database: 'socialnetwork',
-           server: 'socialnetwork.mssql.somee.com', 
+           user: 'rwkama61_',
+            password:'socialnetwork',
+            database: 'rwkama61_',
+           server: 'sql.bsite.net\\MSSQL2016', 
            
             options: {
                     trustedConnection: false,

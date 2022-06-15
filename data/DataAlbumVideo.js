@@ -72,7 +72,7 @@ class DataAlbumVideo {
         END
         ELSE
         BEGIN
-        update AlbumUserImages set Active=0 where IdAlbumVideos=@IdAlbumVideos
+        update AlbumUserVideos set Active=0 where IdAlbumVideos=@IdAlbumVideos
         select 1 as albumdel
         END
         `
@@ -133,7 +133,7 @@ static existAlbumById=async(idalbum)=>
           Userr.Imagee, 
           Userr.Email 
         from 
-        AlbumUserVideos 
+         AlbumUserVideos 
           inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
         where 
           Userr.Active = 1 
@@ -183,7 +183,7 @@ static existAlbumById=async(idalbum)=>
              .query(querysearch)
              for (var album of result.recordset) {
                 let albumvideo = new DTOAlbumVideo(); 
-               await  this.getinformationList(albumvideo,album);
+                 this.getinformationList(albumvideo,album);
                arrayalbumvid.push(albumvideo);
               }
         pool.close();
@@ -218,7 +218,7 @@ static existAlbumById=async(idalbum)=>
               .query(querysearch)
               for (var album of result.recordset) {
                 let albumvideo = new DTOAlbumVideo(); 
-               await  this.getinformationList(albumvideo,album);
+                 this.getinformationList(albumvideo,album);
                arrayalbumvid.push(albumvideo);
               }
          pool.close();
@@ -249,7 +249,7 @@ static existAlbumById=async(idalbum)=>
               .query(querysearch)
               for (var album of result.recordset) {
                 let albumvideo = new DTOAlbumVideo(); 
-               await  this.getinformationList(albumvideo,album);
+                 this.getinformationList(albumvideo,album);
                arrayalbumvid.push(albumvideo);
               }
        
@@ -272,7 +272,7 @@ static getinformation(albumvideo, result) {
     albumvideo.active = result.recordset[0].Active;
    
 }
- static async getinformationList(albumvideo, album) {
+ static  getinformationList(albumvideo, album) {
       
     albumvideo.idalbumvideo = album.IdAlbumVideos;
     albumvideo.user.iduser = album.IdUser;

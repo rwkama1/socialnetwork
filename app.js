@@ -1,9 +1,11 @@
 
 const { DataAlbumImages } = require("./data/DataAlbumImage");
+const { DataAlbumVideo } = require("./data/DataAlbumVideo");
 const { DataPhoto } = require("./data/DataPhoto");
 const { DataUser } = require("./data/DataUser");
 const { DataUserRelation } = require("./data/DataUserRelation");
 const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
+const { DTOAlbumVideo } = require("./entity/DTOAlbumVideos");
 const { DTOPhoto } = require("./entity/DTOPhoto");
 const { DTOUser } = require("./entity/DTOUser");
 const {  DTOUserRelation } = require("./entity/DTOUserRelation");
@@ -14,10 +16,8 @@ const { LoginUser } = require("./security/LoginUser");
 //#region User
 let usermaintenance=async()=>
 {
-   
-  
     // async function registerUser() {
-    //     for (let index = 66; index < 100; index++) {
+    //     for (let index = 1; index < 100; index++) {
 
     //         let dtouser = new DTOUser();
     //         dtouser.name = "User" + index.toString();
@@ -27,9 +27,9 @@ let usermaintenance=async()=>
     //         let year = 1960 + index;
     //         dtouser.country="United Kingdom";
     //         dtouser.datebirth = new Date(year, 05, 02);
-          
+
     //         dtouser.email = "email" + index.toString() + "@gmail.com";
-          
+
     //         const passh = HashPassword.hashPassword(dtouser.password);
     //         dtouser.password = passh.hash;
     //         dtouser.hash = passh.salt;
@@ -41,7 +41,7 @@ let usermaintenance=async()=>
     //     }
     // }
     //  await registerUser();
-    
+
     // async function updateUserProfile() {
     //     let dtouserupdate = new DTOUser();
     //     dtouserupdate.iduser = 3;
@@ -50,7 +50,7 @@ let usermaintenance=async()=>
     //      dtouserupdate.datebirth = new Date(1998, 05, 02);
     //     dtouserupdate.email = "emailupdate@gmail.com";
     //     dtouserupdate.address = "Address1";
-    //     dtouserupdate.ocupattion = "OccupationUpdate";  
+    //     dtouserupdate.ocupattion = "OccupationUpdate";
     //     dtouserupdate.website = "webiste.com";
     //     dtouserupdate.gender = "Male";
     //     dtouserupdate.city = "City";
@@ -61,12 +61,12 @@ let usermaintenance=async()=>
     //     dtouserupdate.urltwitter = "UrlTwitter";
     //     dtouserupdate.martialstatus = "martialstatus";
     //     dtouserupdate.description = "Description";
-    //     dtouserupdate.country = "Country";     
+    //     dtouserupdate.country = "Country";
     //     let updateuser = await DataUser.updateUser(dtouserupdate);
     //      if (updateuser===-1) {
     //             throw new Error("The user does not exists");
     //     }
-    //     console.log("The user updated successfully");     
+    //     console.log("The user updated successfully");
     // }
     // await updateUserProfile();
 
@@ -76,9 +76,9 @@ let usermaintenance=async()=>
     //                 throw new Error("The user does not exists");
     //             }
     //         console.log("The user was successfully unsubscribed");
-           
-        
-       
+
+
+
     // }
     // await deleteUser();
 
@@ -103,69 +103,69 @@ let usermaintenance=async()=>
     //             console.log("The username and password updated successfully");
 
     //     }
-    
+
 
     //     await updateUserNamePassword();
-   
+
     // async function updateStateUser() {
-    
+
     //     let updateStateUser = await DataUser.updateStateUser('State', 'UserName1');
-    //     if (updateStateUser===-1) 
+    //     if (updateStateUser===-1)
     //     {
     //       throw new Error("The user name does not exists");
     //      }
-     
+
     //         console.log("The state was updated successfully");
-        
+
     // }
-    
-   
+
+
     // await updateStateUser();
 
     // async function updateVisibilityUser() {
- 
+
     //     let updateVisibilityUser = await DataUser.updateVisibilityUser('Friend', 'UserName80');
-    //     if (updateVisibilityUser===-1) 
+    //     if (updateVisibilityUser===-1)
     //     {
     //       throw new Error("The user name does not exists");
     //     }
     //         console.log("The visibility was updated successfully");
-       
+
     // }
-    
-   
+
+
     // await updateVisibilityUser();
 
     // async function insertProfilePicture() {
-      
+
     //     let insertProfilePicture = await DataUser.insertProfilePicture('Imageurl', 'UserName70');
-    //      if (insertProfilePicture===-1) 
+    //      if (insertProfilePicture===-1)
     //     {
     //       throw new Error("The user name does not exists");
-    //     }     
+    //     }
     //         console.log("The Profile Picture was added successfully");
 
     // }
-    
-   
+
+
     // await insertProfilePicture();
 
     // async function deleteProfilePicture() {
-       
+
     //     let deleteProfilePicture = await DataUser.deleteProfilePicture('UserName2');
-    //      if (deleteProfilePicture===-1) 
+    //      if (deleteProfilePicture===-1)
     //     {
     //       throw new Error("The user name does not exists");
-    //     }  
-      
+    //     }
+
     //         console.log("The Profile Picture was deleted successfully");
-       
+
     // }
-    
+
     // await deleteProfilePicture();
-   
-   
-   
+
+
+
 
 
 // let loginuser = await LoginUser.loginUser('UserName13','Password213')
@@ -218,88 +218,88 @@ usermaintenance().then()
 //#region UserRelation
 let userrelation=async()=>
 {
-  // async function addUserRelation() {
-        // for (let index = 46; index < 100; index++) {
-        //     let dtour = new DTOUserRelation();
-        //     dtour.user.iduser = index;
-        //     dtour.friend.iduser = index+1;
-    
-        //     let addUserRelation1 = await DataUserRelation.addUserRelation(dtour);
-        //     if (addUserRelation1===-1) {
-        //         throw new Error("The user does not exists"); 
-        //     }
-        //     if (addUserRelation1===-2) {
-        //         throw new Error("The friend does not exists"); 
-        //     }
-        //     if (addUserRelation1===-3) {
-        //         throw new Error("The users relation already exists"); 
-        //     }  
-        //      console.log("Friend request has been sent");
+//   async function addUserRelation() {
+//         for (let index = 33; index < 100; index++) {
+//             let dtour = new DTOUserRelation();
+//             dtour.user.iduser = index;
+//             dtour.friend.iduser = index+1;
 
-          
-      // }
-        
-   // }
-   // await addUserRelation();
+//             let addUserRelation1 = await DataUserRelation.addUserRelation(dtour);
+//             if (addUserRelation1===-1) {
+//                 throw new Error("The user does not exists");
+//             }
+//             if (addUserRelation1===-2) {
+//                 throw new Error("The friend does not exists");
+//             }
+//             if (addUserRelation1===-3) {
+//                 throw new Error("The users relation already exists");
+//             }
+//              console.log("Friend request has been sent");
+
+
+//       }
+
+//    }
+//    await addUserRelation();
 
     // async function confirmFriend() {
-  
 
-    //         let confirmFriend1 = await DataUserRelation.confirmFriend(7,8);
+
+    //         let confirmFriend1 = await DataUserRelation.confirmFriend(5,8);
     //            if (confirmFriend1===-1) {
-    //             throw new Error("The user does not exists"); 
+    //             throw new Error("The user does not exists");
     //         }
     //         if (confirmFriend1===-2) {
-    //             throw new Error("The friend does not exists"); 
+    //             throw new Error("The friend does not exists");
     //         }
     //         if (confirmFriend1===-3) {
-    //             throw new Error("The users relation does not exists"); 
-    //         }  
+    //             throw new Error("The users relation does not exists");
+    //         }
     //      console.log("Friend request has been confirmed");
-               
-              
 
-            
+
+
+
     //  }
     //    await confirmFriend();
-          
+
 
     // async function deleteUserRelation() {
-    
 
-    //     let deleteuserrelation1 = await DataUserRelation.deleteUserRelation(70, 80);
+
+    //     let deleteuserrelation1 = await DataUserRelation.deleteUserRelation(33, 34);
     //      if (deleteuserrelation1===-1) {
-    //             throw new Error("The user does not exists"); 
+    //             throw new Error("The user does not exists");
     //     }
     //      if (deleteuserrelation1===-2) {
-    //             throw new Error("The friend does not exists"); 
+    //             throw new Error("The friend does not exists");
     //      }
     //     if (deleteuserrelation1===-3) {
-    //         throw new Error("The users relation does not exists"); 
-    //      }  
+    //         throw new Error("The users relation does not exists");
+    //      }
     //  console.log("Friend request has been deleted");
-           
-        
+
+
     // }
     //  await deleteUserRelation();
 
     //   async function blockUserRelation() {
-     
+
     //     let blockFriend1 = await DataUserRelation.blockFriend(3, 4);
-         
+
     //      if (blockFriend1===-1) {
-    //             throw new Error("The user does not exists"); 
+    //             throw new Error("The user does not exists");
     //     }
     //      if (blockFriend1===-2) {
-    //             throw new Error("The friend does not exists"); 
+    //             throw new Error("The friend does not exists");
     //      }
     //     if (blockFriend1===-3) {
-    //         throw new Error("The users relation does not exists"); 
-    //      }  
-        
+    //         throw new Error("The users relation does not exists");
+    //      }
+
     //      console.log("Friend request has been blocked");
-          
-       
+
+
     // }
     // await blockUserRelation();
 
@@ -342,9 +342,9 @@ userrelation().then()
  let albumimage=async()=>
  {
     // async function addAlbum() {
-    //     for (let index = 50; index < 100; index++) {
+    //     for (let index = 1; index < 100; index++) {
     //         let dtoalbumimage = new DTOAlbumPhoto();
-    //         dtoalbumimage.user.iduser = index;        
+    //         dtoalbumimage.user.iduser = index;
     //         dtoalbumimage.title = "AlbumImage" + index.toString();
     //         let registerAlbumImage = await DataAlbumImages.addAlbumImage(dtoalbumimage);
     //         if (registerAlbumImage===-1) {
@@ -354,7 +354,7 @@ userrelation().then()
 
     //         }
     //     }
-    
+
     //  await addAlbum();
 
     // async function updateTitleAlbumImages() {
@@ -365,20 +365,20 @@ userrelation().then()
     //          }
 
     //     console.log("The title was updated successfully");
-       
+
     // }
     // await updateTitleAlbumImages();
-     
+
 //  async function deleteAlbum() {
-    
+
 //         let deleteAlbum = await DataAlbumImages.deleteAlbum(3);
 //            if (deleteAlbum===-1) {
 //               throw new Error("The album of images does not exists");
 //             }
-//             console.log("The album was deleted successfully");      
+//             console.log("The album was deleted successfully");
 //     }
 //     await deleteAlbum();
-     
+
 // let getAlbumImage = await DataAlbumImages.getAlbumImage(2);
 // if (getAlbumImage===-1) {
 //       throw new Error("The album of images does not exists");
@@ -399,14 +399,13 @@ userrelation().then()
 //#region Images
 let images=async()=>
  {
-     
     // async function addImage() {
-    //     for (let index = 46; index < 100; index--) {
+    //     for (let index = 11; index < 100; index++) {
     //         let dtophoto = new DTOPhoto();
-    //         dtophoto.user.iduser = index;       
+    //         dtophoto.user.iduser = index;
     //         dtophoto.albumphoto.idalbumphoto = index;
     //         dtophoto.title = "Image" + index.toString();
-    //         dtophoto.description = "Description" + index.toString(); 
+    //         dtophoto.description = "Description" + index.toString();
     //         dtophoto.DateTimePublish = new Date();
 
     //         dtophoto.urlimage = "Urlimage" + index.toString();
@@ -416,47 +415,47 @@ let images=async()=>
     //             }
     //         if (addImage===-2) {
     //             throw new Error("The album of images does not exists");
-    //         } 
-          
+    //         }
+
     //          console.log("The image was added successfully");
 
-            
+
     //     }
     // }
     // await addImage();
-    
+
     // async function updateVisibilityPhoto() {
-    
+
     //     let updateVisibilityPhoto = await DataPhoto.updateVisibilityPhoto(2,'Friend');
     //     if (updateVisibilityPhoto===-1) {
     //         throw new Error("The image does not exists");
     //         }
     //         console.log("The visibility was updated successfully");
-        
+
     // }
-    // await updateVisibilityPhoto(); 
+    // await updateVisibilityPhoto();
 
     //  async function updateTitleDescriptionPhoto() {
-    
+
     //     let updateTitleDescriptionPhoto = await DataPhoto.updateTitleDescriptionPhoto(90,'Description Update','TitleImageUpdated');
     //        if (updateTitleDescriptionPhoto===-1) {
     //         throw new Error("The image does not exists");
     //         }
     //         console.log("The image was updated successfully");
-        
+
     // }
     // await updateTitleDescriptionPhoto();
-      
+
     // async function deletePhoto() {
-     
+
     //     let deletePhoto = await DataPhoto.deletePhoto(50);
     //     if (deletePhoto===-1) {
     //         throw new Error("The image does not exists");
     //         }
     //         console.log("The image was deleted successfully");
-        
+
     // }
-    // await deletePhoto(); 
+    // await deletePhoto();
 
     // let getImage = await DataPhoto.getImage(25);
     // if (getImage===-1) {
@@ -465,7 +464,7 @@ let images=async()=>
     // getImage.DiffDatePublishDateNow();
     // getImage.showDiffDatePublishDateNow();
     // console.log(getImage);
-  
+
     // async function getImages() {
     //     let array=await DataPhoto.getImages();
     //     for (const image of array) {
@@ -473,7 +472,7 @@ let images=async()=>
     //       image.showDiffDatePublishDateNow()
     //         console.log(image);
     //     }
-   
+
     // }
     // await getImages();
 
@@ -484,7 +483,7 @@ let images=async()=>
     //       image.showDiffDatePublishDateNow()
     //         console.log(image);
     //     }
-   
+
     // }
     // await getImagesByAlbum();
 
@@ -496,7 +495,7 @@ let images=async()=>
     //       image.showDiffDatePublishDateNow()
     //         console.log(image);
     //     }
-   
+
     // }
     //await getImagesbyAlbumAndUser();
 
@@ -508,7 +507,7 @@ let images=async()=>
     //       image.showDiffDatePublishDateNow()
     //         console.log(image);
     //     }
-   
+
     // }
     // await getImagesbyIdUser();
 
@@ -519,7 +518,7 @@ let images=async()=>
     //       image.showDiffDatePublishDateNow()
     //         console.log(image);
     //     }
-   
+
     // }
     // await getImagesbyFriendUser();
 
@@ -531,92 +530,93 @@ let images=async()=>
     //       image.showDiffDatePublishDateNow()
     //         console.log(image);
     //     }
-   
+
     // }
     // await getImagesVisibilityFriendUser();
-  
+
     //  async function getImagesMainPage() {
     //     let array=await DataPhoto.getImagesMainPage(60,'USA');
-       
+
     //     for (const image of array) {
     //       image.DiffDatePublishDateNow()
     //       image.showDiffDatePublishDateNow()
     //         console.log(image);
     //     }
-   
+
     // }
-   
-    
-    
+
+
+
     // await getImagesMainPage();
- 
 
-    
-   
 
-   
+
+
+
+
  }
   images().then()
-  
+
 //#endregion
 //#region AlbumVideos
+
 let albumvideo=async()=>
 {
-   // async function addAlbum() {
-   //     for (let index = 50; index < 100; index++) {
-   //         let dtoalbumimage = new DTOAlbumPhoto();
-   //         dtoalbumimage.user.iduser = index;        
-   //         dtoalbumimage.title = "AlbumImage" + index.toString();
-   //         let registerAlbumImage = await DataAlbumImages.addAlbumImage(dtoalbumimage);
-   //         if (registerAlbumImage===-1) {
-   //            throw new Error("The user does not exists");
-   //             }
-   //            console.log("The album of images was registered successfully");
+//    async function addAlbum() {
+//        for (let index = 1; index < 100; index++) {
+//            let dtoalvideo = new DTOAlbumVideo();
+//            dtoalvideo.user.iduser = index;
+//            dtoalvideo.title = "AlbumVideo" + index.toString();
+//            let addAlbumVideo = await DataAlbumVideo.addAlbumVideo(dtoalvideo);
+//            if (addAlbumVideo===-1) {
+//               throw new Error("The user does not exists");
+//                }
+//               console.log("The album of videos was registered successfully");
 
-   //         }
-   //     }
-   
-   //  await addAlbum();
+//            }
+//        }
 
-   // async function updateTitleAlbumImages() {
+//     await addAlbum();
 
-   //     let updateTitleAlbumImage = await DataAlbumImages.updateTitleAlbum(3, "AlbumUpdated");
-   //      if (updateTitleAlbumImage===-1) {
-   //         throw new Error("The album of images does not exists");
-   //          }
+//    async function updateTitleAlbumVideo() {
 
-   //     console.log("The title was updated successfully");
-      
-   // }
-   // await updateTitleAlbumImages();
-    
-//  async function deleteAlbum() {
-   
-//         let deleteAlbum = await DataAlbumImages.deleteAlbum(3);
-//            if (deleteAlbum===-1) {
-//               throw new Error("The album of images does not exists");
+//        let updateTitleAlbum = await DataAlbumVideo.updateTitleAlbum(3, "AlbumUpdated");
+//         if (updateTitleAlbum===-1) {
+//            throw new Error("The album of videos does not exists");
 //             }
-//             console.log("The album was deleted successfully");      
+
+//        console.log("The title was updated successfully");
+
+//    }
+//    await updateTitleAlbumVideo();
+
+//  async function deleteAlbumVideo() {
+
+//         let deleteAlbum = await DataAlbumVideo.deleteAlbum(20);
+//            if (deleteAlbum===-1) {
+//               throw new Error("The album of videos does not exists");
+//             }
+//             console.log("The album was deleted successfully");
 //     }
-//     await deleteAlbum();
-    
-// let getAlbumImage = await DataAlbumImages.getAlbumImage(2);
-// if (getAlbumImage===-1) {
-//       throw new Error("The album of images does not exists");
+//     await deleteAlbumVideo();
+
+// let getAlbumVideos = await DataAlbumVideo.getAlbumVideos(20);
+// if (getAlbumVideos===-1) {
+//       throw new Error("The album of videos does not exists");
 //   }
-// console.log(getAlbumImage);
-// let getAlbumImagebyUser = await DataAlbumImages.getAlbumImagebyUser(5);
-// console.log(getAlbumImagebyUser);
-// let getsAlbumImages = await DataAlbumImages.getsAlbumImages();
-// console.log(getsAlbumImages);
-// let getAlbumImageByTitleUser = await DataAlbumImages.getAlbumImageByTitleUser("",3);
-// console.log(getAlbumImageByTitleUser);
+// console.log(getAlbumVideos);
 
-
+// let getAlbumVideobyUser = await DataAlbumVideo.getAlbumVideobyUser(1);
+// console.log(getAlbumVideobyUser);
+// let getsAlbumVideos = await DataAlbumVideo.getsAlbumVideos();
+// console.log(getsAlbumVideos);
+// let getAlbumVideoByTitleUser = await DataAlbumVideo.getAlbumVideoByTitleUser("",3);
+// console.log(getAlbumVideoByTitleUser);
 
 }
 albumvideo().then()
 //#endregion
+
 //#region Others
 // let conexion=async()=>
 // {

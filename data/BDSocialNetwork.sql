@@ -1,4 +1,4 @@
-use socialnetwork
+use rwkama61_
 go
 
 
@@ -245,8 +245,71 @@ go
 select * from userr
  where iduser=6
 select * from AlbumUserImages
+select * from AlbumUserVideos
 select * from  UserImages
+select * from userrrelations
 
+
+	IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${iduser} and Active=1)
+    BEGIN
+    select -1 as notexistuser
+    END
+	ELSE
+	BEGIN 
+		 IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${idfriend} and Active=1)
+		BEGIN
+		select -2 as notexistfriend
+		END
+		ELSE
+		BEGIN 
+			IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
+			BEGIN
+			select -3 as notexistduplicate
+			END
+			ELSE
+			BEGIN		 
+				BEGIN TRANSACTION 
+				delete from UserrRelations where IdUser=${iduser} and IdFriend=${idfriend} 
+				delete from UserrRelations where IdUser=${idfriend} and IdFriend=${iduser} 
+				select 1 as deletedsuccess
+				IF(@@ERROR > 0)  
+				BEGIN  
+					ROLLBACK TRANSACTION  
+				END  
+				ELSE  
+				BEGIN  
+				  COMMIT TRANSACTION  
+				END  
+			END
+		END 
+	END 
+   
+   
+
+
+
+
+
+   
+    IF  EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
+    BEGIN
+    select -3 as existduplicate
+    END
+    ELSE
+    BEGIN
+    BEGIN TRANSACTION  
+    insert into UserrRelations values (@IdUser,@IdFriend,'Pending') 
+    insert into UserrRelations values (@IdFriend,@IdUser,'Pending') 
+    select 1 as insertsuccess
+      IF(@@ERROR > 0)  
+      BEGIN  
+          ROLLBACK TRANSACTION  
+      END  
+      ELSE  
+      BEGIN  
+        COMMIT TRANSACTION  
+      END 
+    END 
 
 
   select 
