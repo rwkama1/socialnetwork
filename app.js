@@ -4,11 +4,13 @@ const { DataAlbumVideo } = require("./data/DataAlbumVideo");
 const { DataPhoto } = require("./data/DataPhoto");
 const { DataUser } = require("./data/DataUser");
 const { DataUserRelation } = require("./data/DataUserRelation");
+const { DataVideo } = require("./data/DataVideo");
 const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
 const { DTOAlbumVideo } = require("./entity/DTOAlbumVideos");
 const { DTOPhoto } = require("./entity/DTOPhoto");
 const { DTOUser } = require("./entity/DTOUser");
 const {  DTOUserRelation } = require("./entity/DTOUserRelation");
+const { DTOVideo } = require("./entity/DTOVideo");
 const { HashPassword } = require("./security/hashPassword");
 const { LoginUser } = require("./security/LoginUser");
 
@@ -616,7 +618,69 @@ let albumvideo=async()=>
 }
 albumvideo().then()
 //#endregion
+//#region Video
+let videos=async()=>
+ {
+    // async function addvideo() {
+    //     for (let index = 1; index < 100; index++) {
+    //         let dtovid = new DTOVideo();
+    //         dtovid.user.iduser = index;
+    //         dtovid.albumvideo.idalbumvideo = index;
+    //         dtovid.title = "Video" + index.toString();
+    //         dtovid.description = "Description" + index.toString();
+    //         dtovid.DateTimePublish = new Date();
+    //         dtovid.urlvideo = "UrlVideo" + index.toString();
+    //         let addImage = await DataVideo.addVideo(dtovid);
+    //         if (addImage===-1) {
+    //             throw new Error("The user does not exists");
+    //             }
+    //         if (addImage===-2) {
+    //             throw new Error("The album of videos does not exists");
+    //         }
 
+    //          console.log("The video was added successfully");
+
+
+    //     }
+    // }
+    // await addvideo();
+
+    //   async function updateVisibilityVideo() {
+
+    //     let updateVisibilityVideo = await DataVideo.updateVisibilityVideo(2,'Friend');
+    //     if (updateVisibilityVideo===-1) {
+    //         throw new Error("The video does not exists");
+    //         }
+    //         console.log("The visibility was updated successfully");
+
+    // }
+    // await updateVisibilityVideo();
+
+    //  async function updateTitleDescriptionVideo() {
+
+    //     let updateTitleDescriptionVideo = await DataVideo.updateTitleDescriptionVideo(2,'Description Update','TitleVideoUpdated');
+    //        if (updateTitleDescriptionVideo===-1) {
+    //         throw new Error("The video does not exists");
+    //         }
+    //         console.log("The video was updated successfully");
+
+    // }
+    // await updateTitleDescriptionVideo();
+   
+    //   async function deleteVideo() {
+
+    //     let deleteVideo = await DataVideo.deleteVideo(3);
+    //        if (deleteVideo===-1) {
+    //         throw new Error("The video does not exists");
+    //         }
+    //         console.log("The video was deleted successfully");
+
+    // }
+    // await deleteVideo();
+   
+ }
+ videos().then()
+//#endregion
 //#region Others
 // let conexion=async()=>
 // {

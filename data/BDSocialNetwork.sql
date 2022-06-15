@@ -247,6 +247,7 @@ select * from userr
 select * from AlbumUserImages
 select * from AlbumUserVideos
 select * from  UserImages
+select * from  UserVideos
 select * from userrrelations
 
 
