@@ -313,8 +313,8 @@ let userrelation=async()=>
 // console.log(getConfirmedFriendsbyUser);
 
 
-//  let getPendingFriendsbyUser = await DataUserRelation.getPendingFriendsbyUser(14);
-// console.log(getPendingFriendsbyUser);
+//  let getSentPendingUsersbyUser = await DataUserRelation.getSentPendingUsersbyUser(14);
+// console.log(getSentPendingUsersbyUser);
 
 //  let getSearchNickFriendsbyUser = await DataUserRelation.getSearchNickFriendsbyUser(14,'5');
 // console.log(getSearchNickFriendsbyUser);
@@ -537,7 +537,7 @@ let images=async()=>
     // await getImagesVisibilityFriendUser();
 
     //  async function getImagesMainPage() {
-    //     let array=await DataPhoto.getImagesMainPage(60,'USA');
+    //     let array=await DataPhoto.getImagesMainPage(1,'United Kingdom');
 
     //     for (const image of array) {
     //       image.DiffDatePublishDateNow()
@@ -546,10 +546,7 @@ let images=async()=>
     //     }
 
     // }
-
-
-
-    // await getImagesMainPage();
+    //  await getImagesMainPage();
 
 
 
@@ -677,6 +674,126 @@ let videos=async()=>
 
     // }
     // await deleteVideo();
+
+      // await getImages();
+
+    // async function getVideo() {
+    //     let getVideo=await DataVideo.getVideo(4);
+    //     if (getVideo===-1) {
+    //          throw new Error("The video does not exists");
+    //      }
+    //      getVideo.DiffDatePublishDateNow();
+    //      getVideo.showDiffDatePublishDateNow();
+    //     console.log(getVideo);
+    // }
+    // await getVideo();
+
+    //  async function getVideosbyAlbum() {
+    //     let array=await DataVideo.getVideosbyAlbum(6)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosbyAlbum();
+
+    //  async function getVideosbyAlbumAndUser() {
+    //     let array=await DataVideo.getVideosbyAlbumAndUser(6,6)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosbyAlbumAndUser();
+
+
+    //  async function getVideosbyAlbumAndUser() {
+    //     let array=await DataVideo.getVideosbyAlbumAndUser(6,6)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosbyAlbumAndUser();
+
+
+    //   async function getVideosbyIdUser() {
+    //     let array=await DataVideo.getVideosbyIdUser(6)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+   
+    // }
+    // await getVideosbyIdUser();
+
+    
+    //   async function getVideosVisibilityFriendUser() {
+    //     let array=await DataVideo.getVideosVisibilityFriendUser(1)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosVisibilityFriendUser();
+
+    //     async function getVideosVisibilityPublicUser() {
+    //     let array=await DataVideo.getVideosVisibilityPublicUser(4)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosVisibilityPublicUser();
+
+
+    // async function getVideosbyFriendUser() {
+    //     let array=await DataVideo.getVideosbyFriendUser(4)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosbyFriendUser();
+
+
+
+    //     async function getVideosVisibilityByUserRelation() {
+    //     let array=await DataVideo.getVideosVisibilityByUserRelation(4,5)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosVisibilityByUserRelation();
+
+    // async function getVideosMainPage() {
+    //     let array=await DataVideo.getVideosMainPage(4,'United Kingdom')
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosMainPage();
+
+    
    
  }
  videos().then()

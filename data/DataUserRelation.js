@@ -292,6 +292,34 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
 }
     //#endregion
     //#region GETS
+    static getUserRelation=async(iduser)=>
+    {
+        let arrayuser=[];
+            let querysearch=`
+            select 
+            Userr.* 
+          from 
+            UserrRelations 
+            inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+          where 
+            Userr.Active = 1 
+            and UserrRelations.IdUser = ${iduser}
+          
+              `;
+            let pool = await Conection.conection();
+       
+                const result = await pool.request()
+                .query(querysearch)
+                for (var recorduser of result.recordset) {
+                    let user = new DTOUser();   
+                  DataUser.getinformationList(user, recorduser);
+                  arrayuser.push(user);
+                 }
+           pool.close();
+           return arrayuser;
+      
+     }
+    //*****************************************************************
     static getAllFriendsbyUser=async(iduser)=>
     {
         let arrayuser=[];
@@ -351,7 +379,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
         
        }
           
-      static getPendingFriendsbyUser=async(iduser)=>
+      static getSentPendingUsersbyUser=async(iduser)=>
       {
           let arrayuser=[];
               let querysearch=`
@@ -436,8 +464,6 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
                return arrayuser;
           
          }
-     
-    
          static getFriendsOfFriendsUser=async(iduser)=>//Friends of Friends
         {
             let arrayuser=[];

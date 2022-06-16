@@ -242,15 +242,29 @@ go
 
 --drop table UserrRelations
 --drop table Userr
+
+    select 
+            UserrRelations.* 
+          from 
+            UserrRelations 
+            inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+          where 
+            Userr.Active = 1 
+            and UserrRelations.IdUser = 34
+
+
 select * from userr
  where iduser=6
 select * from AlbumUserImages
 select * from AlbumUserVideos
 select * from  UserImages
 select * from  UserVideos
+
 select * from userrrelations
+select * from uservideos
 
 
+update userrrelations set Statee='Confirmed'
 	IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${iduser} and Active=1)
     BEGIN
     select -1 as notexistuser

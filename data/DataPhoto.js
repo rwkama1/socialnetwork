@@ -451,6 +451,10 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
     }
     static getImagesVisibilityByUserRelation=async(iduserlogin,iduser)=>
     {
+        /*    if the users are friends, 
+          it shows the images with public or friend status, and if they are not,
+          it shows the public images
+      */
        let arrayphoto=[];
        let querysearch = `   
 
@@ -569,6 +573,26 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 					and UserImages.Active = 1 
 					and UserImages.Visibility='Public'
 					and Userr.Country =@Country
+             
+
+               UNION
+
+               SELECT 
+					UserImages.*, 
+					AlbumUserImages.Title as AlbumTitle, 
+					Userr.Name, 
+					Userr.Nick, 
+					Userr.Email, 
+					Userr.Imagee 
+					from 
+					UserImages 
+					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+					where 
+					Userr.Active = 1 
+					and AlbumUserImages.Active = 1 
+					and UserImages.Active = 1 
+					and UserImages.Visibility='Public'
                ORDER BY DATEPUBLISH DESC
 		END
 		ELSE
@@ -663,7 +687,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
           return arrayphoto;
     }
 
-   //#endregion
+//#endregion
 //#region Others
 // static DiffDatePublishDateNow=async(dtophoto)=>
 // {
