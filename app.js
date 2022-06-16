@@ -305,6 +305,12 @@ let userrelation=async()=>
     // }
     // await blockUserRelation();
 
+    
+//  let getUserRelation = await DataUserRelation.getUserRelation(31,32);
+//  if (getUserRelation===-1) {
+//     throw new Error("The user relation does not exists");
+//  }
+// console.log(getUserRelation);
 
 //  let getAllFriendsbyUser = await DataUserRelation.getAllFriendsbyUser(14);
 // console.log(getAllFriendsbyUser);

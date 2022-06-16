@@ -2,6 +2,7 @@
 
 const { VarChar,Int ,Date} = require("mssql");
 const { DTOUser } = require("../entity/DTOUser");
+const { DTOUserRelation } = require("../entity/DTOUserRelation");
 const { Conection } = require("./Connection");
 const { DataUser } = require("./DataUser");
 
@@ -292,31 +293,45 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
 }
     //#endregion
     //#region GETS
-    static getUserRelation=async(iduser)=>
+    static getUserRelation=async(iduser,idfriend)=>
     {
-        let arrayuser=[];
+           let resultquery;
             let querysearch=`
-            select 
-            Userr.* 
-          from 
-            UserrRelations 
-            inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
-          where 
-            Userr.Active = 1 
-            and UserrRelations.IdUser = ${iduser}
-          
+            IF NOT EXISTS (
+                      select 
+                      UserrRelations.* 
+                from 
+                  UserrRelations 
+                  inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+                where 
+                  Userr.Active = 1 
+                  and UserrRelations.IdUser = ${iduser} 
+                  and UserrRelations.IdFriend = ${idfriend}
+                
+              )
+            BEGIN
+              select -1 as notexistuser
+            END
+            ELSE
+            BEGIN
+              SELECT  * FROM  UserrRelations WHERE IdUser = ${iduser} And IdFriend = ${idfriend}
+            END
               `;
             let pool = await Conection.conection();
        
                 const result = await pool.request()
                 .query(querysearch)
-                for (var recorduser of result.recordset) {
-                    let user = new DTOUser();   
-                  DataUser.getinformationList(user, recorduser);
-                  arrayuser.push(user);
-                 }
-           pool.close();
-           return arrayuser;
+                resultquery = result.recordset[0].notexistuser; 
+                if (resultquery===undefined) {
+                   let dtouserrelation = new DTOUserRelation();   
+                   dtouserrelation.iduserrelation = result.recordset[0].IdUserRelation;
+                   dtouserrelation.user.iduser = result.recordset[0].IdUser;
+                   dtouserrelation.friend.iduser = result.recordset[0].IdFriend;
+                   dtouserrelation.statee = result.recordset[0].Statee;
+                   resultquery=dtouserrelation
+                  }
+                  pool.close();
+                return resultquery;
       
      }
     //*****************************************************************

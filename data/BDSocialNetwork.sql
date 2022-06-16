@@ -263,8 +263,19 @@ select * from  UserVideos
 select * from userrrelations
 select * from uservideos
 
+SELECT  * FROM  UserrRelations WHERE IdUser =1 And IdFriend =2
 
-update userrrelations set Statee='Confirmed'
+  select 
+              UserrRelations.* 
+            from 
+              UserrRelations 
+              inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+            where 
+              Userr.Active = 1 
+              and UserrRelations.IdUser =34 
+             and UserrRelations.IdFriend = 33
+
+update userr  set active=0  where iduser=34
 	IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${iduser} and Active=1)
     BEGIN
     select -1 as notexistuser
