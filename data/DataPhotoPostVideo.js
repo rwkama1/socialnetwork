@@ -131,7 +131,7 @@ class DataPhotoPostVideo {
          UNION
          
          END
-         ----------------------------------------------------------------------
+          
          ELSE
          ----------------------------------------------------------------------
 	       BEGIN				
@@ -174,6 +174,7 @@ class DataPhotoPostVideo {
     photopostvideo.user.nick = result.recordset[0].nickuser;
     photopostvideo.user.email = result.recordset[0].emailuser;
     photopostvideo.user.image = result.recordset[0].imageuser;
+    photopostvideo.user.country = result.recordset[0].countryuser;
 
   
   
@@ -196,6 +197,7 @@ class DataPhotoPostVideo {
     photopostvideo.user.nick = result.nickuser;
     photopostvideo.user.email = result.emailuser;
     photopostvideo.user.image = result.imageuser;
+    photopostvideo.user.country = result.countryuser;
    
   
   
