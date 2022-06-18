@@ -2,12 +2,14 @@
 const { DataAlbumImages } = require("./data/DataAlbumImage");
 const { DataAlbumVideo } = require("./data/DataAlbumVideo");
 const { DataPhoto } = require("./data/DataPhoto");
+const { DataPost } = require("./data/DataPost");
 const { DataUser } = require("./data/DataUser");
 const { DataUserRelation } = require("./data/DataUserRelation");
 const { DataVideo } = require("./data/DataVideo");
 const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
 const { DTOAlbumVideo } = require("./entity/DTOAlbumVideos");
 const { DTOPhoto } = require("./entity/DTOPhoto");
+const { DTOPost } = require("./entity/DTOPost");
 const { DTOUser } = require("./entity/DTOUser");
 const {  DTOUserRelation } = require("./entity/DTOUserRelation");
 const { DTOVideo } = require("./entity/DTOVideo");
@@ -681,7 +683,7 @@ let videos=async()=>
     // }
     // await deleteVideo();
 
-      // await getImages();
+      
 
     // async function getVideo() {
     //     let getVideo=await DataVideo.getVideo(4);
@@ -803,6 +805,150 @@ let videos=async()=>
    
  }
  videos().then()
+//#endregion
+//#region Post
+let posts=async()=>
+ {
+    // async function addpost() {
+    //     for (let index = 1; index < 100; index++) {
+    //         let dtopost = new DTOPost();
+    //         dtopost.user.iduser = index;
+    //         dtopost.title = "Post" + index.toString();
+    //         dtopost.description = "Description" + index.toString();
+    //         let addPost = await DataPost.addPost(dtopost);
+    //         if (addPost===-1) {
+    //             throw new Error("The user does not exists");
+    //         }
+    //          console.log("The post was added successfully");
+    //     }
+    // }
+    // await addpost();
+
+    // async function updateVisibilityPost() {
+
+    //     let updateVisibilityPost = await DataPost.updateVisibilityPost(29,'Friend');
+    //     if (updateVisibilityPost===-1) {
+    //         throw new Error("The Post does not exists");
+    //     }
+    //     console.log("The visibility was updated successfully");
+
+    // }
+    // await updateVisibilityPost();
+
+    // async function updateTitleDescriptionPost() {
+    //     let updateTitleDescriptionPost = await DataPost.updateTitleDescriptionPost(2,'Description Update','TitlePostUpdated');
+    //     if (updateTitleDescriptionPost===-1) {
+    //        throw new Error("The Post does not exists");
+    //     }
+    //         console.log("The post was updated successfully");
+    // }
+
+    // await updateTitleDescriptionPost();
+   
+    //  async function deletePost() {
+    //     let deletePost = await DataPost.deletePost(28);
+    //        if (deletePost===-1) {
+    //             throw new Error("The post does not exists");
+    //         }
+    //         console.log("The post was deleted successfully");
+    // }
+    // await deletePost();
+
+    //****************************************************** */
+
+    // async function getPost() {
+    //      let getPost=await DataPost.getPost(4);
+    //      if (getPost===-1) {
+    //          throw new Error("The Post does not exists");
+    //      }
+    //      getPost.DiffDatePublishDateNow();
+    //      getPost.showDiffDatePublishDateNow();
+    //      console.log(getPost);
+    // }
+    // await getPost();
+
+    //  async function getPosts() {
+    //     let array=await DataPost.getPosts();
+    //     for (const post of array) {
+    //       post.DiffDatePublishDateNow()
+    //       post.showDiffDatePublishDateNow()
+    //         console.log(post);
+    //     }
+      
+    // }
+    //  await getPosts();
+
+    //  async function getPostbyIdUser() {
+    //     let array=await DataPost.getPostbyIdUser(6)
+    //     for (const post of array) {
+    //       post.DiffDatePublishDateNow()
+    //       post.showDiffDatePublishDateNow()
+    //         console.log(post);
+    //     }
+      
+    // }
+    // await getPostbyIdUser();
+
+    //  async function getPostVisibilityFriendUser() {
+    //     let array=await DataPost.getPostVisibilityFriendUser(6)
+    //     for (const post of array) {
+    //       post.DiffDatePublishDateNow()
+    //       post.showDiffDatePublishDateNow()
+    //         console.log(post);
+    //     }
+      
+    // }
+    // await getPostVisibilityFriendUser();
+
+    //  async function getPostVisibilityPublicUser() {
+    //     let array=await DataPost.getPostVisibilityPublicUser(6)
+    //     for (const post of array) {
+    //       post.DiffDatePublishDateNow()
+    //       post.showDiffDatePublishDateNow()
+    //         console.log(post);
+    //     }
+      
+    // }
+    // await getPostVisibilityPublicUser();
+
+
+  // async function getPostbyFriendUser() {
+  //       let array=await DataPost.getPostbyFriendUser(6)
+  //       for (const post of array) {
+  //         post.DiffDatePublishDateNow()
+  //         post.showDiffDatePublishDateNow()
+  //           console.log(post);
+  //       }
+      
+  //   }
+  //   await getPostbyFriendUser();
+
+  //   async function getPostVisibilityByUserRelation() {
+  //     let array=await DataPost.getPostVisibilityByUserRelation(5,9)
+  //     for (const post of array) {
+  //       post.DiffDatePublishDateNow()
+  //       post.showDiffDatePublishDateNow()
+  //         console.log(post);
+  //     }
+    
+  // }
+  // await getPostVisibilityByUserRelation();
+
+  // async function getPostMainPage() {
+  //     let array=await DataPost.getPostMainPage(3,'')
+  //     for (const post of array) {
+  //       post.DiffDatePublishDateNow()
+  //       post.showDiffDatePublishDateNow()
+  //         console.log(post);
+  //     }
+    
+  // }
+  // await getPostMainPage();
+
+
+
+ }
+ posts().then()
 //#endregion
 //#region Others
 // let conexion=async()=>

@@ -5,11 +5,11 @@ const sql  = require("mssql");
 {
      static conection=async () => {
         let sqlconfig = {
-           user: 'rwkama61_',
-            password:'socialnetwork',
-            database: 'rwkama61_',
-           server: 'sql.bsite.net\\MSSQL2016', 
-           
+         
+            user: 'rwkama63_SQLLogin_1',
+            password:'67bu3zb26y',
+            database: 'socialnetwork',
+           server: 'socialnetwork.mssql.somee.com',
             options: {
                     trustedConnection: false,
                     enableArithAbort: true,
@@ -17,8 +17,6 @@ const sql  = require("mssql");
                 }
             
         }
-        
-       
         const pool = await  sql.connect(sqlconfig);
         return pool
   

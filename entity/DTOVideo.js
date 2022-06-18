@@ -26,14 +26,18 @@ class DTOVideo
 
     DiffDatePublishDateNow()
     {
-          let date1=this.DateTimePublish;
+          let localdate=this.DateTimePublish;
+          let dateutcpublish=new Date(localdate.getUTCFullYear(),
+          localdate.getUTCMonth(),localdate.getUTCDate(),localdate.getUTCHours()
+        ,localdate.getUTCMinutes(),localdate.getUTCSeconds(),localdate.getUTCMilliseconds())
+
           let now=new Date();
           let nowutc=new Date(now.getUTCFullYear(),
         now.getUTCMonth(),now.getUTCDate(),now.getUTCHours()
         ,now.getUTCMinutes(),now.getUTCSeconds(),now.getUTCMilliseconds()
         )
       
-      let difmiliseconds=nowutc-date1
+      let difmiliseconds=nowutc-dateutcpublish
       this.diffsecond=Math.floor((difmiliseconds)/1000);
       this.diffminutes=Math.floor(this.diffsecond/60);
       this.diffhour=Math.floor(this.diffminutes/60);

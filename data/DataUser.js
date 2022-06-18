@@ -400,7 +400,7 @@ class DataUser {
  }
   static getUserbyEmail=async(email)=>
  {
-    let resultquery=0;
+         let resultquery=0;
          let querysearch = `
          IF NOT EXISTS (  select * from Userr where Email=@Email and Active=1)
          BEGIN

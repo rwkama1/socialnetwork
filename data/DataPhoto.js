@@ -598,7 +598,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 		ELSE
 		BEGIN				
 			IF EXISTS (
-				SELECT 
+				   SELECT 
                 UserImages.*
                 from 
                 UserImages 
@@ -653,7 +653,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 		    END
          ELSE 
 			BEGIN
-				SELECT 
+				   SELECT 
 					UserImages.*, 
 					AlbumUserImages.Title as AlbumTitle, 
 					Userr.Name, 
