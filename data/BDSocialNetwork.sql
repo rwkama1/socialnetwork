@@ -301,7 +301,7 @@ select * from uservideos
 					and (UserImages.Visibility='Public' or UserImages.Visibility='Friend') 
 					and UserrRelations.IdUser = 1
 					
-					UNION ALL
+					UNION 
 
 					SELECT 
 					UserVideos.iduservideos, 
@@ -334,7 +334,7 @@ select * from uservideos
 					and (UserVideos.Visibility='Public' or UserVideos.Visibility='Friend') 
 					and UserrRelations.IdUser = 1
 									
-						UNION ALL
+						UNION 
 
 					SELECT 
 					UserPost.idpost, 
@@ -396,7 +396,7 @@ select * from uservideos
 					and UserImages.Visibility='Public'
 					and Userr.Country='USA'
 
-					UNION ALL
+					UNION 
 
 					SELECT 
 					UserVideos.iduservideos, 
@@ -427,7 +427,7 @@ select * from uservideos
 					and UserVideos.Visibility='Public'
 					and Userr.Country='USA'
 
-					UNION ALL
+					UNION 
 
 					SELECT 
 					UserPost.idpost, 
@@ -486,7 +486,7 @@ select * from uservideos
 					and UserImages.Active = 1 
 					and UserImages.Visibility='Public'
 				
-					UNION ALL
+					UNION 
 
 					SELECT 
 					UserVideos.iduservideos, 
@@ -516,7 +516,7 @@ select * from uservideos
 					and UserVideos.Active = 1 
 					and UserVideos.Visibility='Public'
 					
-					UNION ALL
+					UNION 
 
 					SELECT 
 					UserPost.idpost, 
@@ -547,7 +547,7 @@ select * from uservideos
 		
 		
 		 select distinct  * from friendsquery 
-		 union all 
+		 union  
 		 select distinct * from countryquery
 		 union all
 		 select  distinct * from publicquery
