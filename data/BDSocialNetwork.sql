@@ -547,9 +547,9 @@ select * from uservideos
 		
 		
 		 select distinct  * from friendsquery 
-		 union ALL
+		 union all 
 		 select distinct * from countryquery
-		 union ALL
+		 union all
 		 select  distinct * from publicquery
 		
 		
