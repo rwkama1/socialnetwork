@@ -343,7 +343,7 @@ class DataPost {
               pool.close();
               return arrayp;
         }
-  static getPostVisibilityByUserRelation=async(iduserlogin,iduser)=>
+    static getPostVisibilityByUserRelation=async(iduserlogin,iduser)=>
         {
             /*    if the users are friends, 
               it shows the post with public or friend status, and if they are not,

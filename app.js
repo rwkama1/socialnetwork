@@ -1,7 +1,9 @@
 
 const { DataAlbumImages } = require("./data/DataAlbumImage");
 const { DataAlbumVideo } = require("./data/DataAlbumVideo");
+const { DataLikeImage } = require("./data/DataLikeImage");
 const { DataPhoto } = require("./data/DataPhoto");
+const { DataPhotoPostVideo } = require("./data/DataPhotoPostVideo");
 const { DataPost } = require("./data/DataPost");
 const { DataUser } = require("./data/DataUser");
 const { DataUserRelation } = require("./data/DataUserRelation");
@@ -949,6 +951,94 @@ let posts=async()=>
 
  }
  posts().then()
+//#endregion
+//#region  PostVideoImages
+
+let postvideoimage=async()=>
+ {
+    //     async function getPhotoPostVideoMainPage() {
+    //         let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(3,'')
+    //         for (const post of array) {
+    //             post.DiffDatePublishDateNow()
+    //             post.showDiffDatePublishDateNow()
+    //             console.log(post);
+    //         }
+            
+    //     }
+    //     await getPhotoPostVideoMainPage();
+
+        // async function getPhotoPostVideoCountryUser() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoCountryUser('USA')
+        //     for (const post of array) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+            
+        // }
+        // await getPhotoPostVideoCountryUser();
+
+        //  async function getPhotoPostVideoPublic() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoPublic()
+        //     for (const post of array) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+            
+        // }
+        
+        // await getPhotoPostVideoPublic();
+
+        // async function getPhotoPostVideoByIdAndType() {
+        //     let data=await DataPhotoPostVideo.getPhotoPostVideoByIdAndType(2,'V')   
+        //     data.DiffDatePublishDateNow()
+        //     data.showDiffDatePublishDateNow()
+        //      console.log(data);
+        
+            
+        // }
+        
+        // await getPhotoPostVideoByIdAndType();
+
+
+ }
+ postvideoimage().then()
+
+//#endregion
+//#region LikeImage
+let LikeImage=async()=>
+ {
+    // async function likeanimage() {
+    
+    //         let likeanimage = await DataLikeImage.likeanimage(2,1);
+    //         if (likeanimage===-1) {
+    //             throw new Error("The image does not exists");
+    //         }
+    //         if (likeanimage===-2) {
+    //             throw new Error("The user does not exists");
+    //         }
+    //         if (likeanimage===-3) {
+    //             throw new Error("The user already liked that image ");
+    //         }
+    //          console.log("The likeimage was added successfully");
+       
+    // }
+    // await likeanimage();
+
+
+
+
+
+
+
+
+    
+
+
+
+ }
+ LikeImage().then()
 //#endregion
 //#region Others
 // let conexion=async()=>
