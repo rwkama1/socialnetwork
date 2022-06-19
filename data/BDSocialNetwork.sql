@@ -245,6 +245,19 @@ go
 --drop table UserrRelations
 --drop table Userr
 
+ 		 SELECT 
+         Userr.*
+		 FROM 
+          Userr
+         inner join LikeImage on LikeImage.IdUser = Userr.IdUser
+		 inner join UserImages on UserImages.iduserimages=LikeImage.iduserimages 
+		WHERE 
+         Userr.Active = 1 
+         and UserImages.Active = 1
+		 and LikeImage.iduserimages=1
+
+
+
     select 
             UserrRelations.* 
           from 
@@ -565,6 +578,7 @@ select * from  LikeImage
 
 		select * from userimages where iduser=1
 		select * from AlbumUserImages
+		select *
 		
 
 

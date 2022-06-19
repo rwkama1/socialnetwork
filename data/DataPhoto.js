@@ -210,7 +210,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 
 //*********************************** */
 
- static getImages=async()=>
+  static getImages=async()=>
  {
     let arrayphoto=[];
          let querysearch = `     
@@ -378,8 +378,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
         
           pool.close();
           return arrayphoto;
-    }
-   
+    }   
    static getImagesVisibilityPublicUser=async(iduser)=>
     {
        let arrayphoto=[];

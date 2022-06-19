@@ -1027,6 +1027,27 @@ let LikeImage=async()=>
     // await likeanimage();
 
 
+    // async function deletelikeanimage() {
+    
+    //         let deletelikeanimage = await DataLikeImage.deletelikeanimage(2,1);
+    //         if (deletelikeanimage===-1) {
+    //             throw new Error("The image does not exists");
+    //         }
+    //         if (deletelikeanimage===-2) {
+    //             throw new Error("The user does not exists");
+    //         }
+    //         if (deletelikeanimage===-3) {
+    //             throw new Error("The likeimage does not exists ");
+    //         }
+    //          console.log("The likeimage was deleted  successfully");
+       
+    // }
+    // await deletelikeanimage();
+
+    // let getLikesImageUsers = await DataLikeImage.getLikesImageUsers(1);
+    // console.log(getLikesImageUsers);
+
+
 
 
 
