@@ -1,20 +1,21 @@
-const { DTOLikeImage } = require("../entity/DTOLikeImage");
+const { DTOLikePost } = require("../entity/DTOLikePost");
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
 
 
-class DataLikeImage {
+class DataLikePost {
     //#region CRUD
 
-     static likeanimage=async(iduser,idimage)=>
+     static likeanpost=async(iduser,idpost)=>
     {
        let resultquery;
 
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
+
+        IF NOT EXISTS ( SELECT * FROM UserPost WHERE idpost=@idpost and Active=1)
         BEGIN
-            select -1 as notexistimage
+            select -1 as notexistpost
         END
         ELSE
         BEGIN
@@ -24,16 +25,16 @@ class DataLikeImage {
             END
             ELSE
             BEGIN
-                IF  EXISTS ( SELECT * FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
+                IF  EXISTS ( SELECT * FROM LikePost WHERE IdUser=@iduser and idpost=@idpost)
                 BEGIN
                 select -3 as existduplicate
                 END
                 ELSE
                 BEGIN
                     BEGIN TRANSACTION  
-                        insert into LikeImage values (@iduser,@iduserimage)
-                        UPDATE UserImages SET Likes = Likes + 1 where IdUserImages=@iduserimage
-                        select 1 as likeanimageadded
+                        insert into LikePost values (@iduser,@idpost)
+                        UPDATE UserPost SET Likes = Likes + 1 where idpost=@idpost
+                        select 1 as likeanpostadded
                     IF(@@ERROR > 0)  
                     BEGIN  
                         ROLLBACK TRANSACTION  
@@ -51,9 +52,9 @@ class DataLikeImage {
     
         const result = await pool.request()
             .input('iduser', Int,iduser)
-            .input('iduserimage', Int, idimage)  
+            .input('idpost', Int, idpost)  
             .query(queryinsert)
-            resultquery = result.recordset[0].notexistimage;
+            resultquery = result.recordset[0].notexistpost;
             if(resultquery===undefined)
             {
               resultquery = result.recordset[0].notexistuser;
@@ -62,7 +63,7 @@ class DataLikeImage {
                 resultquery = result.recordset[0].existduplicate;
                 if(resultquery===undefined)
                 {
-                    resultquery = result.recordset[0].likeanimageadded;
+                    resultquery = result.recordset[0].likeanpostadded;
                  }
               }
             }
@@ -70,15 +71,15 @@ class DataLikeImage {
         return resultquery;
         
     }
-     static deletelikeanimage=async(iduser,idimage)=>
+     static deletelikeanpost=async(iduser,idpost)=>
     {
         let resultquery;
         let queryupdate = 
         `
 
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
+        IF NOT EXISTS ( SELECT * FROM UserPost WHERE idpost=@idpost and Active=1)
         BEGIN
-            select -1 as notexistimage
+            select -1 as notexistpost
         END
         ELSE
         BEGIN
@@ -88,16 +89,16 @@ class DataLikeImage {
             END
             ELSE
             BEGIN
-                IF  NOT EXISTS ( SELECT * FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
+                IF  NOT EXISTS ( SELECT * FROM LikePost WHERE IdUser=@iduser and idpost=@idpost)
                 BEGIN
                 select -3 as noexistlike
                 END
                 ELSE
                 BEGIN
                     BEGIN TRANSACTION  
-                        delete from  LikeImage where IdUser=@iduser and IdUserImages=@iduserimage
-                        UPDATE UserImages SET Likes = Likes - 1 where IdUserImages=@iduserimage
-                        select 1 as deletelikeanimage
+                        delete from  LikePost where IdUser=@iduser and idpost=@idpost
+                        UPDATE UserPost SET Likes = Likes - 1 where idpost=@idpost
+                        select 1 as deletelikeanpost
                     IF(@@ERROR > 0)  
                     BEGIN  
                         ROLLBACK TRANSACTION  
@@ -114,9 +115,9 @@ class DataLikeImage {
         let pool = await Conection.conection();
         const result = await pool.request()
        .input('iduser', Int,iduser)
-       .input('iduserimage', Int, idimage) 
+       .input('idpost', Int, idpost) 
        .query(queryupdate)
-       resultquery = result.recordset[0].notexistimage;
+       resultquery = result.recordset[0].notexistpost;
        if(resultquery===undefined)
        {
          resultquery = result.recordset[0].notexistuser;
@@ -125,7 +126,7 @@ class DataLikeImage {
            resultquery = result.recordset[0].noexistlike;
            if(resultquery===undefined)
            {
-               resultquery = result.recordset[0].deletelikeanimage;
+               resultquery = result.recordset[0].deletelikeanpost;
             }
          }
        }
@@ -138,7 +139,7 @@ class DataLikeImage {
 
     //#region OTHERS
 
-    static  NumberOfLikesImage=async(idimage)=>
+    static  NumberOfLikesPost=async(idpost)=>
     {
     
             let query = `
@@ -146,11 +147,11 @@ class DataLikeImage {
             SELECT 
             COUNT(*) as numberlikes
             FROM 
-             LikeImage
-            inner join UserImages on UserImages.iduserimages = LikeImage.iduserimages
+             LikePost
+            inner join UserPost on UserPost.idpost = LikePost.idpost
             WHERE 
-             UserImages.Active = 1
-             AND LikeImage.iduserimages=${idimage}
+             UserPost.Active = 1
+             AND LikePost.idpost=${idpost}
 
             `;
         let pool = await Conection.conection();
@@ -164,4 +165,4 @@ class DataLikeImage {
  
     //#endregion
 }
-module.exports = { DataLikeImage };
+module.exports = { DataLikePost };

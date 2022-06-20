@@ -2,6 +2,8 @@
 const { DataAlbumImages } = require("./data/DataAlbumImage");
 const { DataAlbumVideo } = require("./data/DataAlbumVideo");
 const { DataLikeImage } = require("./data/DataLikeImage");
+const { DataLikePost } = require("./data/DataLikePost");
+const { DataLikeVideo } = require("./data/DataLikeVideo");
 const { DataPhoto } = require("./data/DataPhoto");
 const { DataPhotoPostVideo } = require("./data/DataPhotoPostVideo");
 const { DataPost } = require("./data/DataPost");
@@ -1011,7 +1013,7 @@ let LikeImage=async()=>
  {
     // async function likeanimage() {
     
-    //         let likeanimage = await DataLikeImage.likeanimage(2,1);
+    //         let likeanimage = await DataLikeImage.likeanimage(3,1);
     //         if (likeanimage===-1) {
     //             throw new Error("The image does not exists");
     //         }
@@ -1044,22 +1046,116 @@ let LikeImage=async()=>
     // }
     // await deletelikeanimage();
 
-    // let getLikesImageUsers = await DataLikeImage.getLikesImageUsers(1);
+    // let getLikesImageUsers = await DataUser.getLikesImageUsers(1);
     // console.log(getLikesImageUsers);
 
-
-
-
-
-
-
-
     
+    // let NumberOfLikesImage = await DataLikeImage.NumberOfLikesImage(1);
+    // console.log(NumberOfLikesImage);
 
 
 
  }
  LikeImage().then()
+//#endregion
+//#region LikeVideos
+let LikeVideos=async()=>
+{
+//    async function likeanvideos() {
+   
+//            let likeanvideos = await DataLikeVideo.likeanvideo(1,1);
+//            if (likeanvideos===-1) {
+//                throw new Error("The video does not exists");
+//            }
+//            if (likeanvideos===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (likeanvideos===-3) {
+//                throw new Error("The user already liked that video");
+//            }
+//             console.log("The likevideo was added successfully");
+      
+//    }
+//    await likeanvideos();
+
+
+//    async function deletelikeanvideo() {
+   
+//            let deletelikeanvideo = await DataLikeVideo.deletelikeanvideo(2,1);
+//            if (deletelikeanvideo===-1) {
+//                throw new Error("The video does not exists");
+//            }
+//            if (deletelikeanvideo===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (deletelikeanvideo===-3) {
+//                throw new Error("The likevideo does not exists ");
+//            }
+//             console.log("The likevideo was deleted  successfully");
+      
+//    }
+//    await deletelikeanvideo();
+
+//    let getLikesVideoUsers = await DataUser.getLikesVideoUsers(1);
+//    console.log(getLikesVideoUsers);
+
+//    let NumberOfLikesVideos = await DataLikeVideo.NumberOfLikesVideos(1);
+//    console.log(NumberOfLikesVideos);
+
+
+
+}
+LikeVideos().then()
+//#endregion
+//#region LikePost
+let LikePost=async()=>
+{
+//    async function likeanpost() {
+   
+//            let likeanpost = await DataLikePost.likeanpost(4,1);
+//            if (likeanpost===-1) {
+//                throw new Error("The post does not exists");
+//            }
+//            if (likeanpost===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (likeanpost===-3) {
+//                throw new Error("The user already liked that post");
+//            }
+//             console.log("The likepost was added successfully");
+      
+//    }
+//    await likeanpost();
+
+
+//    async function deletelikeanpost() {
+   
+//            let deletelikeanpost = await DataLikePost.deletelikeanpost(2,1);
+//            if (deletelikeanpost===-1) {
+//                throw new Error("The post does not exists");
+//            }
+//            if (deletelikeanpost===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (deletelikeanpost===-3) {
+//                throw new Error("The likepost does not exists ");
+//            }
+//             console.log("The likepost was deleted  successfully");
+      
+//    }
+//    await deletelikeanpost();
+
+//    let getLikesPostUsers = await DataUser.getLikesPostUsers(1);
+//    console.log(getLikesPostUsers);
+
+//    let NumberOfLikesPost = await DataLikePost.NumberOfLikesPost(1);
+//    console.log(NumberOfLikesPost);
+
+
+
+}
+LikePost().then()
+
 //#endregion
 //#region Others
 // let conexion=async()=>

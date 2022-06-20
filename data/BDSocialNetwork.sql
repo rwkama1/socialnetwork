@@ -245,15 +245,17 @@ go
 --drop table UserrRelations
 --drop table Userr
 
+
+
+
+
  		 SELECT 
-         Userr.*
+         COUNT(*) as numberlikes
 		 FROM 
-          Userr
-         inner join LikeImage on LikeImage.IdUser = Userr.IdUser
-		 inner join UserImages on UserImages.iduserimages=LikeImage.iduserimages 
+          LikeImage
+         inner join UserImages on UserImages.iduserimages = LikeImage.iduserimages
 		WHERE 
-         Userr.Active = 1 
-         and UserImages.Active = 1
+          UserImages.Active = 1
 		 and LikeImage.iduserimages=1
 
 
@@ -280,6 +282,9 @@ select * from userrrelations where iduser=1
 select * from uservideos
 
 select * from  LikeImage
+select * from  LikePost
+select * from  LikeVideo
+
 
 
 

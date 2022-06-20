@@ -1,20 +1,19 @@
-const { DTOLikeImage } = require("../entity/DTOLikeImage");
+const { DTOLikeVideo } = require("../entity/DTOLikeVideo");
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
 
-
-class DataLikeImage {
+class DataLikeVideo {
     //#region CRUD
 
-     static likeanimage=async(iduser,idimage)=>
+    static likeanvideo=async(iduser,idvideo)=>
     {
        let resultquery;
 
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
+        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE IdUserVideos=@iduservideo and Active=1)
         BEGIN
-            select -1 as notexistimage
+            select -1 as notexistvideo
         END
         ELSE
         BEGIN
@@ -24,16 +23,16 @@ class DataLikeImage {
             END
             ELSE
             BEGIN
-                IF  EXISTS ( SELECT * FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
+                IF  EXISTS ( SELECT * FROM LikeVideo WHERE IdUser=@iduser and IdUserVideos=@iduservideo)
                 BEGIN
-                select -3 as existduplicate
+                 select -3 as existduplicate
                 END
                 ELSE
                 BEGIN
                     BEGIN TRANSACTION  
-                        insert into LikeImage values (@iduser,@iduserimage)
-                        UPDATE UserImages SET Likes = Likes + 1 where IdUserImages=@iduserimage
-                        select 1 as likeanimageadded
+                        insert into LikeVideo values (@iduser,@iduservideo)
+                        UPDATE UserVideos SET Likes = Likes + 1 where IdUserVideos=@iduservideo
+                        select 1 as likeanvideoadded
                     IF(@@ERROR > 0)  
                     BEGIN  
                         ROLLBACK TRANSACTION  
@@ -49,9 +48,9 @@ class DataLikeImage {
         `
         let pool = await Conection.conection();
     
-        const result = await pool.request()
+             const result = await pool.request()
             .input('iduser', Int,iduser)
-            .input('iduserimage', Int, idimage)  
+            .input('iduservideo', Int, idvideo)  
             .query(queryinsert)
             resultquery = result.recordset[0].notexistimage;
             if(resultquery===undefined)
@@ -62,7 +61,7 @@ class DataLikeImage {
                 resultquery = result.recordset[0].existduplicate;
                 if(resultquery===undefined)
                 {
-                    resultquery = result.recordset[0].likeanimageadded;
+                    resultquery = result.recordset[0].likeanvideoadded;
                  }
               }
             }
@@ -70,15 +69,15 @@ class DataLikeImage {
         return resultquery;
         
     }
-     static deletelikeanimage=async(iduser,idimage)=>
+    static deletelikeanvideo=async(iduser,idvideo)=>
     {
         let resultquery;
         let queryupdate = 
         `
 
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
+        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE IdUserVideos=@iduservideos and Active=1)
         BEGIN
-            select -1 as notexistimage
+            select -1 as notexistvideo
         END
         ELSE
         BEGIN
@@ -88,16 +87,16 @@ class DataLikeImage {
             END
             ELSE
             BEGIN
-                IF  NOT EXISTS ( SELECT * FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
+                IF  NOT EXISTS ( SELECT * FROM LikeVideo WHERE IdUser=@iduser and IdUserVideos=@iduservideos)
                 BEGIN
-                select -3 as noexistlike
+                select -3 as noexistlikevideo
                 END
                 ELSE
                 BEGIN
                     BEGIN TRANSACTION  
-                        delete from  LikeImage where IdUser=@iduser and IdUserImages=@iduserimage
-                        UPDATE UserImages SET Likes = Likes - 1 where IdUserImages=@iduserimage
-                        select 1 as deletelikeanimage
+                        DELETE  FROM  LikeVideo where IdUser=@iduser and IdUserVideos=@iduservideos
+                        UPDATE UserVideos SET Likes = Likes - 1 where IdUserVideos=@iduservideos
+                        select 1 as deletelikeanvideo
                     IF(@@ERROR > 0)  
                     BEGIN  
                         ROLLBACK TRANSACTION  
@@ -114,18 +113,18 @@ class DataLikeImage {
         let pool = await Conection.conection();
         const result = await pool.request()
        .input('iduser', Int,iduser)
-       .input('iduserimage', Int, idimage) 
+       .input('iduservideos', Int, idvideo) 
        .query(queryupdate)
-       resultquery = result.recordset[0].notexistimage;
+       resultquery = result.recordset[0].notexistvideo;
        if(resultquery===undefined)
        {
          resultquery = result.recordset[0].notexistuser;
          if(resultquery===undefined)
          {
-           resultquery = result.recordset[0].noexistlike;
+           resultquery = result.recordset[0].noexistlikevideo;
            if(resultquery===undefined)
            {
-               resultquery = result.recordset[0].deletelikeanimage;
+               resultquery = result.recordset[0].deletelikeanvideo;
             }
          }
        }
@@ -138,7 +137,7 @@ class DataLikeImage {
 
     //#region OTHERS
 
-    static  NumberOfLikesImage=async(idimage)=>
+    static  NumberOfLikesVideos=async(idvideo)=>
     {
     
             let query = `
@@ -146,11 +145,11 @@ class DataLikeImage {
             SELECT 
             COUNT(*) as numberlikes
             FROM 
-             LikeImage
-            inner join UserImages on UserImages.iduserimages = LikeImage.iduserimages
+            LikeVideo
+            inner join UserVideos on UserVideos.iduservideos = LikeVideo.iduservideos
             WHERE 
-             UserImages.Active = 1
-             AND LikeImage.iduserimages=${idimage}
+            UserVideos.Active = 1
+             AND LikeVideo.iduservideos=${idvideo}
 
             `;
         let pool = await Conection.conection();
@@ -164,4 +163,4 @@ class DataLikeImage {
  
     //#endregion
 }
-module.exports = { DataLikeImage };
+module.exports = { DataLikeVideo };

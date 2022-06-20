@@ -540,8 +540,97 @@ static getUsersbyBirthDate=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
      
             
          }
-  
+/*************************** */ 
 
+static getLikesImageUsers=async(idimage)=>// get all users who liked the image
+{
+   let array=[];
+        let querysearch =
+         `     
+       SELECT 
+        Userr.*
+        FROM 
+         Userr
+        inner join LikeImage on LikeImage.IdUser = Userr.IdUser
+        inner join UserImages on UserImages.iduserimages=LikeImage.iduserimages 
+       WHERE 
+        Userr.Active = 1 
+        and UserImages.Active = 1
+        and LikeImage.iduserimages=${idimage}
+
+        `  
+        let pool = await Conection.conection();
+        const result = await pool.request()      
+        .query(querysearch)
+        for (var p of result.recordset) {
+           let user = new DTOUser();   
+           this.getinformationList(user,p);
+         array.push(user);
+        }
+     
+       pool.close();
+       return array;
+}
+
+static getLikesVideoUsers=async(idvideo)=>// get all users who liked the video
+{
+   let array=[];
+        let querysearch =
+         `     
+       SELECT 
+        Userr.*
+        FROM 
+         Userr
+        inner join LikeVideo  on LikeVideo.IdUser = Userr.IdUser
+        inner join uservideos on uservideos.iduservideos=LikeVideo.iduservideos 
+       WHERE 
+        Userr.Active = 1 
+        and uservideos.Active = 1
+        and LikeVideo.iduservideos=${idvideo}
+
+        `  
+        let pool = await Conection.conection();
+        const result = await pool.request()      
+        .query(querysearch)
+        for (var p of result.recordset) {
+           let user = new DTOUser();   
+           this.getinformationList(user,p);
+         array.push(user);
+        }
+     
+       pool.close();
+       return array;
+}
+
+static getLikesPostUsers=async(idpost)=>// get all users who liked the post
+{
+   let array=[];
+        let querysearch =
+         `     
+       SELECT 
+        Userr.*
+        FROM 
+         Userr
+        inner join LikePost  on LikePost.IdUser = Userr.IdUser
+        inner join userpost on userpost.idpost=LikePost.idpost 
+       WHERE 
+        Userr.Active = 1 
+        and userpost.Active = 1
+        and LikePost.idpost=${idpost}
+
+        `  
+        let pool = await Conection.conection();
+        const result = await pool.request()      
+        .query(querysearch)
+        for (var p of result.recordset) {
+           let user = new DTOUser();   
+           this.getinformationList(user,p);
+         array.push(user);
+        }
+     
+       pool.close();
+       return array;
+}
 //#endregion
 //#region Getinformation
  static getinformation(userr, result) {

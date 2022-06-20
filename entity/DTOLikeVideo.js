@@ -1,16 +1,17 @@
-const { DTOPhoto } = require("./DTOPhoto");
 const { DTOUser } = require("./DTOUser");
+const { DTOVideo } = require("./DTOVideo");
 
-class DTOLikeImage
+class DTOLikeVideo 
 //this class is not used but it can be used
 // to list likes in the future
 {
-     idlikeimage=0;
+     idlikevideo=0;
      user=new DTOUser();
-     image=new DTOPhoto();
+     video=new DTOVideo();
+     
      constructor()
      {
-
+          
      }
 }
-module.exports = { DTOLikeImage };
+module.exports = { DTOLikeVideo };
