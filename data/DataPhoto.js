@@ -146,13 +146,15 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
  static existImageById=async(idimage)=>
 {
    
-     let querysearch=`	SELECT 
+     let querysearch=`	
+     SELECT 
      CASE WHEN EXISTS (
      SELECT *
      FROM UserImages
      WHERE IdUserImages = ${idimage} and Active=1 )
   THEN CAST( 1 as bit)
   ELSE CAST(0 AS BIT) END as Exist
+  
      `;
         let pool = await Conection.conection();   
             const result = await pool.request()

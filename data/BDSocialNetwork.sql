@@ -276,6 +276,19 @@ select * from AlbumUserImages
 select * from AlbumUserVideos
 select * from  UserImages
 
+select * from UserrComments
+select * from UserrSubComments
+select * from UserrCommentsImage
+
+
+ SELECT 
+     CASE WHEN EXISTS (
+     1=1 )
+  THEN CAST( 1 as bit)
+  ELSE CAST(0 AS BIT) END as Exist
+
+  select 1 where 1=2
+
 select * from  UserVideos
 select * from  UserPost
 select * from userrrelations where iduser=1

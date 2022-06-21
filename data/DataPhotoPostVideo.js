@@ -119,7 +119,7 @@ static getPhotoPostVideoByIdAndType=async(id,type)=>
  }
  
  //-------------------------------------------------------------------------
-//  and (UserImages.Visibility='Public' or UserImages.Visibility='Friend') 
+
 // if the user has friends, I get all the images, publications and images of the friends
 // of the registered user,
 // then I get everything according to the country of the logged in user and finally
