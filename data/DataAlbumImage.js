@@ -43,8 +43,8 @@ const { VarChar,Int ,Date} = require("mssql");
     END
     ELSE
     BEGIN
-    update AlbumUserImages set Title=@Title where IdAlbumImages=@IdAlbumImages
-    select 1 as albumupdated
+      update AlbumUserImages set Title=@Title where IdAlbumImages=@IdAlbumImages
+      select 1 as albumupdated
     END
     `
     let pool = await Conection.conection();

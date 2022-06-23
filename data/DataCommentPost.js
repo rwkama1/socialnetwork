@@ -1,18 +1,18 @@
-const { DTOCommentImage } = require("../entity/DTOCommentImage");
+const { DTOCommentPost } = require("../entity/DTOCommentPost");
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
 
-class DataCommentImage {
+class DataCommentPost {
     //#region CRUD
 
-    static CommentImage=async(iduser,idimage,text)=>
+    static CommentPost=async(iduser,idpost,text)=>
     {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE iduserimages=@iduserimages and Active=1)
+        IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=@idpost and Active=1)
         BEGIN
-            select -1 as notexistimage
+            select -1 as notexistpost
         END
         ELSE
         BEGIN
@@ -24,8 +24,8 @@ class DataCommentImage {
             BEGIN
                     BEGIN TRANSACTION  
                         insert into UserrComments values (@iduser,@text,0,getutcdate(),'Public')
-                        insert into UserrCommentsImage values (@@identity,@iduserimages)
-                        select 1 as commentimageadded
+                        insert into UserrCommentsPost values (@@identity,@IdPost)
+                        select 1 as commentpostadded
                     IF(@@ERROR > 0)  
                     BEGIN  
                         ROLLBACK TRANSACTION  
@@ -42,37 +42,37 @@ class DataCommentImage {
              let pool = await Conection.conection();
              const result = await pool.request()
             .input('iduser', Int,iduser)
-            .input('iduserimages', Int, idimage)
+            .input('idpost', Int, idpost)
             .input('text', VarChar, text)  
             .query(queryinsert)
-            resultquery = result.recordset[0].notexistimage;
+            resultquery = result.recordset[0].notexistpost;
             if(resultquery===undefined)
             {
               resultquery = result.recordset[0].notexistuser;
               if(resultquery===undefined)
               {
-                    resultquery = result.recordset[0].commentimageadded;
+                    resultquery = result.recordset[0].commentpostadded;
               }
             }
         pool.close();
         return resultquery;
         
     }
-    static UpdateTextCommentImage=async(iduser,idcomment,idimage,text)=>
+    static UpdateTextCommentPost=async(iduser,idcomment,idpost,text)=>
     {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=@idusercomment 
-            and iduserimages=@iduserimages)
+        IF NOT EXISTS ( SELECT * FROM UserrCommentsPost WHERE idusercomment=@idusercomment 
+            and IdPost=@idpost)
         BEGIN
-            select -1 as notexistcommentimage
+            select -1 as notexistcommentpost
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM UserImages WHERE iduserimages=@iduserimages and Active=1)
+            IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=@idpost and Active=1)
             BEGIN
-                select -2 as notexistimage
+                select -2 as notexistpost
             END
            ELSE
            BEGIN
@@ -102,13 +102,13 @@ class DataCommentImage {
              const result = await pool.request()
             .input('idusercomment', Int,idcomment)
             .input('iduser', Int,iduser)
-            .input('iduserimages', Int, idimage)
+            .input('idpost', Int, idpost)
             .input('text', VarChar, text)  
             .query(queryinsert)
-            resultquery = result.recordset[0].notexistcommentimage;
+            resultquery = result.recordset[0].notexistcommentpost;
             if(resultquery===undefined)
             {
-                resultquery = result.recordset[0].notexistimage;
+                resultquery = result.recordset[0].notexistpost;
                 if(resultquery===undefined)
                 {
                     resultquery = result.recordset[0].notexistuser;
@@ -130,20 +130,20 @@ class DataCommentImage {
         return resultquery;
         
     }
-    static deleteCommentImage=async(iduser,idcomment,idimage)=>
+    static deleteCommentPost=async(iduser,idcomment,idpost)=>
     {
         let resultquery;
         let queryupdate = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=@idcomment and iduserimages=@idimage)
+        IF NOT EXISTS ( SELECT * FROM UserrCommentsPost WHERE idusercomment=@idcomment and IdPost=@idpost)
         BEGIN
-            select -1 as notexistcommentimage
+            select -1 as notexistcommentpost
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM UserImages WHERE iduserimages=@idimage and Active=1)
+            IF NOT EXISTS ( SELECT * FROM UserPost WHERE idpost=@idpost and Active=1)
             BEGIN
-                select -2 as notexistimage
+                select -2 as notexistpost
             END
             ELSE
             BEGIN
@@ -164,9 +164,9 @@ class DataCommentImage {
                             BEGIN
                                 delete from UserrSubComments where idusercomment=@idcomment
                             END
-                            delete from UserrCommentsImage where idusercomment=@idcomment
+                            delete from UserrCommentsPost where idusercomment=@idcomment
                             delete from UserrComments where idusercomment=@idcomment and iduser=@iduser
-                            select 1 as commentimagedeleted
+                            select 1 as commentpostdeleted
                             IF(@@ERROR > 0)  
                             BEGIN  
                                 ROLLBACK TRANSACTION  
@@ -184,13 +184,13 @@ class DataCommentImage {
         let pool = await Conection.conection();
         const result = await pool.request()
        .input('idcomment', Int,idcomment)
-       .input('idimage', Int, idimage) 
+       .input('idpost', Int, idpost) 
        .input('iduser', Int, iduser) 
        .query(queryupdate)
-         resultquery = result.recordset[0].notexistcommentimage;
+         resultquery = result.recordset[0].notexistcommentpost;
             if(resultquery===undefined)
             {
-                resultquery = result.recordset[0].notexistimage;
+                resultquery = result.recordset[0].notexistpost;
                 if(resultquery===undefined)
                 {
                     resultquery = result.recordset[0].notexistuser;
@@ -199,7 +199,7 @@ class DataCommentImage {
                         resultquery = result.recordset[0].notexistcomment;
                         if(resultquery===undefined)
                         {
-                            resultquery = result.recordset[0].commentimagedeleted;
+                            resultquery = result.recordset[0].commentpostdeleted;
                         }
                       
                     }
@@ -214,53 +214,11 @@ class DataCommentImage {
     //#endregion
     //#region  GETS
       
-    static getsCommentImage=async(idimage)=>
-    {
-      
-            let arraysubcomment=[];
-              let querysearch=
-              `             
-            SELECT 
-			UserrComments.idusercomment,
-			UserrComments.textt as textcomment,
-			UserrComments.likes as likescomment,
-			UserrComments.datepublish as datepublishcomment,
-			UserrCommentsImage.idusercommentimg,
-		    UserrCommentsImage.iduserimages,
-			UserrSubComments.idsubusercomment,
-			UserrSubComments.likes as likessubcomment,
-			UserrSubComments.textt as textsubcomment,
-			UserrSubComments.datepublish as datepublishsubcomment,
-			Userr.*
-            FROM 
-            UserrComments
-            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
-			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
-			inner join Userr on Userr.iduser=UserrComments.iduser
-            WHERE 
-			UserImages.Active = 1
-			AND Userr.Active=1
-            AND UserrCommentsImage.iduserimages=${idimage} 
-              `;
-       
-            let pool = await Conection.conection();
-       
-                const result = await pool.request()
-                .query(querysearch)
-                for (var resultcommentimg of result.recordset) {
-                   let commentimg = new DTOCommentImage(); 
-                    this.getinformationListImageComment(commentimg,resultcommentimg);
-                    arraysubcomment.push(commentimg);
-                 }
-           pool.close();
-           return arraysubcomment;
-       
-     }
+
     //#endregion
     //#region OTHERS
 
-    static  NumberOfCommentImage=async(idimage)=>
+    static  NumberOfCommentPost=async(idpost)=>
     {
     
             let query = `
@@ -269,11 +227,11 @@ class DataCommentImage {
             COUNT(*) as numbercomment
             FROM 
             UserrComments
-            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idpost
             WHERE 
-            UserImages.Active = 1
-            AND UserrCommentsImage.iduserimages=${idimage}
+            UserPost.Active = 1
+            AND UserrCommentsPost.idpost=${idpost}
 
             `;
         let pool = await Conection.conection();
@@ -286,8 +244,5 @@ class DataCommentImage {
     }
  
     //#endregion
-    //#region GET INFORMATION
-    
-    //#endregion
 }
-module.exports = { DataCommentImage };
+module.exports = { DataCommentPost };

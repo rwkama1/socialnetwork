@@ -2,6 +2,8 @@
 const { DataAlbumImages } = require("./data/DataAlbumImage");
 const { DataAlbumVideo } = require("./data/DataAlbumVideo");
 const { DataCommentImage } = require("./data/DataCommentImage");
+const { DataCommentPost } = require("./data/DataCommentPost");
+const { DataCommentVideo } = require("./data/DataCommentVideo");
 const { DataLikeImage } = require("./data/DataLikeImage");
 const { DataLikePost } = require("./data/DataLikePost");
 const { DataLikeVideo } = require("./data/DataLikeVideo");
@@ -1159,7 +1161,6 @@ let LikePost=async()=>
 LikePost().then()
 
 //#endregion
-
 //#region CommentImage
 
 let CommentImage=async()=>
@@ -1180,39 +1181,50 @@ let CommentImage=async()=>
 //    await commentimage();
 
 
-    async function UpdateTextCommentImage() {
+//     async function UpdateTextCommentImage() {
    
-         let loginuserid=4;
-         if (loginuserid!=4) {
-                throw new Error("Only the logged in user can delete his comment");
-             }
-           let UpdateTextCommentImage = await DataCommentImage.UpdateTextCommentImage(5,1,1,"UpdatedCoomment");
-           if (UpdateTextCommentImage===-1) {
-               throw new Error("The comment does not exists");
-           }
-           if (UpdateTextCommentImage===-2) {
-            throw new Error("The image does not exists");
-        }
-           if (UpdateTextCommentImage===-3) {
-               throw new Error("The user does not exists");
-           }
-            console.log("The comment image was updated successfully");
+//          let loginuserid=4;
+//          if (loginuserid!=4) {
+//                 throw new Error("Only the logged in user can delete his comment");
+//              }
+//            let UpdateTextCommentImage = await DataCommentImage.UpdateTextCommentImage(4,1,1,"UpdateedCoomment");
+//            if (UpdateTextCommentImage===-1) {
+//                throw new Error("The comment images does not exists");
+//            }
+//            if (UpdateTextCommentImage===-2) {
+//             throw new Error("The image does not exists");
+//         }
+//            if (UpdateTextCommentImage===-3) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (UpdateTextCommentImage===-4) {
+//             throw new Error("The comment does not exists");
+//         }
+//             console.log("The comment image was updated successfully");
       
-   }
+//    }
     
-   await UpdateTextCommentImage();
+//    await UpdateTextCommentImage();
 
-//     async function deleteCommentImage() {
+    //async function deleteCommentImage() {
    
 //           let loginuserid=4;
 //           if (loginuserid!=4) {
 //             throw new Error("Only the logged in user can delete his comment");
 //             }
-//            let deleteCommentImage = await DataCommentImage.deleteCommentImage(4,1,1);
-           
+//            let deleteCommentImage = await DataCommentImage.deleteCommentImage(4,6,1);
 //            if (deleteCommentImage===-1) {
-//                throw new Error("The comment does not exists");
-//            }
+//              throw new Error("The comment images does not exists");
+//                 }
+//              if (deleteCommentImage===-2) {
+//                 throw new Error("The image does not exists");
+//              }
+//              if (deleteCommentImage===-3) {
+//                  throw new Error("The user does not exists");
+//              }
+//             if (deleteCommentImage===-4) {
+//               throw new Error("The comment does not exists");
+//                }
            
 //             console.log("The comment image was deleted successfully");
       
@@ -1220,8 +1232,166 @@ let CommentImage=async()=>
     
 //    await deleteCommentImage();
 
+//    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
+//    console.log(NumberOfCommentImage);
+
 }
 CommentImage().then()
+
+//#endregion
+//#region CommentPost
+
+let CommentPost=async()=>
+{
+
+    //    async function commentpost() {
+   
+    //        let CommentPost = await DataCommentPost.CommentPost(4,1,"Comment");
+    //        if (CommentPost===-1) {
+    //            throw new Error("The post does not exists");
+    //        }
+    //        if (CommentPost===-2) {
+    //            throw new Error("The user does not exists");
+    //        }
+    //         console.log("The comment post was added successfully");
+      
+    //     }
+    //     await commentpost();
+
+
+//     async function UpdateTextCommentPost() {
+   
+//          let loginuserid=1;
+//          if (loginuserid!=1) {
+//                 throw new Error("Only the logged in user can delete his comment");
+//              }
+//            let UpdateTextCommentPost = await DataCommentPost.UpdateTextCommentPost(1,10,1,"UpdateedCoomment");
+//            if (UpdateTextCommentPost===-1) {
+//                throw new Error("The comment post does not exists");
+//            }
+//            if (UpdateTextCommentPost===-2) {
+//             throw new Error("The post does not exists");
+//         }
+//            if (UpdateTextCommentPost===-3) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (UpdateTextCommentPost===-4) {
+//             throw new Error("The comment does not exists");
+//         }
+//             console.log("The comment post was updated successfully");
+      
+//    }
+    
+//    await UpdateTextCommentPost();
+
+//     async function deleteCommentPost() {
+   
+//           let loginuserid=4;
+//           if (loginuserid!=4) {
+//             throw new Error("Only the logged in user can delete his comment");
+//             }
+//            let deleteCommentPost = await DataCommentPost.deleteCommentPost(1,10,1);
+//            if (deleteCommentPost===-1) {
+//              throw new Error("The comment post does not exists");
+//                 }
+//              if (deleteCommentPost===-2) {
+//                 throw new Error("The post does not exists");
+//              }
+//              if (deleteCommentPost===-3) {
+//                  throw new Error("The user does not exists");
+//              }
+//             if (deleteCommentPost===-4) {
+//               throw new Error("The comment does not exists");
+//                }
+           
+//             console.log("The comment post was deleted successfully");
+      
+//    }
+    
+//    await deleteCommentPost();
+
+// let NumberOfCommentPost = await DataCommentPost.NumberOfCommentPost(1);
+// console.log(NumberOfCommentPost);
+}
+CommentPost().then()
+
+//#endregion
+//#region CommentVideo
+
+let CommentVideo=async()=>
+{
+
+    //    async function CommentVideo() {
+   
+    //        let CommentVideo = await DataCommentVideo.CommentVideo(4,1,"VideoComment");
+    //        if (CommentVideo===-1) {
+    //            throw new Error("The video does not exists");
+    //        }
+    //        if (CommentVideo===-2) {
+    //            throw new Error("The user does not exists");
+    //        }
+    //         console.log("The comment video was added successfully");
+      
+    //     }
+    //     await CommentVideo();
+
+
+//     async function UpdateTextCommentVideo() {
+   
+//          let loginuserid=1;
+//          if (loginuserid!=1) {
+//                 throw new Error("Only the logged in user can delete his comment");
+//              }
+//            let UpdateTextCommentVideo = await DataCommentVideo.UpdateTextCommentVideo(1,18,1,"UpdateedVideoCoomment");
+//            if (UpdateTextCommentVideo===-1) {
+//                throw new Error("The comment video does not exists");
+//            }
+//            if (UpdateTextCommentVideo===-2) {
+//             throw new Error("The video does not exists");
+//         }
+//            if (UpdateTextCommentVideo===-3) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (UpdateTextCommentVideo===-4) {
+//             throw new Error("The comment does not exists");
+//         }
+//             console.log("The comment video was updated successfully");
+      
+//    }
+    
+//    await UpdateTextCommentVideo();
+
+//     async function deleteCommentVideo() {
+   
+//           let loginuserid=4;
+//           if (loginuserid!=4) {
+//             throw new Error("Only the logged in user can delete his comment");
+//             }
+//            let deleteCommentVideo = await DataCommentVideo.deleteCommentVideo(1,18,1);
+//            if (deleteCommentVideo===-1) {
+//              throw new Error("The comment video does not exists");
+//                 }
+//              if (deleteCommentVideo===-2) {
+//                 throw new Error("The video does not exists");
+//              }
+//              if (deleteCommentVideo===-3) {
+//                  throw new Error("The user does not exists");
+//              }
+//             if (deleteCommentVideo===-4) {
+//               throw new Error("The comment does not exists");
+//                }
+           
+//             console.log("The comment video was deleted successfully");
+      
+//    }
+    
+//    await deleteCommentVideo();
+
+// let NumberOfCommentVideo = await DataCommentVideo.NumberOfCommentVideo(1);
+// console.log(NumberOfCommentVideo);
+}
+CommentVideo().then()
+
 //#endregion
 //#region SubComment
 
@@ -1230,7 +1400,7 @@ let SubComment=async()=>
 
     //    async function addSubComment() {
    
-    //        let addSubComment = await DataSubComment.addSubComment(2,1,"SubComment");
+    //        let addSubComment = await DataSubComment.addSubComment(4,7,"SubComment");
     //        if (addSubComment===-1) {
     //            throw new Error("The comment does not exists");
     //        }
@@ -1243,8 +1413,11 @@ let SubComment=async()=>
     //  await addSubComment();
 
 
+//    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
+//    console.log(NumberOfCommentImage);
 
-
+   let NumberOfCommentImage = await DataSubComment.getsCommentImage(1);
+   console.log(NumberOfCommentImage);
 }
 SubComment().then()
 //#endregion

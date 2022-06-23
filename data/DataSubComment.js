@@ -1,6 +1,7 @@
 const { DTOSubComment } = require("../entity/DTOSubComment");
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
+const { DataUser } = require("./DataUser");
 
 class DataSubComment {
     //#region CRUD
@@ -48,7 +49,7 @@ class DataSubComment {
         
     }
 
-    static UpdateTextCommentImage=async(idcomment,idimage,text)=>
+    static UpdateTextSubCommentImage=async(idcomment,idimage,text)=>
     {
        let resultquery;
         let queryinsert = 
@@ -145,7 +146,51 @@ class DataSubComment {
     }
 
     //#endregion
-
+    //#region GETS 
+    static getsSubCommentImage=async(idimage)=>
+    {
+      
+            let arraysubcomment=[];
+              let querysearch=
+              `             
+            SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			UserrSubComments.idsubusercomment,
+			UserrSubComments.likes as likessubcomment,
+			UserrSubComments.textt as textsubcomment,
+			UserrSubComments.datepublish as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=${idimage} 
+              `;
+       
+            let pool = await Conection.conection();
+       
+                const result = await pool.request()
+                .query(querysearch)
+                for (var resultcommentimg of result.recordset) {
+                   let commentimg = new DTOSubComment(); 
+                    this.getinformationListImageComment(commentimg,resultcommentimg);
+                    arraysubcomment.push(commentimg);
+                 }
+           pool.close();
+           return arraysubcomment;
+       
+     }
+    //#endregion
     //#region OTHERS
 
     static  NumberOfLikesVideos=async(idvideo)=>
@@ -173,5 +218,34 @@ class DataSubComment {
     }
  
     //#endregion
+
+ //#region GetInformation
+static getinformationImageComment(subcomment, result) {
+    
+    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+    subcomment.imagecomment.comment.Textt = result.recordset[0].textcomment; 
+    subcomment.imagecomment.comment.Likes = result.recordset[0].likescomment; 
+    subcomment.imagecomment.comment.DatePublish = result.recordset[0].datepublishcomment; 
+    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+   
+}
+ static  getinformationListImageComment(subcomment, result) {
+      
+    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+    subcomment.imagecomment.comment.Textt = result.recordset[0].textcomment; 
+    subcomment.imagecomment.comment.Likes = result.recordset[0].likescomment; 
+    subcomment.imagecomment.IdUserCommentImg = result.recordset[0].idusercommentimg; 
+    subcomment.imagecomment.image.idphoto = result.recordset[0].iduserimages; 
+    subcomment.IdSubUserComment = result.recordset[0].idusercommentimg; 
+    subcomment.Likes = result.recordset[0].idusercommentimg; 
+    subcomment.Textt = result.recordset[0].textt; 
+    subcomment.DatePublish = result.recordset[0].idusercommentimg; 
+    DataUser.getinformationList(subcomment.user,result)
+
+
+}
+//#endregion
 }
 module.exports = { DataSubComment };

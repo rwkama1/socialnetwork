@@ -1,7 +1,6 @@
 use socialnetwork
 go
 
-
 ---------------------------------------------
 ----TABLES
 CREATE TABLE Userr(
@@ -247,6 +246,51 @@ go
 
 
 
+     IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=2 and iduserimages=1)
+        BEGIN
+            select -1 as notexistcommentimage
+        END
+        ELSE
+        BEGIN
+            IF NOT EXISTS ( SELECT * FROM UserImages WHERE iduserimages=1 and Active=1)
+            BEGIN
+                select -2 as notexistimage
+            END
+            ELSE
+            BEGIN
+                IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=4 and Active=1)
+                BEGIN
+                    select -3 as notexistuser
+                END
+                ELSE
+                BEGIN
+                    IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUser=4 and idusercomment=2)
+                    BEGIN
+                        select -4 as notexistcomment
+                    END
+                    ELSE
+                    BEGIN
+                            BEGIN TRANSACTION  
+                            IF EXISTS ( SELECT * FROM UserrSubComments WHERE  idusercomment=1)
+                            BEGIN
+                                delete from UserrSubComments where idusercomment=2
+                            END
+                            delete from UserrCommentsImage where idusercomment=2
+                            delete from UserrComments where idusercomment=2 and iduser=4
+                            select 1 as commentimagedeleted
+                            IF(@@ERROR > 0)  
+                            BEGIN  
+                                ROLLBACK TRANSACTION  
+                            END  
+                            ELSE  
+                            BEGIN  
+                            COMMIT TRANSACTION  
+                            END
+                    END
+                 END  
+             END
+         END
+
 
 
  		 SELECT 
@@ -275,19 +319,24 @@ select * from userr
 select * from AlbumUserImages
 select * from AlbumUserVideos
 select * from  UserImages
-
-select * from UserrComments
-select * from UserrSubComments
 select * from UserrCommentsImage
 
+select * from UserrComments
+select * from UserrCommentsPost
+select * from UserrSubComments
 
- SELECT 
-     CASE WHEN EXISTS (
-     1=1 )
-  THEN CAST( 1 as bit)
-  ELSE CAST(0 AS BIT) END as Exist
+select * from UserrComments
+select * from UserrCommentsVideo
+select * from UserrSubComments
 
-  select 1 where 1=2
+
+delete from userrsubcomments where idsubusercomment=20
+
+insert into UserrComments values (1,'VideoCommentText',0,getutcdate(),'Public')
+insert into UserrCommentsVideo values (@@identity,1)
+insert into UserrSubComments values(1,7,0,'SubCommentText',getutcdate())
+
+
 
 select * from  UserVideos
 select * from  UserPost
@@ -299,887 +348,79 @@ select * from  LikePost
 select * from  LikeVideo
 
 
-
-
-			--WITH
-			--friendsquery AS
-			--		( 
-			--			SELECT 
-			--		UserImages.iduserimages as id, 
-			--		UserImages.idalbumimages as idalbum,
-			--		AlbumUserImages.title as albumtitle, 
-			--		UserImages.iduser, 
-			--		UserImages.title, 
-			--		UserImages.descriptionn, 
-			--		UserImages.likes,
-			--		UserImages.urlimage as url,
-			--		UserImages.visibility,
-			--		UserImages.datepublish, 
-			--	    UserImages.active, 
-			--		Userr.Name as nameuser, 
-			--		Userr.Nick as nickuser, 
-			--		Userr.Email as emailuser, 
-			--		Userr.Imagee as imageuser, 
-			--		Userr.Country as countryuser, 
-			--		'I' as typee 
-			--		from 
-			--		UserImages 
-			--		inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-			--		inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-			--		inner join UserrRelations on UserrRelations.IdFriend = Userr.IdUser 
-			--		where 	 
-			--		Userr.Active = 1 
-			--		and AlbumUserImages.Active = 1 
-			--		and UserImages.Active = 1 
-			--		and (UserImages.Visibility='Public' or UserImages.Visibility='Friend') 
-			--		and UserrRelations.IdUser = 1
-					
-			--		UNION 
-
-			--		SELECT 
-			--		UserVideos.iduservideos, 
-			--		UserVideos.idalbumvideos,
-			--		AlbumUserVideos.title, 
-			--		UserVideos.iduser, 
-			--		UserVideos.title, 
-			--		UserVideos.descriptionn, 
-			--		UserVideos.likes,
-			--		UserVideos.urlvideos,
-			--		UserVideos.visibility,
-			--		UserVideos.datepublish, 
-			--	    UserVideos.active, 
-			--		Userr.Name, 
-			--		Userr.Nick, 
-			--		Userr.Email, 
-			--		Userr.Imagee,
-			--		Userr.Country as countryuser, 
-			--		'V' as typee 
-			--		 from 
-			--		UserVideos 
-			--		inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
-			--		inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-			--		inner join UserrRelations on UserrRelations.IdFriend = Userr.IdUser 
-			--		where 
-			--		Userr.Active = 1 
-			--		and AlbumUserVideos.Active = 1 
-			--		and UserVideos.Active = 1 
-			--		and UserrRelations.Statee = 'Confirmed' 
-			--		and (UserVideos.Visibility='Public' or UserVideos.Visibility='Friend') 
-			--		and UserrRelations.IdUser = 1
-									
-			--			UNION 
-
-			--		SELECT 
-			--		UserPost.idpost, 
-			--		0,
-			--		'',
-			--		UserPost.iduser, 
-			--		UserPost.title, 
-			--		UserPost.descriptionn, 
-			--		UserPost.likes,
-			--		'',
-			--		UserPost.visibility,
-			--		UserPost.datepublish, 
-			--	    UserPost.active, 
-			--		Userr.Name, 
-			--		Userr.Nick, 
-			--		Userr.Email, 
-			--	    Userr.Imagee,
-			--		Userr.Country as countryuser, 
-			--		'P' as typee  
-			--	 	 from 
-   --                 UserPost 
-   --                 inner join Userr on Userr.IdUser = UserPost.IdUser 
-   --                 inner join UserrRelations on UserrRelations.IdFriend = Userr.IdUser 
-   --                 where 
-   --                 Userr.Active = 1 
-   --                 and UserPost.Active = 1 
-   --                 and UserrRelations.Statee = 'Confirmed' 
-   --                 and (UserPost.Visibility='Public' or UserPost.Visibility='Friend') 
-   --                 and UserrRelations.IdUser = 1
-			--		),
-
-			WITH
-			 countryquery AS
-				( 
-					SELECT 	
-					UserImages.iduserimages as id, 
-					UserImages.idalbumimages as idalbum,
-					AlbumUserImages.title as albumtitle, 
-					UserImages.iduser, 
-					UserImages.title, 
-					UserImages.descriptionn, 
-					UserImages.likes,
-					UserImages.urlimage as url,
-					UserImages.visibility,
-					UserImages.datepublish, 
-				    UserImages.active, 
-					Userr.Name as nameuser, 
-					Userr.Nick as nickuser, 
-					Userr.Email as emailuser, 
-					Userr.Imagee as imageuser,
-					Userr.Country as countryuser, 
-					'I' as typee 
-					FROM 
-					UserImages 
-					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-					WHERE 
-					Userr.Active = 1 
-					and AlbumUserImages.Active = 1 
-					and UserImages.Active = 1 
-					and UserImages.Visibility='Public'
-					and Userr.Country='USA'
-
-					UNION 
-
-					SELECT 
-					UserVideos.iduservideos, 
-					UserVideos.idalbumvideos,
-					AlbumUserVideos.title, 
-					UserVideos.iduser, 
-					UserVideos.title, 
-					UserVideos.descriptionn, 
-					UserVideos.likes,
-					UserVideos.urlvideos,
-					UserVideos.visibility,
-					UserVideos.datepublish, 
-				    UserVideos.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-					Userr.Imagee,
-					Userr.Country as countryuser,
-					'V' as typee 
-					from 
-					UserVideos 
-					inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
-					inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserVideos.Active = 1 
-					and UserVideos.Active = 1 
-					and UserVideos.Visibility='Public'
-					and Userr.Country='USA'
-
-					UNION 
-
-					SELECT 
-					UserPost.idpost, 
-					0,
-					'',
-					UserPost.iduser, 
-					UserPost.title, 
-					UserPost.descriptionn, 
-					UserPost.likes,
-					'',
-					UserPost.visibility,
-					UserPost.datepublish, 
-				    UserPost.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-				    Userr.Imagee,
-					Userr.Country as countryuser,
-					'P' as typee  
-					 from 
-					UserPost 
-					inner join Userr on Userr.IdUser = UserPost.IdUser 
-					where 
-					Userr.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Visibility='Public'
-					and Userr.Country='USA'
-			    ),
-
-
-
-
-
-
-
-
-
-	SELECT * FROM
-	(
-				SELECT 	
-					UserImages.iduserimages as id, 
-					UserImages.idalbumimages as idalbum,
-					AlbumUserImages.title as albumtitle, 
-					UserImages.iduser, 
-					UserImages.title, 
-					UserImages.descriptionn, 
-					UserImages.likes,
-					UserImages.urlimage as url,
-					UserImages.visibility,
-					UserImages.datepublish, 
-				    UserImages.active, 
-					Userr.Name as nameuser, 
-					Userr.Nick as nickuser, 
-					Userr.Email as emailuser, 
-					Userr.Imagee as imageuser,
-					Userr.Country as countryuser, 
-					'I' as typee 
-					FROM 
-					UserImages 
-					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-					WHERE 
-					Userr.Active = 1 
-					and AlbumUserImages.Active = 1 
-					and UserImages.Active = 1 
-					and UserImages.Visibility='Public'
-				
-					UNION 
-
-					SELECT 
-					UserVideos.iduservideos, 
-					UserVideos.idalbumvideos,
-					AlbumUserVideos.title, 
-					UserVideos.iduser, 
-					UserVideos.title, 
-					UserVideos.descriptionn, 
-					UserVideos.likes,
-					UserVideos.urlvideos,
-					UserVideos.visibility,
-					UserVideos.datepublish, 
-				    UserVideos.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-					Userr.Imagee,
-					Userr.Country,
-					'V' as typee 
-					from 
-					UserVideos 
-					inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
-					inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserVideos.Active = 1 
-					and UserVideos.Active = 1 
-					and UserVideos.Visibility='Public'
-					
-					UNION  
-
-					SELECT 
-					UserPost.idpost, 
-					0,
-					'',
-					UserPost.iduser, 
-					UserPost.title, 
-					UserPost.descriptionn, 
-					UserPost.likes,
-					'',
-					UserPost.visibility,
-					UserPost.datepublish, 
-				    UserPost.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-				    Userr.Imagee,
-					Userr.Country,
-					'P' as typee  
-					 from 
-					UserPost 
-					inner join Userr on Userr.IdUser = UserPost.IdUser 
-					where 
-					Userr.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Visibility='Public'
-		
-	) AS searchquery
-	 where iduser=1 and typee='I'
-		 
-
-
-
-		select * from userimages where iduser=1
-		select * from AlbumUserImages
-		select *
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---friends query 
-				
-					SELECT 
-					UserImages.iduserimages as id, 
-					UserImages.idalbumimages as idalbum,
-					AlbumUserImages.title as albumtitle, 
-					UserImages.iduser, 
-					UserImages.title, 
-					UserImages.descriptionn, 
-					UserImages.likes,
-					UserImages.urlimage as url,
-					UserImages.visibility,
-					UserImages.datepublish, 
-				    UserImages.active, 
-					Userr.Name as nameuser, 
-					Userr.Nick as nickuser, 
-					Userr.Email as emailuser, 
-					Userr.Imagee as imageuser, 
-					Userr.Country as countryuser, 
-					'I' as typee 
-					from 
-					UserImages 
-					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-					inner join UserrRelations on UserrRelations.IdFriend = Userr.IdUser 
-					where 	 
-					Userr.Active = 1 
-					and AlbumUserImages.Active = 1 
-					and UserImages.Active = 1 
-					and (UserImages.Visibility='Public' or UserImages.Visibility='Friend') 
-					and UserrRelations.IdUser = 25
-					
-					UNION 
-
-					SELECT 
-					UserVideos.iduservideos, 
-					UserVideos.idalbumvideos,
-					AlbumUserVideos.title, 
-					UserVideos.iduser, 
-					UserVideos.title, 
-					UserVideos.descriptionn, 
-					UserVideos.likes,
-					UserVideos.urlvideos,
-					UserVideos.visibility,
-					UserVideos.datepublish, 
-				    UserVideos.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-					Userr.Imagee,
-					Userr.Country as countryuser, 
-					'V' as typee 
-					 from 
-					UserVideos 
-					inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
-					inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-					inner join UserrRelations on UserrRelations.IdFriend = Userr.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserVideos.Active = 1 
-					and UserVideos.Active = 1 
-					and UserrRelations.Statee = 'Confirmed' 
-					and (UserVideos.Visibility='Public' or UserVideos.Visibility='Friend') 
-					and UserrRelations.IdUser = 25
-									
-			
-
-					UNION 
-
-					SELECT 
-					UserPost.idpost, 
-					0,
-					'',
-					UserPost.iduser, 
-					UserPost.title, 
-					UserPost.descriptionn, 
-					UserPost.likes,
-					'',
-					UserPost.visibility,
-					UserPost.datepublish, 
-				    UserPost.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-				    Userr.Imagee,
-					Userr.Country as countryuser, 
-					'P' as typee  
-				 	 from 
-                    UserPost 
-                    inner join Userr on Userr.IdUser = UserPost.IdUser 
-                    inner join UserrRelations on UserrRelations.IdFriend = Userr.IdUser 
-                    where 
-                    Userr.Active = 1 
-                    and UserPost.Active = 1 
-                    and UserrRelations.Statee = 'Confirmed' 
-                    and (UserPost.Visibility='Public' or UserPost.Visibility='Friend') 
-                    and UserrRelations.IdUser = 25
-
-
-					UNION all
---user same country query
-					SELECT 	
-					UserImages.iduserimages as id, 
-					UserImages.idalbumimages as idalbum,
-					AlbumUserImages.title as albumtitle, 
-					UserImages.iduser, 
-					UserImages.title, 
-					UserImages.descriptionn, 
-					UserImages.likes,
-					UserImages.urlimage as url,
-					UserImages.visibility,
-					UserImages.datepublish, 
-				    UserImages.active, 
-					Userr.Name as nameuser, 
-					Userr.Nick as nickuser, 
-					Userr.Email as emailuser, 
-					Userr.Imagee as imageuser,
-					Userr.Country as countryuser, 
-					'I' as typee 
-					FROM 
-					UserImages 
-					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-					WHERE 
-					Userr.Active = 1 
-					and AlbumUserImages.Active = 1 
-					and UserImages.Active = 1 
-					and UserImages.Visibility='Public'
-					and Userr.Country='USA'
-
-					UNION 
-
-					SELECT 
-					UserVideos.iduservideos, 
-					UserVideos.idalbumvideos,
-					AlbumUserVideos.title, 
-					UserVideos.iduser, 
-					UserVideos.title, 
-					UserVideos.descriptionn, 
-					UserVideos.likes,
-					UserVideos.urlvideos,
-					UserVideos.visibility,
-					UserVideos.datepublish, 
-				    UserVideos.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-					Userr.Imagee,
-					Userr.Country,
-					'V' as typee 
-					from 
-					UserVideos 
-					inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
-					inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserVideos.Active = 1 
-					and UserVideos.Active = 1 
-					and UserVideos.Visibility='Public'
-					and Userr.Country='USA'
-
-					UNION 
-
-					SELECT 
-					UserPost.idpost, 
-					0,
-					'',
-					UserPost.iduser, 
-					UserPost.title, 
-					UserPost.descriptionn, 
-					UserPost.likes,
-					'',
-					UserPost.visibility,
-					UserPost.datepublish, 
-				    UserPost.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-				    Userr.Imagee,
-					Userr.Country,
-					'P' as typee  
-					 from 
-					UserPost 
-					inner join Userr on Userr.IdUser = UserPost.IdUser 
-					where 
-					Userr.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Visibility='Public'
-					and Userr.Country='USA'
---all users query
-                    	UNION 
-
-					SELECT 	
-					UserImages.iduserimages as id, 
-					UserImages.idalbumimages as idalbum,
-					AlbumUserImages.title as albumtitle, 
-					UserImages.iduser, 
-					UserImages.title, 
-					UserImages.descriptionn, 
-					UserImages.likes,
-					UserImages.urlimage as url,
-					UserImages.visibility,
-					UserImages.datepublish, 
-				    UserImages.active, 
-					Userr.Name as nameuser, 
-					Userr.Nick as nickuser, 
-					Userr.Email as emailuser, 
-					Userr.Imagee as imageuser,
-					Userr.Country as countryuser, 
-					'I' as typee 
-					FROM 
-					UserImages 
-					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-					WHERE 
-					Userr.Active = 1 
-					and AlbumUserImages.Active = 1 
-					and UserImages.Active = 1 
-					and UserImages.Visibility='Public'
-				
-
-					UNION
-
-					SELECT 
-					UserVideos.iduservideos, 
-					UserVideos.idalbumvideos,
-					AlbumUserVideos.title, 
-					UserVideos.iduser, 
-					UserVideos.title, 
-					UserVideos.descriptionn, 
-					UserVideos.likes,
-					UserVideos.urlvideos,
-					UserVideos.visibility,
-					UserVideos.datepublish, 
-				    UserVideos.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-					Userr.Imagee,
-					Userr.Country,
-					'V' as typee 
-					from 
-					UserVideos 
-					inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
-					inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserVideos.Active = 1 
-					and UserVideos.Active = 1 
-					and UserVideos.Visibility='Public'
-					
-
-					UNION
-
-					SELECT 
-					UserPost.idpost, 
-					0,
-					'',
-					UserPost.iduser, 
-					UserPost.title, 
-					UserPost.descriptionn, 
-					UserPost.likes,
-					'',
-					UserPost.visibility,
-					UserPost.datepublish, 
-				    UserPost.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-				    Userr.Imagee,
-					Userr.Country,
-					'P' as typee  
-					 from 
-					UserPost 
-					inner join Userr on Userr.IdUser = UserPost.IdUser 
-					where 
-					Userr.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Visibility='Public'
-					
-					order by  desc
-				
-
-				select * from userr where iduser=9
-					
-
-
-
-
-
-
-
-
-
-
-
-
-					SELECT 	
-					UserImages.iduserimages as id, 
-					UserImages.idalbumimages as idalbum,
-					AlbumUserImages.title as albumtitle, 
-					UserImages.iduser, 
-					UserImages.title, 
-					UserImages.descriptionn, 
-					UserImages.likes,
-					UserImages.urlimage as url,
-					UserImages.visibility,
-					UserImages.datepublish, 
-				    UserImages.active, 
-					Userr.Name as nameuser, 
-					Userr.Nick as nickuser, 
-					Userr.Email as emailuser, 
-					Userr.Imagee as imageuser, 
-					'I' as typee 
-					FROM 
-					UserImages 
-					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-					WHERE 
-					Userr.Active = 1 
-					and AlbumUserImages.Active = 1 
-					and UserImages.Active = 1 
-					and UserImages.Visibility='Public'
-					and Userr.Country='United Kingdom'
-------------------------------------------------------------------------
-----I get all the images, publications and images of the friends of the logged user
-
-					UNION
-
-					SELECT 
-					UserVideos.iduservideos, 
-					UserVideos.idalbumvideos,
-					AlbumUserVideos.title, 
-					UserVideos.iduser, 
-					UserVideos.title, 
-					UserVideos.descriptionn, 
-					UserVideos.likes,
-					UserVideos.urlvideos,
-					UserVideos.visibility,
-					UserVideos.datepublish, 
-				    UserVideos.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-					Userr.Imagee,
-					'V' as typee 
-					from 
-					UserVideos 
-					inner join AlbumUserVideos on AlbumUserVideos.idalbumvideos = UserVideos.idalbumvideos 
-					inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserVideos.Active = 1 
-					and UserVideos.Active = 1 
-					and Userr.Country='United Kingdom')
-
-					UNION 
-
-					SELECT 
-					UserPost.idpost, 
-					0,
-					'',
-					UserPost.iduser, 
-					UserPost.title, 
-					UserPost.descriptionn, 
-					UserPost.likes,
-					'',
-					UserPost.visibility,
-					UserPost.datepublish, 
-				    UserPost.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-				    Userr.Imagee,
-					'P' as typee  
-					from 
-					UserPost 
-					inner join Userr on Userr.IdUser = UserPost.IdUser 
-					where 
-				    Userr.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Visibility='Public'
-					
-					ORDER BY datepublish DESC
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-					
-					SELECT 
-					
-					UserImages.iduserimages as id, 
-					UserImages.idalbumimages as idalbum,
-					AlbumUserImages.title as albumtitle, 
-					UserImages.iduser, 
-					UserImages.title, 
-					UserImages.descriptionn, 
-					UserImages.likes,
-					UserImages.urlimage as url,
-					UserImages.visibility,
-					UserImages.datepublish, 
-				    UserImages.active, 
-					Userr.Name as nameuser, 
-					Userr.Nick as nickuser, 
-					Userr.Email as emailuser, 
-					Userr.Imagee as imageuser, 
-					'I' as typee 
-					from 
-					UserImages 
-					inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
-					inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserImages.Active = 1 
-					and UserImages.Active = 1 
-					and UserImages.Visibility='Public'
-
-					UNION 
-
-					SELECT 
-					UserVideos.iduservideos, 
-					UserVideos.idalbumvideos,
-					AlbumUserVideos.title, 
-					UserVideos.iduser, 
-					UserVideos.title, 
-					UserVideos.descriptionn, 
-					UserVideos.likes,
-					UserVideos.urlvideos,
-					UserVideos.visibility,
-					UserVideos.datepublish, 
-				    UserVideos.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-					Userr.Imagee,
-					'V' as typee 
-					from 
-					UserVideos 
-					inner join AlbumUserVideos on AlbumUserVideos.idalbumvideos = UserVideos.idalbumvideos 
-					inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-					where 
-					Userr.Active = 1 
-					and AlbumUserVideos.Active = 1 
-					and UserVideos.Active = 1 
-					and UserVideos.Visibility='Public'
-
-					UNION 
-
-					SELECT 
-					UserPost.idpost, 
-					0,
-					'',
-					UserPost.iduser, 
-					UserPost.title, 
-					UserPost.descriptionn, 
-					UserPost.likes,
-					'',
-					UserPost.visibility,
-					UserPost.datepublish, 
-				    UserPost.active, 
-					Userr.Name, 
-					Userr.Nick, 
-					Userr.Email, 
-				    Userr.Imagee,
-					'P' as typee  
-					from 
-					UserPost 
-					inner join Userr on Userr.IdUser = UserPost.IdUser 
-					where 
-				    Userr.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Active = 1 
-					and UserPost.Visibility='Public'
-					
-					ORDER BY datepublish DESC
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-					 
-				SELECT 
-                 UserPost.* FROM 
-                 UserPost 
-
-                 Userr.Name, 
-                 Userr.Nick, 
-                 Userr.Email, 
-                 Userr.Imagee 
-                
-                 INNER JOIN  Userr on Userr.IdUser = UserPost.IdUser 
-                 WHERE 
-                 Userr.Active = 1 
-                 AND UserPost.Active = 1 
-                 AND UserPost.IdPost = 4
-
-
-
-
 	
-	select * from AlbumUserImages
-	select * from UserImages
-	select * from UserrRelations
-	select * from userr
-	select * from userpost
-
-
-			
-			-- 45 no tiene amigos
-					
-
-
-
-
-
-	
+		IF NOT EXISTS (SELECT idusercomment from
+		(
+            SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			UserrSubComments.idsubusercomment as idsubusercomment  ,
+			UserrSubComments.likes as likessubcomment,
+			UserrSubComments.textt as textsubcomment,
+			UserrSubComments.datepublish as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=1
+		) AS commentsubcomentimg
+		)
+		BEGIN 
+			SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			0 as idsubusercomment,
+			0 as likessubcomment,
+			'' as textsubcomment,
+			0 as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=1
+		END  
+		ELSE
+		BEGIN
+			SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			UserrSubComments.idsubusercomment as idsubusercomment  ,
+			UserrSubComments.likes as likessubcomment,
+			UserrSubComments.textt as textsubcomment,
+			UserrSubComments.datepublish as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=1
+		END
+		

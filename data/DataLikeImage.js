@@ -143,14 +143,14 @@ class DataLikeImage {
     
             let query = `
 
-            SELECT 
+           SELECT 
             COUNT(*) as numberlikes
             FROM 
              LikeImage
             inner join UserImages on UserImages.iduserimages = LikeImage.iduserimages
             WHERE 
              UserImages.Active = 1
-             AND LikeImage.iduserimages=${idimage}
+             AND LikeImage.iduserimages=${idimage} 
 
             `;
         let pool = await Conection.conection();
