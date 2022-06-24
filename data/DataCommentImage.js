@@ -1,7 +1,7 @@
 const { DTOCommentImage } = require("../entity/DTOCommentImage");
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
-
+const { DataUser } = require("./DataUser");
 class DataCommentImage {
     //#region CRUD
 
@@ -214,10 +214,10 @@ class DataCommentImage {
     //#endregion
     //#region  GETS
       
-    static getsCommentImage=async(idimage)=>
+    static getsCommentsImage=async(idimage)=>
     {
       
-            let arraysubcomment=[];
+            let arraycomment=[];
               let querysearch=
               `             
             SELECT 
@@ -227,16 +227,11 @@ class DataCommentImage {
 			UserrComments.datepublish as datepublishcomment,
 			UserrCommentsImage.idusercommentimg,
 		    UserrCommentsImage.iduserimages,
-			UserrSubComments.idsubusercomment,
-			UserrSubComments.likes as likessubcomment,
-			UserrSubComments.textt as textsubcomment,
-			UserrSubComments.datepublish as datepublishsubcomment,
 			Userr.*
             FROM 
             UserrComments
             inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
 			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
-			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
 			inner join Userr on Userr.iduser=UserrComments.iduser
             WHERE 
 			UserImages.Active = 1
@@ -251,10 +246,10 @@ class DataCommentImage {
                 for (var resultcommentimg of result.recordset) {
                    let commentimg = new DTOCommentImage(); 
                     this.getinformationListImageComment(commentimg,resultcommentimg);
-                    arraysubcomment.push(commentimg);
+                    arraycomment.push(commentimg);
                  }
            pool.close();
-           return arraysubcomment;
+           return arraycomment;
        
      }
     //#endregion
@@ -287,7 +282,21 @@ class DataCommentImage {
  
     //#endregion
     //#region GET INFORMATION
+    static getinformationListImageComment(imagecomment, result) {
+      
+        imagecomment.comment.IdUserComment = result.idusercomment; 
+        imagecomment.comment.Textt = result.textcomment; 
+        imagecomment.comment.Likes = result.likescomment; 
+        imagecomment.comment.DatePublish = result.datepublishcomment; 
+        imagecomment.IdUserCommentImg = result.idusercommentimg; 
+        imagecomment.image.idphoto = result.iduserimages; 
+        imagecomment.image.user = null; 
+        imagecomment.image.albumphoto = null; 
+        imagecomment.image.DateTimePublish = null; 
+        DataUser.getinformationList(imagecomment.comment.user,result)
     
+    
+    }
     //#endregion
 }
 module.exports = { DataCommentImage };

@@ -1,6 +1,7 @@
 const { DTOCommentPost } = require("../entity/DTOCommentPost");
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
+const { DataUser } = require("./DataUser");
 
 class DataCommentPost {
     //#region CRUD
@@ -214,7 +215,43 @@ class DataCommentPost {
     //#endregion
     //#region  GETS
       
-
+    static getsCommentsPost=async(idpost)=>
+    {
+      
+            let arraycomment=[];
+              let querysearch=
+              `             
+            SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsPost.idusercommentpost,
+		    UserrCommentsPost.idpost,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idusercommentpost
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserPost.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsPost.idpost=${idpost} 
+              `;
+       
+            let pool = await Conection.conection();
+            const result = await pool.request()
+            .query(querysearch)
+            for (var resultcommentpost of result.recordset) {
+                   let commentpost = new DTOCommentPost(); 
+                    this.getinformationListPostComment(commentpost,resultcommentpost);
+                    arraycomment.push(commentpost);
+                 }
+           pool.close();
+           return arraycomment;
+       
+     }
     //#endregion
     //#region OTHERS
 
@@ -243,6 +280,24 @@ class DataCommentPost {
         
     }
  
+    //#endregion
+
+      //#region GET INFORMATION
+      
+ static getinformationListPostComment(postcomment, result) {
+      
+        postcomment.comment.IdUserComment = result.idusercomment; 
+        postcomment.comment.Textt = result.textcomment; 
+        postcomment.comment.Likes = result.likescomment; 
+        postcomment.comment.DatePublish = result.datepublishcomment; 
+        postcomment.IdUserCommentPost = result.idusercommentpost; 
+        postcomment.post.idpost = result.idpost; 
+        postcomment.post.user = null; 
+        postcomment.post.DateTimePublish = null; 
+        DataUser.getinformationList(postcomment.comment.user,result)
+    
+    
+    }
     //#endregion
 }
 module.exports = { DataCommentPost };

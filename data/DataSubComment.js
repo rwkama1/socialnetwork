@@ -147,19 +147,17 @@ class DataSubComment {
 
     //#endregion
     //#region GETS 
-    static getsSubCommentImage=async(idimage)=>
+    static getsSubCommentsByIdComment=async(idcomment)=>
     {
       
             let arraysubcomment=[];
               let querysearch=
               `             
-            SELECT 
+          	SELECT 
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
 			UserrComments.likes as likescomment,
 			UserrComments.datepublish as datepublishcomment,
-			UserrCommentsImage.idusercommentimg,
-		    UserrCommentsImage.iduserimages,
 			UserrSubComments.idsubusercomment,
 			UserrSubComments.likes as likessubcomment,
 			UserrSubComments.textt as textsubcomment,
@@ -167,24 +165,21 @@ class DataSubComment {
 			Userr.*
             FROM 
             UserrComments
-            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
 			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
 			inner join Userr on Userr.iduser=UserrComments.iduser
             WHERE 
-			UserImages.Active = 1
-			AND Userr.Active=1
-            AND UserrCommentsImage.iduserimages=${idimage} 
+			 Userr.Active=1
+            AND UserrComments.idusercomment=${idcomment}
               `;
        
             let pool = await Conection.conection();
        
                 const result = await pool.request()
                 .query(querysearch)
-                for (var resultcommentimg of result.recordset) {
-                   let commentimg = new DTOSubComment(); 
-                    this.getinformationListImageComment(commentimg,resultcommentimg);
-                    arraysubcomment.push(commentimg);
+                for (var resultsubcomments of result.recordset) {
+                   let subcomments = new DTOSubComment(); 
+                    this.getinformationsubcomment(subcomments,resultsubcomments);
+                    arraysubcomment.push(subcomments);
                  }
            pool.close();
            return arraysubcomment;
@@ -220,32 +215,32 @@ class DataSubComment {
     //#endregion
 
  //#region GetInformation
-static getinformationImageComment(subcomment, result) {
+// static getinformationImageComment(subcomment, result) {
     
-    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
-    subcomment.imagecomment.comment.Textt = result.recordset[0].textcomment; 
-    subcomment.imagecomment.comment.Likes = result.recordset[0].likescomment; 
-    subcomment.imagecomment.comment.DatePublish = result.recordset[0].datepublishcomment; 
-    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
-    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
-    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+//     subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+//     subcomment.imagecomment.comment.Textt = result.recordset[0].textcomment; 
+//     subcomment.imagecomment.comment.Likes = result.recordset[0].likescomment; 
+//     subcomment.imagecomment.comment.DatePublish = result.recordset[0].datepublishcomment; 
+//     subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+//     subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
+//     subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
    
-}
- static  getinformationListImageComment(subcomment, result) {
+// }
+ static getinformationsubcomment(subcomment, result) {
       
-    subcomment.imagecomment.comment.IdUserComment = result.recordset[0].idusercomment; 
-    subcomment.imagecomment.comment.Textt = result.recordset[0].textcomment; 
-    subcomment.imagecomment.comment.Likes = result.recordset[0].likescomment; 
-    subcomment.imagecomment.IdUserCommentImg = result.recordset[0].idusercommentimg; 
-    subcomment.imagecomment.image.idphoto = result.recordset[0].iduserimages; 
-    subcomment.IdSubUserComment = result.recordset[0].idusercommentimg; 
-    subcomment.Likes = result.recordset[0].idusercommentimg; 
-    subcomment.Textt = result.recordset[0].textt; 
-    subcomment.DatePublish = result.recordset[0].idusercommentimg; 
-    DataUser.getinformationList(subcomment.user,result)
-
-
-}
+    subcomment.comment.IdUserComment = result.idusercomment; 
+    subcomment.comment.Textt = result.textcomment; 
+    subcomment.comment.Likes = result.likescomment; 
+    subcomment.comment.DatePublish = result.datepublishcomment; 
+    subcomment.IdSubUserComment=result.idsubusercomment;
+    subcomment.Likes=result.likessubcomment;
+    subcomment.Textt=result.textsubcomment;
+    subcomment.DatePublish=result.datepublishsubcomment;
+    DataUser.getinformationList(subcomment.comment.user,result)
+    
+    
+    }
+  
 //#endregion
 }
 module.exports = { DataSubComment };

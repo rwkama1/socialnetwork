@@ -1232,6 +1232,25 @@ let CommentImage=async()=>
     
 //    await deleteCommentImage();
 
+
+//  async function getsCommentsImage() {
+//         let array=await DataCommentImage.getsCommentsImage(1);
+//         for (const commentimg of array) {
+//             commentimg.comment.DiffDatePublishDateNow()
+//             commentimg.comment.showDiffDatePublishDateNow()
+//             for (const subcomments of await DataSubComment.getsSubCommentsByIdComment(commentimg.comment.IdUserComment)) {
+//                 subcomments.DiffDatePublishDateNow()
+//                 subcomments.showDiffDatePublishDateNow()
+//                 console.log(commentimg);
+//                 console.log(subcomments);
+//             }
+          
+
+//         }
+      
+//     }
+//      await getsCommentsImage();
+
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);
 
@@ -1310,6 +1329,26 @@ let CommentPost=async()=>
     
 //    await deleteCommentPost();
 
+
+
+ async function getsCommentsPost() {
+        let array=await DataCommentPost.getsCommentsPost(1);
+        for (const commentpost of array) {
+            commentpost.comment.DiffDatePublishDateNow()
+            commentpost.comment.showDiffDatePublishDateNow()
+            for (const subcomments of await DataSubComment.getsSubCommentsByIdComment(commentpost.comment.IdUserComment)) {
+                subcomments.DiffDatePublishDateNow()
+                subcomments.showDiffDatePublishDateNow()
+                console.log(commentpost);
+                console.log(subcomments);
+            }
+          
+
+        }
+      
+    }
+   await getsCommentsPost();
+   
 // let NumberOfCommentPost = await DataCommentPost.NumberOfCommentPost(1);
 // console.log(NumberOfCommentPost);
 }
@@ -1416,8 +1455,6 @@ let SubComment=async()=>
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);
 
-   let NumberOfCommentImage = await DataSubComment.getsCommentImage(1);
-   console.log(NumberOfCommentImage);
 }
 SubComment().then()
 //#endregion

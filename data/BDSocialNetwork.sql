@@ -245,6 +245,24 @@ go
 --drop table Userr
 
 
+			SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrSubComments.idsubusercomment,
+			UserrSubComments.likes as likessubcomment,
+			UserrSubComments.textt as textsubcomment,
+			UserrSubComments.datepublish as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			 Userr.Active=1
+            AND UserrComments.idusercomment=7 
+
 
      IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=2 and iduserimages=1)
         BEGIN
@@ -319,6 +337,7 @@ select * from userr
 select * from AlbumUserImages
 select * from AlbumUserVideos
 select * from  UserImages
+select * from  UserPost
 select * from UserrCommentsImage
 
 select * from UserrComments
@@ -348,6 +367,24 @@ select * from  LikePost
 select * from  LikeVideo
 
 
+
+       SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsPost.idusercommentpost,
+		    UserrCommentsPost.idpost,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idusercommentpost
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserPost.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsPost.idpost=1
 	
 		IF NOT EXISTS (SELECT idusercomment from
 		(
@@ -373,9 +410,63 @@ select * from  LikeVideo
 			UserImages.Active = 1
 			AND Userr.Active=1
             AND UserrCommentsImage.iduserimages=1
+
 		) AS commentsubcomentimg
+
 		)
 		BEGIN 
+
+			SELECT 	
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			0 as idsubusercomment,
+			0 as likessubcomment,
+			'' as textsubcomment,
+			0 as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join Userr on Userr.iduser=UserrComments.iduser
+		      WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=1
+		END  
+		ELSE
+		BEGIN
+			
+			SELECT
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			UserrSubComments.idsubusercomment as idsubusercomment  ,
+			UserrSubComments.likes as likessubcomment,
+			UserrSubComments.textt as textsubcomment,
+			UserrSubComments.datepublish as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
+			inner join Userr on Userr.iduser=UserrComments.iduser
+
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+			AND UserrComments.idusercomment=8
+
+			union all
+
 			SELECT 
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
@@ -397,10 +488,49 @@ select * from  LikeVideo
 			UserImages.Active = 1
 			AND Userr.Active=1
             AND UserrCommentsImage.iduserimages=1
-		END  
-		ELSE
-		BEGIN
-			SELECT 
+		END
+		
+
+
+
+
+
+
+
+
+
+
+
+
+		 SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=1
+
+
+
+
+
+
+
+
+
+			Select  * from
+			(
+			SELECT
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
 			UserrComments.likes as likescomment,
@@ -418,9 +548,59 @@ select * from  LikeVideo
 			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
 			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
 			inner join Userr on Userr.iduser=UserrComments.iduser
+
             WHERE 
 			UserImages.Active = 1
 			AND Userr.Active=1
             AND UserrCommentsImage.iduserimages=1
-		END
-		
+
+			union all
+
+			SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			0 as idsubusercomment,
+			0 as likessubcomment,
+			'' as textsubcomment,
+			0 as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=1
+			) as commentwithsubcomments
+			where commentwithsubcomments exists
+			 (
+			 SELECT 
+			
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsImage.idusercommentimg,
+		    UserrCommentsImage.iduserimages,
+			0 as idsubusercomment,
+			0 as likessubcomment,
+			'' as textsubcomment,
+			0 as datepublishsubcomment,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+			inner join Userr on Userr.iduser=UserrComments.iduser
+			
+            WHERE 
+			UserImages.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsImage.iduserimages=1
+			)
