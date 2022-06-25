@@ -1238,14 +1238,7 @@ let CommentImage=async()=>
 //         for (const commentimg of array) {
 //             commentimg.comment.DiffDatePublishDateNow()
 //             commentimg.comment.showDiffDatePublishDateNow()
-//             for (const subcomments of await DataSubComment.getsSubCommentsByIdComment(commentimg.comment.IdUserComment)) {
-//                 subcomments.DiffDatePublishDateNow()
-//                 subcomments.showDiffDatePublishDateNow()
-//                 console.log(commentimg);
-//                 console.log(subcomments);
-//             }
-          
-
+//             console.log(commentimg)
 //         }
       
 //     }
@@ -1331,23 +1324,15 @@ let CommentPost=async()=>
 
 
 
- async function getsCommentsPost() {
-        let array=await DataCommentPost.getsCommentsPost(1);
-        for (const commentpost of array) {
-            commentpost.comment.DiffDatePublishDateNow()
-            commentpost.comment.showDiffDatePublishDateNow()
-            for (const subcomments of await DataSubComment.getsSubCommentsByIdComment(commentpost.comment.IdUserComment)) {
-                subcomments.DiffDatePublishDateNow()
-                subcomments.showDiffDatePublishDateNow()
-                console.log(commentpost);
-                console.log(subcomments);
-            }
-          
-
-        }
-      
-    }
-   await getsCommentsPost();
+//  async function getsCommentsPost() {
+//         let array=await DataCommentPost.getsCommentsPost(1);
+//         for (const commentpost of array) {
+//             commentpost.comment.DiffDatePublishDateNow()
+//             commentpost.comment.showDiffDatePublishDateNow()
+//             console.log(commentpost);
+//         }     
+//     }
+//    await getsCommentsPost();
    
 // let NumberOfCommentPost = await DataCommentPost.NumberOfCommentPost(1);
 // console.log(NumberOfCommentPost);
@@ -1451,6 +1436,27 @@ let SubComment=async()=>
     // }
     //  await addSubComment();
 
+
+ async function getIfExistsSubComentsOfCommentsImage() {
+        let array=await DataSubComment.getIfExistsSubComentsOfCommentsImage(1);
+        for (const subcommentimg of array) {
+            if (subcommentimg.withsubcomments=1) {
+                subcommentimg.DiffDatePublishDateNowSubComment()
+                subcommentimg.showDiffDatePublishDateNowSubComment()
+
+                subcommentimg.DiffDatePublishDateNowComment()
+                subcommentimg.showDiffDatePublishDateNowComment()
+                console.log(subcommentimg);
+              
+            } else {
+                subcommentimg.DiffDatePublishDateNowComment()
+                subcommentimg.showDiffDatePublishDateNowComment()
+                console.log(subcommentimg);
+            }
+           
+        }     
+    }
+   await getIfExistsSubComentsOfCommentsImage();
 
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);

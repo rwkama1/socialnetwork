@@ -220,7 +220,8 @@ class DataCommentPost {
       
             let arraycomment=[];
               let querysearch=
-              `             
+              `        
+                   
             SELECT 
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
@@ -238,6 +239,7 @@ class DataCommentPost {
 			UserPost.Active = 1
 			AND Userr.Active=1
             AND UserrCommentsPost.idpost=${idpost} 
+
               `;
        
             let pool = await Conection.conection();
@@ -252,6 +254,7 @@ class DataCommentPost {
            return arraycomment;
        
      }
+     
     //#endregion
     //#region OTHERS
 

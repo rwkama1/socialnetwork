@@ -9,6 +9,7 @@ class DTOComment
      Likes=0;
      DatePublish=new Date();
      Visibility="";
+     withsubcomments=0; 
 
 
      //time elapsed since publication date

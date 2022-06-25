@@ -1,33 +1,64 @@
-const { DTOComment } = require("./DTOComment");
-
-const { DTOUser } = require("./DTOUser");
 
 class DTOSubComment
 
 {
-     IdSubUserComment=0;
-     user=new DTOUser();
-  
-   comment=new DTOComment();
-   
-     Textt="";
-     Likes=0;
-     DatePublish=new Date();
-  
+    idsubusercomment=0;
+    textsubcomment="";
+     likessubcomment=0;
+     datepublishsubcomment=new Date();
+     withsubcomments=0;
 
-     //time elapsed since publication date
+    //Comment
+
+    idusercomment=0;
+    textcomment="";
+    likescomment=0;
+    datepublishcomment=new Date();
+   
+    diffsecondcomment=0;
+    diffminutescomment=0;
+    diffhourcomment=0;
+    diffdayscomment=0;
+    diffmonthcomment=0;
+    diffyearscomment=0;
+    stringpostedagocomment="";
+
+     //User SubComment
+
+     idsubcommentuser=0;
+     namesubcommentuser="";
+     nicksubcommentuser="";
+     usernamesubcommentuser="";
+     imagesubcommentuser="";
+
+     //User Comment
+
+     idcommentuser=0;
+     namecommentuser="";
+     nickcommentuser="";
+     usernamecommentuser="";
+     imagecommentuser="";
+
+     //Comment Image
+
+     idusercommentimg=0;
+     iduserimages=0;
+
+
+
+     //time elapsed since publication date sub comment
     
-     diffsecond=0;
-     diffminutes=0;
-     diffhour=0;
-     diffdays=0;
-     diffmonth=0;
-     diffyear=0;
-     stringpostedago="";
+     diffsecondsubcomment=0;
+     diffminutessubcomment=0;
+     diffhoursubcomment=0;
+     diffdayssubcomment=0;
+     diffmonthsubcomment=0;
+     diffyearsubcomment=0;
+     stringpostedagosubcomment="";
  
-     DiffDatePublishDateNow()
+     DiffDatePublishDateNowSubComment()
      {
-           let localdate=this.DatePublish;
+           let localdate=this.datepublishsubcomment;
            let dateutcpublish=new Date(localdate.getUTCFullYear(),
            localdate.getUTCMonth(),localdate.getUTCDate(),localdate.getUTCHours()
          ,localdate.getUTCMinutes(),localdate.getUTCSeconds(),localdate.getUTCMilliseconds())
@@ -39,39 +70,91 @@ class DTOSubComment
          )
        
        let difmiliseconds=nowutc-dateutcpublish
-       this.diffsecond=Math.floor((difmiliseconds)/1000);
-       this.diffminutes=Math.floor(this.diffsecond/60);
-       this.diffhour=Math.floor(this.diffminutes/60);
-       this.diffdays=Math.floor(this.diffhour/24);
-       this.diffmonth=Math.floor(this.diffdays/31);
-       this.diffyear=Math.floor(this.diffmonth/12);
+       this.diffsecondsubcomment=Math.floor((difmiliseconds)/1000);
+       this.diffminutessubcomment=Math.floor(this.diffsecondsubcomment/60);
+       this.diffhoursubcomment=Math.floor(this.diffminutessubcomment/60);
+       this.diffdayssubcomment=Math.floor(this.diffhoursubcomment/24);
+       this.diffmonthsubcomment=Math.floor(this.diffdayssubcomment/31);
+       this.diffyearsubcomment=Math.floor(this.diffmonthsubcomment/12);
       
      }
-     showDiffDatePublishDateNow()
+     showDiffDatePublishDateNowSubComment()
      {
-       if(this.diffsecond<60)
+       if(this.diffsecondsubcomment<60)
        {
-         this.stringpostedago= `Posted ${this.diffsecond} seconds ago`
+         this.stringpostedagosubcomment= `Posted ${this.diffsecondsubcomment} seconds ago`
        }
-       else if(this.diffsecond>=60&&this.diffminutes<60)
+       else if(this.diffsecondsubcomment>=60&&this.diffminutessubcomment<60)
        {
-         this.stringpostedago= `Posted ${this.diffminutes} minutes ago`
+         this.stringpostedagosubcomment= `Posted ${this.diffminutessubcomment} minutes ago`
        }
-       else if(this.diffminutes>=60&&this.diffhour<24)
+       else if(this.diffminutessubcomment>=60&&this.diffhoursubcomment<24)
        {
-         this.stringpostedago= `Posted ${this.diffhour} hours ago`
+         this.stringpostedagosubcomment= `Posted ${this.diffhoursubcomment} hours ago`
        }
-       else if(this.diffhour>=24&&this.diffdays<31)
+       else if(this.diffhoursubcomment>=24&&this.diffdayssubcomment<31)
        {
-         this.stringpostedago= `Posted ${this.diffdays} days ago`
+         this.stringpostedagosubcomment= `Posted ${this.diffdayssubcomment} days ago`
        }
-       else if(this.diffdays>=31&&this.diffmonth<12)
+       else if(this.diffdayssubcomment>=31&&this.diffmonthsubcomment<12)
        {
-         this.stringpostedago= `Posted ${this.diffmonth} month ago`
+         this.stringpostedagosubcomment= `Posted ${this.diffmonthsubcomment} month ago`
        }
-       else if(this.diffmonth>=12)
+       else if(this.diffmonthsubcomment>=12)
        {
-         this.stringpostedago= `Posted ${this.diffyear} years ago`
+         this.stringpostedagosubcomment= `Posted ${this.diffyearsubcomment} years ago`
+       }
+     }
+
+
+
+     DiffDatePublishDateNowComment()
+     {
+           let localdate=this.datepublishcomment;
+           let dateutcpublish=new Date(localdate.getUTCFullYear(),
+           localdate.getUTCMonth(),localdate.getUTCDate(),localdate.getUTCHours()
+         ,localdate.getUTCMinutes(),localdate.getUTCSeconds(),localdate.getUTCMilliseconds())
+ 
+           let now=new Date();
+           let nowutc=new Date(now.getUTCFullYear(),
+         now.getUTCMonth(),now.getUTCDate(),now.getUTCHours()
+         ,now.getUTCMinutes(),now.getUTCSeconds(),now.getUTCMilliseconds()
+         )
+       
+       let difmiliseconds=nowutc-dateutcpublish
+       this.diffsecondcomment=Math.floor((difmiliseconds)/1000);
+       this.diffminutescomment=Math.floor(this.diffsecondcomment/60);
+       this.diffhourcomment=Math.floor(this.diffminutescomment/60);
+       this.diffdayscomment=Math.floor(this.diffhourcomment/24);
+       this.diffmonthcomment=Math.floor(this.diffdayscomment/31);
+       this.diffyearcomment=Math.floor(this.diffmonthcomment/12);
+      
+     }
+     showDiffDatePublishDateNowComment()
+     {
+       if(this.diffsecondcomment<60)
+       {
+         this.stringpostedagocomment= `Posted ${this.diffsecondcomment} seconds ago`
+       }
+       else if(this.diffsecondcomment>=60&&this.diffminutescomment<60)
+       {
+         this.stringpostedagocomment= `Posted ${this.diffminutescomment} minutes ago`
+       }
+       else if(this.diffminutescomment>=60&&this.diffhourcomment<24)
+       {
+         this.stringpostedagocomment= `Posted ${this.diffdayscomment} hours ago`
+       }
+       else if(this.diffdayscomment>=24&&this.diffdayscomment<31)
+       {
+         this.stringpostedagocomment= `Posted ${this.diffdayscomment} days ago`
+       }
+       else if(this.diffdayscomment>=31&&this.diffmonthcomment<12)
+       {
+         this.stringpostedagocomment= `Posted ${this.diffmonthcomment} month ago`
+       }
+       else if(this.diffmonthcomment>=12)
+       {
+         this.stringpostedagocomment= `Posted ${this.diffyearscomment} years ago`
        }
      }
      constructor()
