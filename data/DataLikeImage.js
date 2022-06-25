@@ -1,4 +1,4 @@
-const { DTOLikeImage } = require("../entity/DTOLikeImage");
+
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
 

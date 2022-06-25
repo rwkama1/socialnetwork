@@ -14,7 +14,9 @@ class DTOSubComment
     textcomment="";
     likescomment=0;
     datepublishcomment=new Date();
-   
+    
+    //time elapsed since publication date  comment
+    
     diffsecondcomment=0;
     diffminutescomment=0;
     diffhourcomment=0;
@@ -44,7 +46,15 @@ class DTOSubComment
      idusercommentimg=0;
      iduserimages=0;
 
+    //Comment Post
 
+    idusercommentpost=0;
+    idpost=0;
+
+     //Comment Video
+
+    idusercommentvideo=0;
+    iduservideos=0;
 
      //time elapsed since publication date sub comment
     
@@ -142,9 +152,9 @@ class DTOSubComment
        }
        else if(this.diffminutescomment>=60&&this.diffhourcomment<24)
        {
-         this.stringpostedagocomment= `Posted ${this.diffdayscomment} hours ago`
+         this.stringpostedagocomment= `Posted ${this.diffhourcomment} hours ago`
        }
-       else if(this.diffdayscomment>=24&&this.diffdayscomment<31)
+       else if(this.diffhourcomment>=24&&this.diffdayscomment<31)
        {
          this.stringpostedagocomment= `Posted ${this.diffdayscomment} days ago`
        }

@@ -1437,26 +1437,76 @@ let SubComment=async()=>
     //  await addSubComment();
 
 
- async function getIfExistsSubComentsOfCommentsImage() {
-        let array=await DataSubComment.getIfExistsSubComentsOfCommentsImage(1);
-        for (const subcommentimg of array) {
-            if (subcommentimg.withsubcomments=1) {
-                subcommentimg.DiffDatePublishDateNowSubComment()
-                subcommentimg.showDiffDatePublishDateNowSubComment()
-
-                subcommentimg.DiffDatePublishDateNowComment()
-                subcommentimg.showDiffDatePublishDateNowComment()
-                console.log(subcommentimg);
-              
-            } else {
-                subcommentimg.DiffDatePublishDateNowComment()
-                subcommentimg.showDiffDatePublishDateNowComment()
-                console.log(subcommentimg);
-            }
+//  async function getIfExistsSubComentsOfCommentsImage() {
+//         let array=await DataSubComment.getIfExistsSubComentsOfCommentsImage(1);
+//         for (const subcommentimg of array) {
+//             if (subcommentimg.withsubcomments===1) {     
+//                 subcommentimg.DiffDatePublishDateNowComment()
+//                 subcommentimg.showDiffDatePublishDateNowComment()
+                
+//                 subcommentimg.DiffDatePublishDateNowSubComment()
+//                 subcommentimg.showDiffDatePublishDateNowSubComment()
+        
+//             } else 
+//             {
+//                 subcommentimg.DiffDatePublishDateNowComment()
+//                 subcommentimg.showDiffDatePublishDateNowComment()
+               
+//             }
+//             console.log(subcommentimg);
            
-        }     
-    }
-   await getIfExistsSubComentsOfCommentsImage();
+//         }     
+//     }
+//    await getIfExistsSubComentsOfCommentsImage();
+
+// async function getIfExistsSubComentsOfCommentsPost() {
+//     let array=await DataSubComment.getIfExistsSubComentsOfCommentsPost(1);
+//     for (const subcommentpost of array) {
+//         if (subcommentpost.withsubcomments===1) {     
+//             subcommentpost.DiffDatePublishDateNowComment()
+//             subcommentpost.showDiffDatePublishDateNowComment()
+            
+//             subcommentpost.DiffDatePublishDateNowSubComment()
+//             subcommentpost.showDiffDatePublishDateNowSubComment()
+    
+//         } else 
+//         {
+//             subcommentpost.DiffDatePublishDateNowComment()
+//             subcommentpost.showDiffDatePublishDateNowComment()
+           
+//         }
+//         console.log(subcommentpost);
+       
+//     }     
+// }
+// await getIfExistsSubComentsOfCommentsPost();
+
+
+async function getIfExistsSubComentsOfCommentsVideo() {
+    let array=await DataSubComment.getIfExistsSubComentsOfCommentsVideo(1);
+    for (const subcommentv of array) {
+        if (subcommentv.withsubcomments===1) {     
+            subcommentv.DiffDatePublishDateNowComment()
+            subcommentv.showDiffDatePublishDateNowComment()
+            
+            subcommentv.DiffDatePublishDateNowSubComment()
+            subcommentv.showDiffDatePublishDateNowSubComment()
+    
+        } else 
+        {
+            subcommentv.DiffDatePublishDateNowComment()
+            subcommentv.showDiffDatePublishDateNowComment()
+           
+        }
+        console.log(subcommentv);
+       
+    }     
+}
+await getIfExistsSubComentsOfCommentsVideo();
+
+
+
+
 
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);

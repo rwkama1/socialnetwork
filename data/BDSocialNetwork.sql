@@ -150,11 +150,13 @@ CREATE TABLE UserrCommentsPost(
 )
 go
 CREATE TABLE UserrCommentsVideo(
-	IdUserCommentImg int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserCommentVideo int NOT NULL PRIMARY KEY Identity(1,1) ,
 	IdUserComment int not null Foreign Key References UserrComments(IdUserComment),
 	IdUserVideos int not null Foreign Key References UserVideos(IdUserVideos)
 )
 go
+
+
 CREATE TABLE UserrCommentsEvent(
 	IdUserCommentImg int NOT NULL PRIMARY KEY Identity(1,1) ,
 	IdUserComment int not null Foreign Key References UserrComments(IdUserComment),
@@ -346,13 +348,15 @@ select * from UserrSubComments
 
 select * from UserrComments
 select * from UserrCommentsVideo
+select * from  UserVideos
 select * from UserrSubComments
 
 
 delete from userrsubcomments where idsubusercomment=20
 
 insert into UserrComments values (1,'VideoCommentText',0,getutcdate(),'Public')
-insert into UserrCommentsVideo values (@@identity,1)
+insert into UserrCommentsVideo values (19,1)
+
 
 insert into UserrSubComments values(1,14,0,'SubCommentText',getutcdate())
 insert into UserrSubComments values(1,14,0,'SubCommentText',getutcdate())
@@ -397,7 +401,12 @@ select * from  LikeVideo
 
 
 
+select * from  UserPost
 
+
+select * from UserrComments
+select * from UserrCommentsPost
+select * from UserrSubComments
 	
 		IF NOT EXISTS (SELECT idusercomment  from --I check if the image has comments with subcomments
 				(
@@ -405,16 +414,16 @@ select * from  LikeVideo
 					UserrComments.idusercomment
 					FROM 
 					UserrComments
-					inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-					inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+					inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+					inner join  UserPost on UserPost.idpost=UserrCommentsPost.idpost
 					inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
 					inner join Userr on Userr.iduser=UserrComments.iduser
 					WHERE 
-					UserImages.Active = 1
+					UserPost.Active = 1
 					AND Userr.Active=1
-					AND UserrCommentsImage.iduserimages=1
+					AND UserrCommentsPost.idpost=1
 
-				) AS commentsubcomentimg
+				) AS commentsubcomentpost
 
 		)
 		BEGIN --if there are no subcomments then list all comments without subcomments
@@ -425,8 +434,8 @@ select * from  LikeVideo
 			UserrComments.likes as likescomment,
 			UserrComments.datepublish as datepublishcomment,
 
-			UserrCommentsImage.idusercommentimg,
-		    UserrCommentsImage.iduserimages,
+			UserrCommentsPost.idusercommentpost,
+		    UserrCommentsPost.idpost,
 
 			0 as idsubusercomment,
 			0 as likessubcomment,
@@ -437,22 +446,24 @@ select * from  LikeVideo
 			'' as namesubcommentuser,
 			'' as nicksubcommentuser,
 			'' as usernamesubcommentuser,
+			'' as imagesubcommentuser,
 
 			Userr.iduser as idcommentuser,
 			Userr.name as namecommentuser,
 			Userr.nick as nickcommentuser,
 			Userr.userrname as usernamecommentuser,
+			Userr.imagee as imagecommentuser,
 
 			0 as withsubcomments
             FROM 
             UserrComments
-            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idpost
 			inner join Userr  on Userr.iduser=UserrComments.iduser
 		      WHERE 
-			UserImages.Active = 1
+			UserPost.Active = 1
 			AND Userr.Active=1
-            AND UserrCommentsImage.iduserimages=1
+            AND UserrCommentsPost.idpost=1
 		END  
 		ELSE 
 		BEGIN --if there are subcomments then query all comments with subcomments
@@ -463,8 +474,8 @@ select * from  LikeVideo
 			UserrComments.likes as likescomment,
 			UserrComments.datepublish as datepublishcomment,
 
-			UserrCommentsImage.idusercommentimg,
-		    UserrCommentsImage.iduserimages,
+			UserrCommentsPost.idusercommentpost,
+		    UserrCommentsPost.idpost,
 
 			UserrSubComments.idsubusercomment as idsubusercomment  ,
 			UserrSubComments.likes as likessubcomment,
@@ -485,16 +496,16 @@ select * from  LikeVideo
 			1 as withsubcomments
             FROM 
             UserrComments
-            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idpost
 			inner join  UserrSubComments on UserrComments.idusercomment=UserrSubComments.idusercomment
 			inner join Userr as Usercomment on Usercomment.iduser=UserrComments.iduser
 			inner join Userr as Usersubcomment on Usersubcomment.iduser=UserrSubComments.iduser
             WHERE 
-			UserImages.Active = 1
+			UserPost.Active = 1
 			AND Usercomment.Active=1
 			AND Usersubcomment.Active=1
-			AND UserrCommentsImage.iduserimages=1
+			AND UserrCommentsPost.idpost=1
 
 			union all
 
@@ -504,33 +515,36 @@ select * from  LikeVideo
 			UserrComments.likes as likescomment,
 			UserrComments.datepublish as datepublishcomment,
 
-			UserrCommentsImage.idusercommentimg,
-		    UserrCommentsImage.iduserimages,
+			UserrCommentsPost.idusercommentpost,
+		    UserrCommentsPost.idpost,
 
 			0 as idsubusercomment,
 			0 as likessubcomment,
 			'' as textsubcomment,
 			0 as datepublishsubcomment,
 
+
 			0 as idsubcommentuser,
 			'' as namesubcommentuser,
 			'' as nicksubcommentuser,
 			'' as usernamesubcommentuser,
+			'' as imagesubcommentuser,
 
 			Userr.iduser as idcommentuser,
 			Userr.name as namecommentuser,
 			Userr.nick as nickcommentuser,
 			Userr.userrname as usernamecommentuser,
-			1 as withsubcomments
+			Userr.imagee as imagecommentuser,
+			0 as withsubcomments
             FROM 
-            UserrComments
-            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
-			inner join Userr on Userr.iduser=UserrComments.iduser
+             UserrComments
+            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idpost
+			inner join Userr  on Userr.iduser=UserrComments.iduser
             WHERE 
-			UserImages.Active = 1
+			UserPost.Active = 1
 			AND Userr.Active=1
-            AND UserrCommentsImage.iduserimages=1
+            AND UserrCommentsPost.idpost=1
 			AND NOT EXISTS
 			(
 				SELECT idsubusercomment,idusercomment FROM UserrSubComments
