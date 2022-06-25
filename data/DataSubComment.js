@@ -491,7 +491,7 @@ class DataSubComment {
                 WHERE 
                 UserVideos.Active = 1
                 AND Userr.Active=1
-                AND UserrCommentsVideo.idvideo=${idvideo}
+                AND UserrCommentsVideo.iduservideos=${idvideo}
 
             ) AS commentsubcomentvideo
 
@@ -585,7 +585,7 @@ class DataSubComment {
         UserrComments.likes as likescomment,
         UserrComments.datepublish as datepublishcomment,
 
-        UserrCommentsVideo.idusercommentvideos,
+        UserrCommentsVideo.idusercommentvideo,
         UserrCommentsVideo.iduservideos,
 
         0 as idsubusercomment,
