@@ -1,6 +1,6 @@
 const { DTOCommentPost } = require("../entity/DTOCommentPost");
 const { Conection } = require("./Connection");
-const { VarChar,Int ,Date} = require("mssql");
+const { VarChar,Int } = require("mssql");
 const { DataUser } = require("./DataUser");
 
 class DataCommentPost {
@@ -219,17 +219,22 @@ class DataCommentPost {
     {
       
             let arraycomment=[];
-              let querysearch=
-              `        
-                   
+            let querysearch=
+              `                   
             SELECT 
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
 			UserrComments.likes as likescomment,
 			UserrComments.datepublish as datepublishcomment,
+
 			UserrCommentsPost.idusercommentpost,
 		    UserrCommentsPost.idpost,
-			Userr.*
+
+			Userr.iduser as idcommentuser,
+            Userr.name as namecommentuser,
+            Userr.nick as nickcommentuser,
+            Userr.userrname as usernamecommentuser,
+            Userr.imagee as imagecommentuser
             FROM 
             UserrComments
             inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
@@ -289,15 +294,21 @@ class DataCommentPost {
       
  static getinformationListPostComment(postcomment, result) {
       
-        postcomment.comment.IdUserComment = result.idusercomment; 
-        postcomment.comment.Textt = result.textcomment; 
-        postcomment.comment.Likes = result.likescomment; 
-        postcomment.comment.DatePublish = result.datepublishcomment; 
+        postcomment.idusercomment = result.idusercomment; 
+        postcomment.textcomment = result.textcomment; 
+        postcomment.likescomment = result.likescomment; 
+        postcomment.datepublishcomment = result.datepublishcomment; 
+
         postcomment.IdUserCommentPost = result.idusercommentpost; 
-        postcomment.post.idpost = result.idpost; 
-        postcomment.post.user = null; 
-        postcomment.post.DateTimePublish = null; 
-        DataUser.getinformationList(postcomment.comment.user,result)
+        postcomment.idpost = result.idpost; 
+
+        
+        postcomment.idcommentuser = result.idcommentuser; 
+        postcomment.namecommentuser = result.namecommentuser; 
+        postcomment.nickcommentuser = result.nickcommentuser; 
+        postcomment.usernamecommentuser = result.usernamecommentuser; 
+        postcomment.imagecommentuser = result.imagecommentuser;
+    
     
     
     }

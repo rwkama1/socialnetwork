@@ -227,28 +227,36 @@ class DataCommentVideo {
 			UserrComments.textt as textcomment,
 			UserrComments.likes as likescomment,
 			UserrComments.datepublish as datepublishcomment,
-			UserrCommentsPost.idusercommentpost,
-		    UserrCommentsPost.idpost,
-			Userr.*
+
+			UserrCommentsVideo.idusercommentvideo,
+		    UserrCommentsVideo.iduservideos,
+
+		
+			Userr.iduser as idcommentuser,
+            Userr.name as namecommentuser,
+            Userr.nick as nickcommentuser,
+            Userr.userrname as usernamecommentuser,
+            Userr.imagee as imagecommentuser
+
             FROM 
             UserrComments
-            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
-			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idusercommentpost
+            inner join UserrCommentsVideo on UserrCommentsVideo.idusercomment = UserrComments.idusercomment
+			inner join  UserVideos on UserVideos.iduservideos=UserrCommentsVideo.idusercommentvideo
 			inner join Userr on Userr.iduser=UserrComments.iduser
             WHERE 
-			UserPost.Active = 1
+			UserVideos.Active = 1
 			AND Userr.Active=1
-            AND UserrCommentsPost.idpost=${idpost} 
+            AND UserrCommentsVideo.iduservideos=${idvideo} 
 
               `;
        
             let pool = await Conection.conection();
             const result = await pool.request()
             .query(querysearch)
-            for (var resultcommentpost of result.recordset) {
-                   let commentpost = new DTOCommentPost(); 
-                    this.getinformationListPostComment(commentpost,resultcommentpost);
-                    arraycomment.push(commentpost);
+            for (var resultcommentvideo of result.recordset) {
+                   let commentvideo = new DTOCommentVideo(); 
+                    this.getinformationListVideoComment(commentvideo, resultcommentvideo);
+                    arraycomment.push(commentvideo);
                  }
            pool.close();
            return arraycomment;
@@ -282,6 +290,27 @@ class DataCommentVideo {
         
     }
  
+    //#endregion
+
+    //#region GetInformation
+
+    static getinformationListVideoComment(commentvideo, result) {
+
+        commentvideo.idusercomment = result.idusercomment; 
+        commentvideo.textcomment = result.textcomment; 
+        commentvideo.likescomment = result.likescomment; 
+        commentvideo.datepublishcomment = result.datepublishcomment; 
+
+        commentvideo.IdUserCommentVideo = result.idusercommentvideo; 
+        commentvideo.iduservideos = result.iduservideos; 
+
+        
+        commentvideo.idcommentuser = result.idcommentuser; 
+        commentvideo.namecommentuser = result.namecommentuser; 
+        commentvideo.nickcommentuser = result.nickcommentuser; 
+        commentvideo.usernamecommentuser = result.usernamecommentuser; 
+        commentvideo.imagecommentuser = result.imagecommentuser;
+    }
     //#endregion
 }
 module.exports = { DataCommentVideo };

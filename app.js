@@ -316,7 +316,7 @@ let userrelation=async()=>
     // await blockUserRelation();
 
     
-//  let getUserRelation = await DataUserRelation.getUserRelation(31,32);
+//  let getUserRelation = await DataUserRelation.getUserRelation(25,1);
 //  if (getUserRelation===-1) {
 //     throw new Error("The user relation does not exists");
 //  }
@@ -1237,16 +1237,16 @@ let CommentImage=async()=>
 //    await deleteCommentImage();
 
 
- async function getsCommentsImage() {
-        let array=await DataCommentImage.getsCommentsImage(1);
-        for (const commentimg of array) {
-            commentimg.DiffDatePublishDateNow()
-            commentimg.showDiffDatePublishDateNow()
-            console.log(commentimg)
-        }
+//  async function getsCommentsImage() {
+//         let array=await DataCommentImage.getsCommentsImage(1);
+//         for (const commentimg of array) {
+//             commentimg.DiffDatePublishDateNow()
+//             commentimg.showDiffDatePublishDateNow()
+//             console.log(commentimg)
+//         }
       
-    }
-     await getsCommentsImage();
+//     }
+//      await getsCommentsImage();
 
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);
@@ -1331,8 +1331,8 @@ let CommentPost=async()=>
 //  async function getsCommentsPost() {
 //         let array=await DataCommentPost.getsCommentsPost(1);
 //         for (const commentpost of array) {
-//             commentpost.comment.DiffDatePublishDateNow()
-//             commentpost.comment.showDiffDatePublishDateNow()
+//             commentpost.DiffDatePublishDateNow()
+//             commentpost.showDiffDatePublishDateNow()
 //             console.log(commentpost);
 //         }     
 //     }
@@ -1414,6 +1414,16 @@ let CommentVideo=async()=>
 //    }
     
 //    await deleteCommentVideo();
+
+//  async function getsCommentsVideo() {
+//         let array=await DataCommentVideo.getsCommentsVideo(1);
+//         for (const commentvideo of array) {
+//             commentvideo.DiffDatePublishDateNow()
+//             commentvideo.showDiffDatePublishDateNow()
+//             console.log(commentvideo);
+//         }     
+//     }
+//    await getsCommentsVideo();
 
 // let NumberOfCommentVideo = await DataCommentVideo.NumberOfCommentVideo(1);
 // console.log(NumberOfCommentVideo);

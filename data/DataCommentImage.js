@@ -298,7 +298,7 @@ class DataCommentImage {
         imagecomment.IdUserComment = result.idusercomment; 
         imagecomment.Textt = result.textcomment; 
         imagecomment.Likes = result.likescomment; 
-        imagecomment.DatePublish = result.datepublishcomment; 
+        imagecomment.datepublishcomment = result.datepublishcomment; 
 
         imagecomment.IdUserCommentImg = result.idusercommentimg; 
         imagecomment.iduserimages = result.iduserimages; 
