@@ -225,15 +225,26 @@ class DataCommentImage {
 			UserrComments.textt as textcomment,
 			UserrComments.likes as likescomment,
 			UserrComments.datepublish as datepublishcomment,
+
 			UserrCommentsImage.idusercommentimg,
 		    UserrCommentsImage.iduserimages,
-			Userr.*
+
+            Userr.iduser as idcommentuser,
+            Userr.name as namecommentuser,
+            Userr.nick as nickcommentuser,
+            Userr.userrname as usernamecommentuser,
+            Userr.imagee as imagecommentuser
+
             FROM 
+
             UserrComments
+
             inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
 			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
 			inner join Userr on Userr.iduser=UserrComments.iduser
+
             WHERE 
+
 			UserImages.Active = 1
 			AND Userr.Active=1
             AND UserrCommentsImage.iduserimages=${idimage} 
@@ -284,16 +295,19 @@ class DataCommentImage {
     //#region GET INFORMATION
     static getinformationListImageComment(imagecomment, result) {
       
-        imagecomment.comment.IdUserComment = result.idusercomment; 
-        imagecomment.comment.Textt = result.textcomment; 
-        imagecomment.comment.Likes = result.likescomment; 
-        imagecomment.comment.DatePublish = result.datepublishcomment; 
+        imagecomment.IdUserComment = result.idusercomment; 
+        imagecomment.Textt = result.textcomment; 
+        imagecomment.Likes = result.likescomment; 
+        imagecomment.DatePublish = result.datepublishcomment; 
+
         imagecomment.IdUserCommentImg = result.idusercommentimg; 
-        imagecomment.image.idphoto = result.iduserimages; 
-        imagecomment.image.user = null; 
-        imagecomment.image.albumphoto = null; 
-        imagecomment.image.DateTimePublish = null; 
-        DataUser.getinformationList(imagecomment.comment.user,result)
+        imagecomment.iduserimages = result.iduserimages; 
+    
+        imagecomment.idcommentuser = result.idcommentuser; 
+        imagecomment.namecommentuser = result.namecommentuser; 
+        imagecomment.nickcommentuser = result.nickcommentuser; 
+        imagecomment.usernamecommentuser = result.usernamecommentuser; 
+        imagecomment.imagecommentuser = result.imagecommentuser;
     
     
     }

@@ -352,6 +352,18 @@ select * from  UserVideos
 select * from UserrSubComments
 
 
+
+
+  `
+            SELECT 
+            COUNT(*) as numbersubcomments
+            FROM 
+            UserrSubComments
+            WHERE 
+            UserrSubComments.idusercomment=14
+
+
+
 delete from userrsubcomments where idsubusercomment=20
 
 insert into UserrComments values (1,'VideoCommentText',0,getutcdate(),'Public')

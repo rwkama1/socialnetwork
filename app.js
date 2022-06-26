@@ -1035,6 +1035,10 @@ let LikeImage=async()=>
 
     // async function deletelikeanimage() {
     
+    //         let loginuserid=2;
+    //         if (loginuserid!=2) {
+    //            throw new Error("Only the logged in user can delete his comment");
+    //          }
     //         let deletelikeanimage = await DataLikeImage.deletelikeanimage(2,1);
     //         if (deletelikeanimage===-1) {
     //             throw new Error("The image does not exists");
@@ -1233,16 +1237,16 @@ let CommentImage=async()=>
 //    await deleteCommentImage();
 
 
-//  async function getsCommentsImage() {
-//         let array=await DataCommentImage.getsCommentsImage(1);
-//         for (const commentimg of array) {
-//             commentimg.comment.DiffDatePublishDateNow()
-//             commentimg.comment.showDiffDatePublishDateNow()
-//             console.log(commentimg)
-//         }
+ async function getsCommentsImage() {
+        let array=await DataCommentImage.getsCommentsImage(1);
+        for (const commentimg of array) {
+            commentimg.DiffDatePublishDateNow()
+            commentimg.showDiffDatePublishDateNow()
+            console.log(commentimg)
+        }
       
-//     }
-//      await getsCommentsImage();
+    }
+     await getsCommentsImage();
 
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);
@@ -1436,6 +1440,46 @@ let SubComment=async()=>
     // }
     //  await addSubComment();
 
+    
+    //    async function updateSubCommentText() {
+    //         let loginuserid=1
+    //         if (loginuserid!=1) {
+    //           throw new Error("Only the logged in user can update his subcomment");
+    //         }
+    //        let updateSubCommentText = await DataSubComment.updateSubCommentText(24,14,1,"SubCommentUpdated");
+    //        if (updateSubCommentText===-1) {
+    //            throw new Error("The comment does not exists");
+    //        }
+    //        if (updateSubCommentText===-2) {
+    //            throw new Error("The user does not exists");
+    //        }
+    //        if (updateSubCommentText===-3) {
+    //         throw new Error("The sub comment does not exists");
+    //         }
+    //         console.log("The sub comment was updated successfully");
+      
+    // }
+    //  await updateSubCommentText();
+
+    
+    //  async function deleteSubComment() {
+    //         let loginuserid=1
+    //         if (loginuserid!=1) {
+    //           throw new Error("Only the logged in user can deleted his subcomment");
+    //         }
+    //        let deleteSubComment = await DataSubComment.deleteSubComment(1,24);
+    //        if (deleteSubComment===-1) {
+    //         throw new Error("The user does not exists");
+    //        }
+    //        if (deleteSubComment===-2) {
+    //         throw new Error("The sub comment does not exists");
+    //        }
+          
+    //         console.log("The sub comment was deleted successfully");
+      
+    // }
+    //  await deleteSubComment();
+
 
 //  async function getIfExistsSubComentsOfCommentsImage() {
 //         let array=await DataSubComment.getIfExistsSubComentsOfCommentsImage(1);
@@ -1482,34 +1526,30 @@ let SubComment=async()=>
 // await getIfExistsSubComentsOfCommentsPost();
 
 
-async function getIfExistsSubComentsOfCommentsVideo() {
-    let array=await DataSubComment.getIfExistsSubComentsOfCommentsVideo(1);
-    for (const subcommentv of array) {
-        if (subcommentv.withsubcomments===1) {     
-            subcommentv.DiffDatePublishDateNowComment()
-            subcommentv.showDiffDatePublishDateNowComment()
+// async function getIfExistsSubComentsOfCommentsVideo() {
+//     let array=await DataSubComment.getIfExistsSubComentsOfCommentsVideo(1);
+//     for (const subcommentv of array) {
+//         if (subcommentv.withsubcomments===1) {     
+//             subcommentv.DiffDatePublishDateNowComment()
+//             subcommentv.showDiffDatePublishDateNowComment()
             
-            subcommentv.DiffDatePublishDateNowSubComment()
-            subcommentv.showDiffDatePublishDateNowSubComment()
+//             subcommentv.DiffDatePublishDateNowSubComment()
+//             subcommentv.showDiffDatePublishDateNowSubComment()
     
-        } else 
-        {
-            subcommentv.DiffDatePublishDateNowComment()
-            subcommentv.showDiffDatePublishDateNowComment()
+//         } else 
+//         {
+//             subcommentv.DiffDatePublishDateNowComment()
+//             subcommentv.showDiffDatePublishDateNowComment()
            
-        }
-        console.log(subcommentv);
+//         }
+//         console.log(subcommentv);
        
-    }     
-}
-await getIfExistsSubComentsOfCommentsVideo();
+//     }     
+// }
+// await getIfExistsSubComentsOfCommentsVideo();
 
-
-
-
-
-//    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
-//    console.log(NumberOfCommentImage);
+//    let NumberOfSubComments = await DataSubComment.NumberOfSubComments(14);
+//    console.log(NumberOfSubComments);
 
 }
 SubComment().then()

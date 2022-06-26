@@ -489,10 +489,11 @@ static getUsersbyBirthDate=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
         {
           
                 let arrayuser=[];
-                let querysearch=`SELECT *
+                let querysearch=`
+                SELECT *
                 FROM Userr
                 WHERE  BirthDate between '${datebirth1}' and '${datebirth2}'
-                       AND Active=1 order by BirthDate desc`;
+                AND Active=1 order by BirthDate desc`;
                 let pool = await Conection.conection();
            
                     const result = await pool.request()
@@ -508,7 +509,7 @@ static getUsersbyBirthDate=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
      
             
          }
-      static getUsersbyDateEntry=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
+static getUsersbyDateEntry=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
     )=>
         {
            

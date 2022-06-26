@@ -214,7 +214,46 @@ class DataCommentVideo {
     //#endregion
     //#region  GETS
       
+    
+    static getsCommentsVideo=async(idvideo)=>
+    {
+      
+            let arraycomment=[];
+              let querysearch=
+              `        
+                   
+            SELECT 
+			UserrComments.idusercomment,
+			UserrComments.textt as textcomment,
+			UserrComments.likes as likescomment,
+			UserrComments.datepublish as datepublishcomment,
+			UserrCommentsPost.idusercommentpost,
+		    UserrCommentsPost.idpost,
+			Userr.*
+            FROM 
+            UserrComments
+            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idusercommentpost
+			inner join Userr on Userr.iduser=UserrComments.iduser
+            WHERE 
+			UserPost.Active = 1
+			AND Userr.Active=1
+            AND UserrCommentsPost.idpost=${idpost} 
 
+              `;
+       
+            let pool = await Conection.conection();
+            const result = await pool.request()
+            .query(querysearch)
+            for (var resultcommentpost of result.recordset) {
+                   let commentpost = new DTOCommentPost(); 
+                    this.getinformationListPostComment(commentpost,resultcommentpost);
+                    arraycomment.push(commentpost);
+                 }
+           pool.close();
+           return arraycomment;
+       
+     }
     //#endregion
     //#region OTHERS
 

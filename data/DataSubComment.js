@@ -1,6 +1,6 @@
 const { DTOSubComment } = require("../entity/DTOSubComment");
 const { Conection } = require("./Connection");
-const { VarChar,Int ,Date} = require("mssql");
+const { VarChar,Int } = require("mssql");
 
 
 class DataSubComment {
@@ -48,96 +48,98 @@ class DataSubComment {
         return resultquery;
         
     }
-
-    static UpdateTextSubCommentImage=async(idcomment,idimage,text)=>
+    static updateSubCommentText=async(idsubcomment,idcomment,iduser,text)=>
     {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=@idusercomment and iduserimages=@iduserimages)
-        BEGIN
-            select -1 as notexistcomment
-        END
+        IF NOT EXISTS ( SELECT * FROM UserrComments WHERE idusercomment=@idusercomment)
+            BEGIN
+                select -1 as notexistcomment
+            END
         ELSE
         BEGIN
-            UPDATE UserrComments set Textt=@text
-            select 1 as commentupdated   
+            IF NOT EXISTS ( SELECT * FROM Userr WHERE iduser=@iduser)
+            BEGIN
+                select -2 as notexistuser
+            END
+            ELSE
+            BEGIN
+                IF NOT EXISTS ( SELECT * FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
+                BEGIN
+                    select -3 as notexistsubcomment
+                END 
+                ELSE
+                BEGIN
+                    UPDATE UserrSubComments set Textt=@text  where idsubusercomment=@idsubusercomment
+                    select 1 as commentupdated   
+                END
+            END
+          
         END
      
         `
              let pool = await Conection.conection();
              const result = await pool.request()
             .input('idusercomment', Int,idcomment)
-            .input('iduserimages', Int, idimage)
+            .input('iduser', Int, iduser)
+            .input('idsubusercomment', Int, idsubcomment)
             .input('text', VarChar, text)  
             .query(queryinsert)
             resultquery = result.recordset[0].notexistcomment;
             if(resultquery===undefined)
             {
-                resultquery = result.recordset[0].commentupdated;
+                resultquery = result.recordset[0].notexistuser;
+                if(resultquery===undefined)
+                {
+                    resultquery = result.recordset[0].notexistsubcomment;
+                    if(resultquery===undefined)
+                    {
+                        resultquery = result.recordset[0].commentupdated;
               
+                    }
+                }
+               
             }
         pool.close();
         return resultquery;
         
     }
-    static deletelikeanvideo=async(iduser,idvideo)=>
+    static deleteSubComment=async(iduser,idsubcomment)=>
     {
         let resultquery;
         let queryupdate = 
         `
-
-        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE IdUserVideos=@iduservideos and Active=1)
-        BEGIN
-            select -1 as notexistvideo
-        END
-        ELSE
-        BEGIN
             IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
-            BEGIN
-             select -2 as notexistuser
-            END
+                BEGIN
+                select -1 as notexistuser
+                END
             ELSE
             BEGIN
-                IF  NOT EXISTS ( SELECT * FROM LikeVideo WHERE IdUser=@iduser and IdUserVideos=@iduservideos)
+                IF NOT EXISTS ( SELECT * FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
                 BEGIN
-                select -3 as noexistlikevideo
-                END
+                    select -2 as notexistsubcomment
+                END 
                 ELSE
                 BEGIN
-                    BEGIN TRANSACTION  
-                        DELETE  FROM  LikeVideo where IdUser=@iduser and IdUserVideos=@iduservideos
-                        UPDATE UserVideos SET Likes = Likes - 1 where IdUserVideos=@iduservideos
-                        select 1 as deletelikeanvideo
-                    IF(@@ERROR > 0)  
-                    BEGIN  
-                        ROLLBACK TRANSACTION  
-                    END  
-                    ELSE  
-                    BEGIN  
-                    COMMIT TRANSACTION  
-                    END
+                    DELETE  FROM  UserrSubComments where IdUser=@iduser and idsubusercomment=@idsubusercomment
+                    select 1 as deletesubcomment               
                 END 
             END
-        END
-    
+      
         `
         let pool = await Conection.conection();
         const result = await pool.request()
        .input('iduser', Int,iduser)
-       .input('iduservideos', Int, idvideo) 
+       .input('idsubusercomment', Int, idsubcomment) 
        .query(queryupdate)
-       resultquery = result.recordset[0].notexistvideo;
+       resultquery = result.recordset[0].notexistuser;
        if(resultquery===undefined)
        {
-         resultquery = result.recordset[0].notexistuser;
+         resultquery = result.recordset[0].notexistsubcomment;
          if(resultquery===undefined)
          {
-           resultquery = result.recordset[0].noexistlikevideo;
-           if(resultquery===undefined)
-           {
-               resultquery = result.recordset[0].deletelikeanvideo;
-            }
+            resultquery = result.recordset[0].deletesubcomment;
          }
        }
         pool.close();
@@ -638,27 +640,23 @@ class DataSubComment {
     //#endregion
     //#region OTHERS
 
-    static  NumberOfLikesVideos=async(idvideo)=>
-    {
-    
-            let query = `
-
+    static  NumberOfSubComments=async(idcomment)=>
+    { 
+            let query = 
+            `
             SELECT 
-            COUNT(*) as numberlikes
+            COUNT(*) as numbersubcomments
             FROM 
-            LikeVideo
-            inner join UserVideos on UserVideos.iduservideos = LikeVideo.iduservideos
+            UserrSubComments
             WHERE 
-            UserVideos.Active = 1
-             AND LikeVideo.iduservideos=${idvideo}
-
+            UserrSubComments.idusercomment=${idcomment}
             `;
         let pool = await Conection.conection();
         const result = await pool.request()
        .query(query)
-       let numberlikes = result.recordset[0].numberlikes;
+        let numbersubcomments = result.recordset[0].numbersubcomments;
         pool.close();
-        return numberlikes;
+        return numbersubcomments;
         
     }
  
