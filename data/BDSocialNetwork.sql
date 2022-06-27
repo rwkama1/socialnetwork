@@ -246,24 +246,60 @@ go
 --drop table UserrRelations
 --drop table Userr
 
+select getutcdate()
+select * from userr
+ where iduser=6
+select * from AlbumUserImages
+select * from AlbumUserVideos
 
-			SELECT 
-			UserrComments.idusercomment,
-			UserrComments.textt as textcomment,
-			UserrComments.likes as likescomment,
-			UserrComments.datepublish as datepublishcomment,
-			UserrSubComments.idsubusercomment,
-			UserrSubComments.likes as likessubcomment,
-			UserrSubComments.textt as textsubcomment,
-			UserrSubComments.datepublish as datepublishsubcomment,
-			Userr.*
-            FROM 
-            UserrComments
-			inner join  UserrSubComments on UserrSubComments.idusercomment=UserrComments.idusercomment
-			inner join Userr on Userr.iduser=UserrComments.iduser
-            WHERE 
-			 Userr.Active=1
-            AND UserrComments.idusercomment=7 
+
+select * from UserrComments
+select * from UserrCommentsPost
+select * from UserrSubComments
+
+
+select * from  LikeImage
+select * from  UserPost
+select * from  UserImages
+select * from UserrCommentsImage
+
+select * from  LikePost
+select * from  LikeVideo
+select * from  LikeComment
+select * from  LikeSubComment
+
+		SELECT
+        UserrComments.idusercomment,
+        UserrComments.textt as textcomment,
+        UserrComments.likes as likescomment,
+        UserrComments.datepublish as datepublishcomment,
+
+        UserrSubComments.idsubusercomment as idsubusercomment  ,
+        UserrSubComments.likes as likessubcomment,
+        UserrSubComments.textt as textsubcomment,
+        UserrSubComments.datepublish as datepublishsubcomment,
+
+        Usersubcomment.iduser as idsubcommentuser,
+        Usersubcomment.name as namesubcommentuser,
+        Usersubcomment.nick as nicksubcommentuser,
+        Usersubcomment.userrname as usernamesubcommentuser,
+        Usersubcomment.imagee as imagesubcommentuser,
+
+        Usercomment.iduser as idcommentuser,
+        Usercomment.name as namecommentuser,
+        Usercomment.nick as nickcommentuser,
+        Usercomment.userrname as usernamecommentuser,
+        Usercomment.imagee as imagecommentuser
+        FROM 
+        UserrComments
+        inner join  UserrSubComments on UserrComments.idusercomment=UserrSubComments.idusercomment
+        inner join Userr as Usercomment on Usercomment.iduser=UserrComments.iduser
+        inner join Userr as Usersubcomment on Usersubcomment.iduser=UserrSubComments.iduser
+        WHERE 
+        Usercomment.Active=1
+        AND Usersubcomment.Active=1
+        AND UserrComments.idusercomment=14
+		AND Usercomment.iduser=1
 
 
      IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=2 and iduserimages=1)
@@ -410,13 +446,13 @@ insert into LikeComment values (9,7)
           Userr.Email, 
           Userr.Imagee 
           FROM 
-          LikeImage 
+          LikePost 
           inner join UserPost on UserPost.idpost = LikePost.idpost 
           inner join Userr on Userr.IdUser = UserPost.IdUser
           WHERE 
           Userr.Active = 1 
           and UserPost.Active = 1 
-          and LikePost.iduser=1
+          and LikePost.iduser=3
     
             UserrSubComments.idusercomment=14
 

@@ -1700,6 +1700,23 @@ let SubComment=async()=>
 // }
 // await getIfExistsSubComentsOfCommentsVideo();
 
+// async function getSubCommentsByUserComment() {
+//     let array=await DataSubComment.getSubCommentsByUserComment(14,1);
+//     for (const subcommentv of array) {
+       
+//             subcommentv.DiffDatePublishDateNowComment()
+//             subcommentv.showDiffDatePublishDateNowComment()
+            
+//             subcommentv.DiffDatePublishDateNowSubComment()
+//             subcommentv.showDiffDatePublishDateNowSubComment()
+    
+        
+//         console.log(subcommentv);
+       
+//     }     
+// }
+// await getSubCommentsByUserComment();
+
 //    let NumberOfSubComments = await DataSubComment.NumberOfSubComments(14);
 //    console.log(NumberOfSubComments);
 

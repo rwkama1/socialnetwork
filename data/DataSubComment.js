@@ -150,7 +150,57 @@ class DataSubComment {
     //#endregion
     //#region GETS 
  
+    static getSubCommentsByUserComment=async(idcomment,iduser)=>//get subcomments according to user comment
+    {
+       let array=[];
+       let query=
+          `
+          SELECT
+          UserrComments.idusercomment,
+          UserrComments.textt as textcomment,
+          UserrComments.likes as likescomment,
+          UserrComments.datepublish as datepublishcomment,
+  
+          UserrSubComments.idsubusercomment as idsubusercomment  ,
+          UserrSubComments.likes as likessubcomment,
+          UserrSubComments.textt as textsubcomment,
+          UserrSubComments.datepublish as datepublishsubcomment,
+  
+          Usersubcomment.iduser as idsubcommentuser,
+          Usersubcomment.name as namesubcommentuser,
+          Usersubcomment.nick as nicksubcommentuser,
+          Usersubcomment.userrname as usernamesubcommentuser,
+          Usersubcomment.imagee as imagesubcommentuser,
+  
+          Usercomment.iduser as idcommentuser,
+          Usercomment.name as namecommentuser,
+          Usercomment.nick as nickcommentuser,
+          Usercomment.userrname as usernamecommentuser,
+          Usercomment.imagee as imagecommentuser
+          FROM 
+          UserrComments
+          inner join  UserrSubComments on UserrComments.idusercomment=UserrSubComments.idusercomment
+          inner join Userr as Usercomment on Usercomment.iduser=UserrComments.iduser
+          inner join Userr as Usersubcomment on Usersubcomment.iduser=UserrSubComments.iduser
+          WHERE 
+          Usercomment.Active=1
+          AND Usersubcomment.Active=1
+          AND UserrComments.idusercomment=${idcomment}
+          AND Usercomment.iduser=${iduser}
 
+          `
+       let pool = await Conection.conection();
+      
+       const result = await pool.request()
+       .query(query)
+       for (var resultsubcomments of result.recordset) {
+          let subcomments = new DTOSubComment(); 
+           this.getInformationSubComment(subcomments,resultsubcomments);
+           array.push(subcomments);
+        }
+        pool.close();
+        return array;
+    }
 
 
     //***************************************************************** */
@@ -749,6 +799,40 @@ class DataSubComment {
 
         subcomment.idusercommentvideo = result.idusercommentvideo; 
         subcomment.iduservideos = result.iduservideos; 
+
+        subcomment.idsubcommentuser = result.idsubcommentuser; 
+        subcomment.namesubcommentuser = result.namesubcommentuser; 
+        subcomment.nicksubcommentuser = result.nicksubcommentuser; 
+        subcomment.usernamesubcommentuser = result.usernamesubcommentuser;
+        subcomment.imagesubcommentuser = result.imagesubcommentuser;  
+
+        
+        subcomment.idcommentuser = result.idcommentuser; 
+        subcomment.namecommentuser = result.namecommentuser; 
+        subcomment.nickcommentuser = result.nickcommentuser; 
+        subcomment.usernamecommentuser = result.usernamecommentuser; 
+        subcomment.imagecommentuser = result.imagecommentuser; 
+
+        subcomment.withsubcomments = result.withsubcomments; 
+       
+
+        
+    }
+
+
+    static getInformationSubComment(subcomment, result) {
+      
+        subcomment.idsubusercomment = result.idsubusercomment; 
+        subcomment.textsubcomment = result.textsubcomment; 
+        subcomment.likessubcomment = result.likessubcomment; 
+        subcomment.datepublishsubcomment = result.datepublishsubcomment; 
+
+        subcomment.idusercomment = result.idusercomment; 
+        subcomment.textcomment = result.textcomment; 
+        subcomment.likescomment = result.likescomment; 
+        subcomment.datepublishcomment = result.datepublishcomment; 
+
+   
 
         subcomment.idsubcommentuser = result.idsubcommentuser; 
         subcomment.namesubcommentuser = result.namesubcommentuser; 
