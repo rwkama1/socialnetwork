@@ -338,28 +338,86 @@ select * from userr
  where iduser=6
 select * from AlbumUserImages
 select * from AlbumUserVideos
-select * from  UserImages
-select * from  UserPost
-select * from UserrCommentsImage
+
 
 select * from UserrComments
 select * from UserrCommentsPost
 select * from UserrSubComments
 
+
+select * from  LikeImage
+select * from  UserPost
+select * from  UserImages
+select * from UserrCommentsImage
+
+select * from  LikePost
+select * from  LikeVideo
+select * from  LikeComment
+select * from  LikeSubComment
+
+  UPDATE UserImages SET Likes = 1 where iduserimages=2
+   UPDATE UserImages SET Likes = 1 where iduserimages=3
+    UPDATE UserImages SET Likes = 1 where iduserimages=4
+	 UPDATE UserImages SET Likes = 1 where iduserimages=5
+	  UPDATE UserImages SET Likes = 1 where iduserimages=6
+	   UPDATE UserImages SET Likes = 1 where iduserimages=7
+	    UPDATE UserImages SET Likes = 1 where iduserimages=8
+		 UPDATE UserImages SET Likes = 1 where iduserimages=9
+
+
+		  UPDATE UserImages SET Visibility ='Public' where iduserimages=1
+		  UPDATE UserImages SET Visibility ='Public' where iduserimages=2
+
+  select * from  UserImages
 select * from UserrComments
 select * from UserrCommentsVideo
 select * from  UserVideos
+
 select * from UserrSubComments
 
+select * from likesubcomment
+
+insert into LikeImage values (3,2)
+insert into LikeImage values (3,3)
+insert into LikeImage values (3,4)
+insert into LikeImage values (3,5)
+insert into LikeImage values (3,6)
+insert into LikeImage values (3,7)
+insert into LikeImage values (3,8)
+insert into LikeImage values (3,9)
 
 
+
+insert into LikeSubComment values (1,21)
+insert into LikeSubComment values (3,21)
+insert into LikeSubComment values (4,21)
+insert into LikeSubComment values (5,21)
+insert into LikeSubComment values (6,21)
+
+insert into LikeComment values (4,7)
+insert into LikeComment values (1,7)
+insert into LikeComment values (5,7)
+insert into LikeComment values (6,7)
+insert into LikeComment values (7,7)
+insert into LikeComment values (8,7)
+insert into LikeComment values (9,7)
 
   
-            SELECT 
-            COUNT(*) as numbersubcomments
-            FROM 
-            UserrSubComments
-            WHERE 
+		 SELECT 
+          UserPost.*, 
+          Userr.Name, 
+          Userr.Nick, 
+          Userr.Email, 
+          Userr.Imagee 
+          FROM 
+          LikeImage 
+          inner join UserPost on UserPost.idpost = LikePost.idpost 
+          inner join Userr on Userr.IdUser = UserPost.IdUser
+          WHERE 
+          Userr.Active = 1 
+          and UserPost.Active = 1 
+          and LikePost.iduser=1
+    
             UserrSubComments.idusercomment=14
 
 
@@ -387,6 +445,8 @@ select * from uservideos
 select * from  LikeImage
 select * from  LikePost
 select * from  LikeVideo
+select * from  LikeComment
+
 
 
 
@@ -411,9 +471,28 @@ select * from  LikeVideo
 
 
 
+select * from  LikeImag
+
+		SELECT 
+         UserImages.*, 
+         AlbumUserImages.Title as AlbumTitle, 
+         Userr.Name, 
+         Userr.Nick, 
+         Userr.Email, 
+         Userr.Imagee 
+         FROM 
+         LikeImage 
+         inner join UserImages on UserImages.iduserimages = LikeImage.iduserimages 
+         inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages  
+         inner join Userr on Userr.IdUser = AlbumUserImages.IdUser
+		 WHERE 
+		  Userr.Active = 1 
+          and AlbumUserImages.Active = 1 
+          and UserImages.Active = 1 
+		  and LikeImage.iduser=3
 
 
-select * from  UserPost
+select * from  UserImages
 
 
 select * from UserrComments

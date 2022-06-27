@@ -688,6 +688,41 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
           return arrayphoto;
     }
 
+    static getImagesByLikeUser=async(iduserlogin)=>//Get all the images that the user gave like
+    {
+      let arrayphoto=[];
+      let querysearch=
+      `
+      SELECT 
+      UserImages.*, 
+      AlbumUserImages.Title as AlbumTitle, 
+      Userr.Name, 
+      Userr.Nick, 
+      Userr.Email, 
+      Userr.Imagee 
+      FROM 
+      LikeImage 
+      inner join UserImages on UserImages.iduserimages = LikeImage.iduserimages 
+      inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages  
+      inner join Userr on Userr.IdUser = AlbumUserImages.IdUser
+      WHERE 
+      Userr.Active = 1 
+      and AlbumUserImages.Active = 1 
+      and UserImages.Active = 1 
+      and LikeImage.iduser=${iduserlogin}
+
+      `
+      let pool = await Conection.conection();
+      const result = await pool.request()      
+      .query(querysearch)
+      for (var p of result.recordset) {
+         let photo = new DTOPhoto();   
+          this.getinformationList(photo,p);
+       arrayphoto.push(photo);
+      }
+     pool.close();
+     return arrayphoto;
+    } 
 //#endregion
 //#region Others
 // static DiffDatePublishDateNow=async(dtophoto)=>

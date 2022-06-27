@@ -632,6 +632,65 @@ static getLikesPostUsers=async(idpost)=>// get all users who liked the post
        pool.close();
        return array;
 }
+
+static getLikesCommentUsers=async(idcomment)=>// get all users who liked the comment
+{
+        let array=[];
+        let querysearch =
+         `     
+       SELECT 
+        Userr.*
+        FROM 
+         Userr
+        inner join LikeComment  on LikeComment.IdUser = Userr.IdUser
+        inner join UserrComments on UserrComments.idusercomment=LikeComment.idusercomment 
+       WHERE 
+        Userr.Active = 1 
+        and LikeComment.idusercomment=${idcomment}
+
+        `  
+        let pool = await Conection.conection();
+        const result = await pool.request()      
+        .query(querysearch)
+        for (var p of result.recordset) {
+           let user = new DTOUser();   
+           this.getinformationList(user,p);
+         array.push(user);
+        }
+     
+       pool.close();
+       return array;
+}
+
+static getLikesSubCommentUsers=async(idsubcomment)=>// get all users who liked the subcomment
+{
+        let array=[];
+        let querysearch =
+         `     
+       SELECT 
+        Userr.*
+        FROM 
+         Userr
+        inner join LikeSubComment  on LikeSubComment.IdUser = Userr.IdUser
+        inner join UserrSubComments on UserrSubComments.idsubusercomment=LikeSubComment.idsubusercomment 
+       WHERE 
+        Userr.Active = 1 
+        and LikeSubComment.idsubusercomment=${idsubcomment}
+
+        `  
+        let pool = await Conection.conection();
+        const result = await pool.request()      
+        .query(querysearch)
+        for (var p of result.recordset) {
+           let user = new DTOUser();   
+           this.getinformationList(user,p);
+         array.push(user);
+        }
+     
+       pool.close();
+       return array;
+}
+
 //#endregion
 //#region Getinformation
  static getinformation(userr, result) {

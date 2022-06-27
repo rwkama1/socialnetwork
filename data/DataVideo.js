@@ -684,6 +684,43 @@ static getVideo=async(idvideo)=>
           return arrayv;
     }
 
+
+    static getVideosByLikeUser=async(iduserlogin)=>//Get all the video that the user gave like
+    {
+      let array=[];
+      let querysearch=
+      `
+      SELECT 
+      UserVideos.*, 
+      AlbumUserVideos.Title as AlbumTitle, 
+      Userr.Name, 
+      Userr.Nick, 
+      Userr.Email, 
+      Userr.Imagee 
+      FROM 
+      LikeVideo 
+      inner join UserVideos on UserVideos.iduservideos = LikeVideo.iduservideos 
+      inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos  
+      inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser
+      WHERE 
+      Userr.Active = 1 
+      and AlbumUserVideos.Active = 1 
+      and UserVideos.Active = 1 
+      and LikeVideo.iduser=${iduserlogin}
+
+      `
+      let pool = await Conection.conection();
+      const result = await pool.request()      
+      .query(querysearch)
+      for (var p of result.recordset) {
+        let vid = new DTOVideo();   
+        this.getinformationList(vid,p);
+        array.push(vid);
+      }
+     pool.close();
+     return array;
+    } 
+
 //#endregion
 //#region  GetInformation
 static  getinformation(video, result) {

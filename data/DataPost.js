@@ -556,6 +556,40 @@ class DataPost {
               pool.close();
               return arrayp;
         }    
+
+
+    static getPostByLikeUser=async(iduserlogin)=>//Get all the posts that the user gave like
+        {
+          let array=[];
+          let querysearch=
+          `
+          SELECT 
+          UserPost.*, 
+          Userr.Name, 
+          Userr.Nick, 
+          Userr.Email, 
+          Userr.Imagee 
+          FROM 
+          LikePost 
+          inner join UserPost on UserPost.idpost = LikePost.idpost 
+          inner join Userr on Userr.IdUser = UserPost.IdUser
+          WHERE 
+          Userr.Active = 1 
+          and UserPost.Active = 1 
+          and LikePost.iduser=${iduserlogin}
+    
+          `
+          let pool = await Conection.conection();
+          const result = await pool.request()      
+          .query(querysearch)
+          for (var p of result.recordset) {
+            let post = new DTOPost();   
+            this.getinformationList(post,p);
+            array.push(post);
+          }
+         pool.close();
+         return array;
+        } 
      //#endregion
       //#region  GetInformation
   static  getinformation(post, result) {

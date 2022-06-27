@@ -4,8 +4,10 @@ const { DataAlbumVideo } = require("./data/DataAlbumVideo");
 const { DataCommentImage } = require("./data/DataCommentImage");
 const { DataCommentPost } = require("./data/DataCommentPost");
 const { DataCommentVideo } = require("./data/DataCommentVideo");
+const { DataLikeComment } = require("./data/DataLikeComment");
 const { DataLikeImage } = require("./data/DataLikeImage");
 const { DataLikePost } = require("./data/DataLikePost");
+const { DataLikeSubComment } = require("./data/DataLikeSubComment");
 const { DataLikeVideo } = require("./data/DataLikeVideo");
 const { DataPhoto } = require("./data/DataPhoto");
 const { DataPhotoPostVideo } = require("./data/DataPhotoPostVideo");
@@ -565,6 +567,21 @@ let images=async()=>
     //  await getImagesMainPage();
 
 
+    //  async function getImagesByLikeUser() {
+
+    //     let array=await DataPhoto.getImagesByLikeUser(3);
+
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+
+    // }
+    //  await getImagesByLikeUser();
+
+
+
 
 
 
@@ -809,6 +826,18 @@ let videos=async()=>
     // }
     // await getVideosMainPage();
 
+    // async function getVideosByLikeUser() {
+    //     let array=await DataVideo.getVideosByLikeUser(1)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+      
+    // }
+    // await getVideosByLikeUser();
+
+
     
    
  }
@@ -952,6 +981,17 @@ let posts=async()=>
     
   // }
   // await getPostMainPage();
+
+//   async function getPostByLikeUser() {
+//       let array=await DataPost.getPostByLikeUser(1)
+//       for (const post of array) {
+//         post.DiffDatePublishDateNow()
+//         post.showDiffDatePublishDateNow()
+//           console.log(post);
+//       }
+    
+//   }
+//   await getPostByLikeUser();
 
 
 
@@ -1165,6 +1205,108 @@ let LikePost=async()=>
 LikePost().then()
 
 //#endregion
+//#region LikeComment
+let LikeComment=async()=>
+{
+//    async function likeancomment() {
+   
+//            let likeancomment = await DataLikeComment.likeancomment(4,7);
+//            if (likeancomment===-1) {
+//                throw new Error("The comment does not exists");
+//            }
+//            if (likeancomment===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (likeancomment===-3) {
+//                throw new Error("The user already liked that comment");
+//            }
+//             console.log("The likeancomment was added successfully");
+      
+//    }
+//    await likeancomment();
+
+//    async function deletelikeancomment() {
+   
+//             let loginuser=4;
+//             if(loginuser!=4)
+//             {
+//                 throw new Error("Only the logged in user can delete his comment");
+//             }
+//            let deletelikeancomment = await DataLikeComment.deletelikeancomment(4,7);
+//            if (deletelikeancomment===-1) {
+//                throw new Error("The comment does not exists");
+//            }
+//            if (deletelikeancomment===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (deletelikeancomment===-3) {
+//                throw new Error("The likecomment does not exists ");
+//            }
+//             console.log("The likecomment was deleted  successfully");
+      
+//    }
+//    await deletelikeancomment();
+
+//    let getLikesCommentUsers = await DataUser.getLikesCommentUsers(7);
+//    console.log(getLikesCommentUsers);
+
+
+}
+LikeComment().then()
+
+//#endregion
+//#region LikeSubComment
+
+let LikeSubComment=async()=>
+{
+//    async function likeansubcomment() {
+   
+//            let likeansubcomment = await DataLikeSubComment.likeansubcomment(5,21);
+//            if (likeansubcomment===-1) {
+//                throw new Error("The sub comment does not exists");
+//            }
+//            if (likeansubcomment===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (likeansubcomment===-3) {
+//                throw new Error("The user already liked that subcomment");
+//            }
+//             console.log("The like sub comment was added successfully");
+      
+//    }
+//    await likeansubcomment();
+
+//    async function deletelikeansubcomment() {
+   
+//             let loginuser=4;
+//             if(loginuser!=4)
+//             {
+//                 throw new Error("Only the logged in user can delete his comment");
+//             }
+//            let deletelikeansubcomment = await DataLikeSubComment.deletelikeansubcomment(5,21);
+//            if (deletelikeansubcomment===-1) {
+//                throw new Error("The subcomment does not exists");
+//            }
+//            if (deletelikeansubcomment===-2) {
+//                throw new Error("The user does not exists");
+//            }
+//            if (deletelikeansubcomment===-3) {
+//                throw new Error("The likesubcomment does not exists ");
+//            }
+//             console.log("The likesubcomment was deleted  successfully");
+      
+//    }
+//    await deletelikeansubcomment();
+
+//    let getLikesCommentUsers = await DataUser.getLikesCommentUsers(7);
+//    console.log(getLikesCommentUsers);
+
+
+}
+LikeSubComment().then()
+
+
+//#endregion    
 //#region CommentImage
 
 let CommentImage=async()=>
