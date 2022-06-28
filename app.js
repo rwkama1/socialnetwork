@@ -1002,16 +1002,19 @@ let posts=async()=>
 
 let postvideoimage=async()=>
  {
-    //     async function getPhotoPostVideoMainPage() {
-    //         let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(3,'')
-    //         for (const post of array) {
-    //             post.DiffDatePublishDateNow()
-    //             post.showDiffDatePublishDateNow()
-    //             console.log(post);
-    //         }
-            
-    //     }
-    //     await getPhotoPostVideoMainPage();
+        // async function getPhotoPostVideoMainPage() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(3,'')
+        //     const sortdatearray = array.sort((a, b) => b.datepublish - a.datepublish)
+        //     //Order by Dates descending
+        //     for (const post of sortdatearray) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+         
+        // }
+      
+        // await getPhotoPostVideoMainPage();
 
         // async function getPhotoPostVideoCountryUser() {
         //     let array=await DataPhotoPostVideo.getPhotoPostVideoCountryUser('USA')
@@ -1723,6 +1726,14 @@ let SubComment=async()=>
 }
 SubComment().then()
 //#endregion
+//#region Messages
+//#region 
+
+
+
+
+
+
 //#region Others
 // let conexion=async()=>
 // {

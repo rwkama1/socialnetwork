@@ -9,14 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rwkama1/RestaurantTS"
+    "url": "https://github.com/rwkama1/socialnetwork"
   },
   "dependencies": {
     "mssql": "8.1.1"
   },
   "keywords": ["backend",
-    "typeScript",
-    "ts",
     "js",
     "javascript",
     "date",
