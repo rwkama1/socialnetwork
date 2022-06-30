@@ -9,6 +9,7 @@ const { DataLikeImage } = require("./data/DataLikeImage");
 const { DataLikePost } = require("./data/DataLikePost");
 const { DataLikeSubComment } = require("./data/DataLikeSubComment");
 const { DataLikeVideo } = require("./data/DataLikeVideo");
+const { DataMessage } = require("./data/DataMessage");
 const { DataPhoto } = require("./data/DataPhoto");
 const { DataPhotoPostVideo } = require("./data/DataPhotoPostVideo");
 const { DataPost } = require("./data/DataPost");
@@ -1727,6 +1728,90 @@ let SubComment=async()=>
 SubComment().then()
 //#endregion
 //#region Messages
+
+let Messages=async()=>
+{
+    // async function addMessage() {
+   
+    //     let userreceived=1;
+    //     let usersender=2;
+    //     if (userreceived===usersender) {
+    //         throw new Error("The sending user cannot be the same as the receiving user");
+    //        }
+    //        let addMessage = await DataMessage.addMessage(userreceived,usersender,"TitleMessage","TextMessage");
+          
+    //        if (addMessage===-1) {
+    //            throw new Error("The user received does not exists");
+    //        }
+    //        if (addMessage===-2) {
+    //            throw new Error("The user sender does not exists");
+    //        }
+    //         console.log("The message was added successfully");
+      
+    // }
+    //  await addMessage();
+
+
+    // async function deleteMessage() {
+   
+    //         let userreceived=1;
+    //         let usersender=2;
+    //         if (userreceived===usersender) {
+    //             throw new Error("The sending user cannot be the same as the receiving user");
+    //            }
+    //            let deleteMessage = await DataMessage.deleteMessage(userreceived,usersender,2);
+              
+    //            if (deleteMessage===-1) {
+    //                throw new Error("The user received does not exists");
+    //            }
+    //            if (deleteMessage===-2) {
+    //                throw new Error("The user sender does not exists");
+    //            }
+    //            if (deleteMessage===-3) {
+    //             throw new Error("The message does not exists");
+    //         }
+    //             console.log("The message was deleted successfully");
+          
+    //     }
+    //     await deleteMessage();
+    
+//  async function getMessagesByUserReceived() {
+//     let array=await DataMessage.getMessagesByUserReceived(1);
+//     for (const subcommentv of array) {
+//         console.log(subcommentv);
+       
+//     }  
+    
+// }
+// await getMessagesByUserReceived();
+
+// async function getSearchNameMessagesByUserReceived() {
+//     let array=await DataMessage.getSearchNameMessagesByUserReceived(1);
+//     for (const subcommentv of array) {
+//         console.log(subcommentv);
+       
+//     }     
+// }
+// await getSearchNameMessagesByUserReceived();
+
+
+
+
+
+// async function getMessagesByUserSender() {
+//     let array=await DataMessage.getMessagesByUserSender(2);
+//     for (const subcommentv of array) {
+//         console.log(subcommentv);
+       
+//     }     
+// }
+// await getMessagesByUserSender();
+
+
+
+}
+Messages().then()
+
 //#region 
 
 

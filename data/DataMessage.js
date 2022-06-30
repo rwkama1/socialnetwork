@@ -1,6 +1,7 @@
 
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
+const { DTOMessage } = require("../entity/DTOMessage");
 
 class DataMessage {
 
@@ -12,32 +13,30 @@ class DataMessage {
 
         let queryinsert = 
         `
-        IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser = @iduserreceived and Active=1 )
+        IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=@iduserreceived and Active=1)
         BEGIN
              select -1 as notexistuserreceived  
         END
         ELSE
         BEGIN
-            IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser=@idusersender and Active=1 )
+            IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=@idusersender and Active=1)
             BEGIN
                 select -2 as notexistusersender 
             END
             ELSE
             BEGIN
-                INSERT  INTO UserrMessage values (@iduserreceived,@idusersender,@title,@text,getutcdate(),false,false)
+                INSERT INTO UserrMessage values (@iduserreceived,@idusersender,@title,@text,getutcdate(),0,0)
                 select 1 insertsuccess
             END
-        END
-     
+        END   
         `
-        let pool = await Conection.conection();
-    
+             let pool = await Conection.conection();
              const result = await pool.request()
              .input('iduserreceived', Int,iduserreceived)
              .input('idusersender', Int,idusersender)
              .input('title', VarChar,title)
-              .input('text', VarChar, text)  
-            .query(queryinsert)
+             .input('text', VarChar, text)  
+             .query(queryinsert)
             resultquery = result.recordset[0].notexistuserreceived;
             if(resultquery===undefined)
             {
@@ -69,14 +68,15 @@ class DataMessage {
             END
             ELSE
             BEGIN
-                IF NOT EXISTS (SELECT *FROM UserrMessage WHERE IdUser=@idusersender )
+                IF NOT EXISTS (SELECT *FROM UserrMessage WHERE IdUserMessages=@IdUserMessages and IdUser=@iduserreceived  
+                    and IdSender=@idusersender  )
                 BEGIN
-                    select -3 as notexistusersender 
+                    select -3 as notexistmessage 
                 END
                 ELSE
                 BEGIN
-                    INSERT  INTO UserrMessage values (@iduserreceived,@idusersender,@title,@text,getutcdate(),false,false)
-                    select 1 insertsuccess
+                    DELETE FROM UserrMessage WHERE IdUserMessages=@IdUserMessages
+                    select 1 deletemessage
                 END
               
             END
@@ -85,9 +85,9 @@ class DataMessage {
         `
         let pool = await Conection.conection();
         const result = await pool.request()
-       .input('iduser', Int,iduser)
-       .input('iduservideos', Int, idvideo) 
-       .input('iduservideos', Int, idvideo) 
+       .input('iduserreceived', Int,iduserreceived)
+       .input('idusersender', Int, idusersender) 
+       .input('IdUserMessages', Int, idmessage) 
        .query(queryupdate)
        resultquery = result.recordset[0].notexistuserreceived;
        if(resultquery===undefined)
@@ -95,10 +95,10 @@ class DataMessage {
          resultquery = result.recordset[0].notexistusersender;
          if(resultquery===undefined)
          {
-           resultquery = result.recordset[0].notexistusersender;
+           resultquery = result.recordset[0].notexistmessage;
            if(resultquery===undefined)
            {
-               resultquery = result.recordset[0].deletelikeanvideo;
+               resultquery = result.recordset[0].deletemessage;
             }
          }
        }
@@ -108,33 +108,185 @@ class DataMessage {
     }
 
     //#endregion
+    //#region  GETS
 
+    static getMessagesByUserReceived=async(iduserlogin)=>
+    {
+        
+        let array=[];
+        let querysearch=
+        `
+        SELECT 
+        Userreceived.iduser as iduserreceived,
+        Userreceived.name as namereceived,
+        Userreceived.nick as nickreceived,
+        Userreceived.userrname as userrnamereceived,
+        Userreceived.imagee as imageereceived,
+  
+        Usersender.iduser as idusersender,
+        Usersender.name as namesender,
+        Usersender.nick as nicksender,
+        Usersender.userrname as userrnamesender,
+        Usersender.imagee as imageesender,
+  
+        UserrMessage.idusermessages,
+        UserrMessage.title,
+        UserrMessage.textt,
+        UserrMessage.dateetime,
+        UserrMessage.seen,
+        UserrMessage.answered
+  
+        FROM 
+        Userr as Userreceived
+        inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+        inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+        WHERE 
+        Usersender.Active=1 and
+        Userreceived.Active=1 and
+        Userreceived.iduser=${iduserlogin}
+        `;
+ 
+      let pool = await Conection.conection();
+      const result = await pool.request()
+      .query(querysearch)
+      for (var recordsetresult of result.recordset) {
+             let message = new DTOMessage(); 
+            this.getInformation(message, recordsetresult);
+            array.push(message);
+           }
+     pool.close();
+     return array;
+    }
+
+    static getSearchNameMessagesByUserReceived=async(iduserlogin,name="")=>
+    {
+        
+        let array=[];
+        let querysearch=
+        `
+        SELECT 
+        Userreceived.iduser as iduserreceived,
+        Userreceived.name as namereceived,
+        Userreceived.nick as nickreceived,
+        Userreceived.userrname as userrnamereceived,
+        Userreceived.imagee as imageereceived,
+  
+        Usersender.iduser as idusersender,
+        Usersender.name as namesender,
+        Usersender.nick as nicksender,
+        Usersender.userrname as userrnamesender,
+        Usersender.imagee as imageesender,
+  
+        UserrMessage.idusermessages,
+        UserrMessage.title,
+        UserrMessage.textt,
+        UserrMessage.dateetime,
+        UserrMessage.seen,
+        UserrMessage.answered
+  
+        FROM 
+        Userr as Userreceived
+        inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+        inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+        WHERE 
+        Usersender.Active=1 and
+        Userreceived.Active=1 and
+        Usersender.name LIKE '%${name}%' and
+        Userreceived.iduser=${iduserlogin}
+        `;
+ 
+      let pool = await Conection.conection();
+      const result = await pool.request()
+      .query(querysearch)
+      for (var recordsetresult of result.recordset) {
+             let message = new DTOMessage(); 
+            this.getInformation(message, recordsetresult);
+            array.push(message);
+           }
+     pool.close();
+     return array;
+    }
+
+    static getMessagesByUserSender=async(iduserlogin)=>
+    {
+        
+        let array=[];
+        let querysearch=
+        `
+        SELECT 
+        Userreceived.iduser as iduserreceived,
+        Userreceived.name as namereceived,
+        Userreceived.nick as nickreceived,
+        Userreceived.userrname as userrnamereceived,
+        Userreceived.imagee as imageereceived,
+  
+        Usersender.iduser as idusersender,
+        Usersender.name as namesender,
+        Usersender.nick as nicksender,
+        Usersender.userrname as userrnamesender,
+        Usersender.imagee as imageesender,
+  
+        UserrMessage.idusermessages,
+        UserrMessage.title,
+        UserrMessage.textt,
+        UserrMessage.dateetime,
+        UserrMessage.seen,
+        UserrMessage.answered
+  
+        FROM 
+        Userr as Userreceived
+        inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+        inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+        WHERE 
+        Usersender.Active=1 and 
+        Userreceived.Active=1 and
+        Usersender.iduser=${iduserlogin}
+        `;
+ 
+      let pool = await Conection.conection();
+      const result = await pool.request()
+      .query(querysearch)
+      for (var recordsetresult of result.recordset) {
+        let message = new DTOMessage(); 
+       this.getInformation(message, recordsetresult);
+       array.push(message);
+      }
+     pool.close();
+     return array;
+    }
+
+        
+    //#endregion
     //#region OTHERS
 
-    static  NumberOfLikesVideos=async(idvideo)=>
-    {
-    
-            let query = `
-
-            SELECT 
-            COUNT(*) as numberlikes
-            FROM 
-            LikeVideo
-            inner join UserVideos on UserVideos.iduservideos = LikeVideo.iduservideos
-            WHERE 
-            UserVideos.Active = 1
-             AND LikeVideo.iduservideos=${idvideo}
-
-            `;
-        let pool = await Conection.conection();
-        const result = await pool.request()
-       .query(query)
-       let numberlikes = result.recordset[0].numberlikes;
-        pool.close();
-        return numberlikes;
-        
-    }
+   
  
+    //#endregion
+
+    //#region  GetInformation
+
+    static getInformation(message, result) {
+
+        message.iduserreceived = result.iduserreceived; 
+        message.namereceived = result.namereceived; 
+        message.nickreceived = result.nickreceived; 
+        message.userrnamereceived = result.userrnamereceived; 
+        message.imageereceived = result.imageereceived;
+
+        message.idusersender = result.idusersender; 
+        message.namesender = result.namesender; 
+        message.nicksender = result.nicksender; 
+        message.userrnamesender = result.userrnamesender; 
+        message.imageesender = result.imageesender; 
+
+        message.idusermessages = result.idusermessages; 
+        message.title = result.title; 
+        message.textt = result.textt; 
+        message.dateetime = result.dateetime; 
+        message.seen = result.seen; 
+        message.answered = result.answered; 
+    }
+
     //#endregion
 }
 module.exports = { DataMessage };

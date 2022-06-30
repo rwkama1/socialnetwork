@@ -1,21 +1,31 @@
-const { DTOUser } = require("./DTOUser");
+
 
 class DTOMessage 
 
 {
   
-    IdUserMessages=0;
+	idusermessages=0;
+	title="";
+	textt="";
+	dateetime=new Date();
+	seen=false;
+	answered=false;
 
-	UserReceived=new DTOUser();
+	 //User Received
 
-	UserSender=new DTOUser();
+     iduserreceived=0;
+     namereceived="";
+     nickreceived="";
+     userrnamereceived="";
+     imageereceived="";
 
-	Textt="";
-	DateeTime=new Date();
-	Seen=false;
-	Answered=false;
+     //User Sender
 
-
+     idusersender=0;
+     namesender="";
+     nicksender="";
+     userrnamesender="";
+     imageesender="";
 
      constructor()
      {

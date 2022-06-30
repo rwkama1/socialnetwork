@@ -216,6 +216,9 @@ CREATE TABLE LikeSubComment(
 )
 go
 
+
+
+
 --drop table LikeSubComment
 --drop table LikeComment
 --drop table LikePost
@@ -256,9 +259,10 @@ select * from AlbumUserVideos
 select * from UserrComments
 select * from UserrCommentsPost
 select * from UserrSubComments
+select * from UserrMessage
 
-
-select * from  LikeImage
+select getutcdate()
+ elect * from  LikeImage
 select * from  UserPost
 select * from  UserImages
 select * from UserrCommentsImage
@@ -300,6 +304,27 @@ select * from  LikeSubComment
         AND Usersubcomment.Active=1
         AND UserrComments.idusercomment=14
 		AND Usercomment.iduser=1
+
+
+		 IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=2 and Active=1)
+        BEGIN
+             select -1 as notexistuserreceived  
+        END
+        ELSE
+        BEGIN
+            IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=1 and Active=1)
+            BEGIN
+                select -2 as notexistusersender 
+            END
+            ELSE
+            BEGIN
+                INSERT INTO UserrMessage values (12,'','',getutcdate(),false,false)
+                select 1 insertsuccess
+            END
+        END   
+
+
+
 
 
      IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=2 and iduserimages=1)
@@ -438,10 +463,63 @@ insert into LikeComment values (7,7)
 insert into LikeComment values (8,7)
 insert into LikeComment values (9,7)
 
+
+select * from userr
+select * from userrmessage
+select * from userrmesage
+
+
+
+insert into UserrMessage values (1,3,'TitleMessage1','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,4,'TitleMessage2','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,5,'TitleMessage3','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,6,'TitleMessage4','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,7,'TitleMessage5','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,8,'TitleMessage6','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,9,'TitleMessage7','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,10,'TitleMessage8','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,11,'TitleMessage9','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,13,'TitleMessage','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,12,'TitleMessage','Text',getutcdate(),0,0)
+insert into UserrMessage values (1,24,'TitleMessage','Text',getutcdate(),0,0)
+
+
+
+	  SELECT 
+	  Userreceived.iduser as iduserreceived,
+	  Userreceived.name as namereceived,
+	  Userreceived.nick as nickreceived,
+	  Userreceived.userrname as userrnamereceived,
+	  Userreceived.imagee as imageereceived,
+
+	  Usersender.iduser as idusersender,
+	  Usersender.name as namesender,
+	  Usersender.nick as nicksender,
+	  Usersender.userrname as userrnamesender,
+	  Usersender.imagee as imageesender,
+
+	  UserrMessage.idusermessages,
+	  UserrMessage.title,
+	  UserrMessage.textt,
+	  UserrMessage.dateetime,
+	  UserrMessage.seen,
+	  UserrMessage.answered
+
+      FROM 
+      Userr as Userreceived
+      inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+	  inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+      WHERE 
+	   Usersender.Active=1 and
+       Userreceived.Active=1 and
+	    Usersender.name LIKE '%%'  and
+      Userreceived.iduser=1
+
   
 		 SELECT 
           UserPost.*, 
           Userr.Name, 
+
           Userr.Nick, 
           Userr.Email, 
           Userr.Imagee 
