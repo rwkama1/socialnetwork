@@ -29,6 +29,7 @@ CREATE TABLE Userr(
 	UrlTwitter varchar(200)  NULL,
 	UrlInstagram varchar(200)  NULL,
 	UrlLinkedin varchar(200)  NULL,
+	Coverphoto varchar(200)  NULL,
 	Visibility varchar(20) NULL
 ) 
 go
@@ -249,6 +250,9 @@ go
 --drop table UserrRelations
 --drop table Userr
 
+
+
+
 select getutcdate()
 select * from userr
  where iduser=6
@@ -262,7 +266,7 @@ select * from UserrSubComments
 select * from UserrMessage
 
 select getutcdate()
- elect * from  LikeImage
+ select * from  LikeImage
 select * from  UserPost
 select * from  UserImages
 select * from UserrCommentsImage
@@ -272,55 +276,78 @@ select * from  LikeVideo
 select * from  LikeComment
 select * from  LikeSubComment
 
-		SELECT
-        UserrComments.idusercomment,
-        UserrComments.textt as textcomment,
-        UserrComments.likes as likescomment,
-        UserrComments.datepublish as datepublishcomment,
 
-        UserrSubComments.idsubusercomment as idsubusercomment  ,
-        UserrSubComments.likes as likessubcomment,
-        UserrSubComments.textt as textsubcomment,
-        UserrSubComments.datepublish as datepublishsubcomment,
-
-        Usersubcomment.iduser as idsubcommentuser,
-        Usersubcomment.name as namesubcommentuser,
-        Usersubcomment.nick as nicksubcommentuser,
-        Usersubcomment.userrname as usernamesubcommentuser,
-        Usersubcomment.imagee as imagesubcommentuser,
-
-        Usercomment.iduser as idcommentuser,
-        Usercomment.name as namecommentuser,
-        Usercomment.nick as nickcommentuser,
-        Usercomment.userrname as usernamecommentuser,
-        Usercomment.imagee as imagecommentuser
-        FROM 
-        UserrComments
-        inner join  UserrSubComments on UserrComments.idusercomment=UserrSubComments.idusercomment
-        inner join Userr as Usercomment on Usercomment.iduser=UserrComments.iduser
-        inner join Userr as Usersubcomment on Usersubcomment.iduser=UserrSubComments.iduser
-        WHERE 
-        Usercomment.Active=1
-        AND Usersubcomment.Active=1
-        AND UserrComments.idusercomment=14
-		AND Usercomment.iduser=1
+ALTER TABLE userr add
+Coverphoto varchar(200)  NULL
 
 
-		 IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=2 and Active=1)
+
+		IF NOT EXISTS 
+		(
+				SELECT 
+				Userreceived.iduser as iduserreceived,
+				Userreceived.name as namereceived,
+				Userreceived.nick as nickreceived,
+				Userreceived.userrname as userrnamereceived,
+				Userreceived.imagee as imageereceived,
+  
+				Usersender.iduser as idusersender,
+				Usersender.name as namesender,
+				Usersender.nick as nicksender,
+				Usersender.userrname as userrnamesender,
+				Usersender.imagee as imageesender,
+  
+				UserrMessage.idusermessages,
+				UserrMessage.title,
+				UserrMessage.textt,
+				UserrMessage.dateetime,
+				UserrMessage.seen,
+				UserrMessage.answered
+  
+				FROM 
+				Userr as Userreceived
+				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+				WHERE 
+				Usersender.Active=1 and
+				Userreceived.Active=1 and 
+				UserrMessage.idusermessages=1
+		)
         BEGIN
-             select -1 as notexistuserreceived  
+             select -1 as notexistmessage  
         END
         ELSE
         BEGIN
-            IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=1 and Active=1)
-            BEGIN
-                select -2 as notexistusersender 
-            END
-            ELSE
-            BEGIN
-                INSERT INTO UserrMessage values (12,'','',getutcdate(),false,false)
-                select 1 insertsuccess
-            END
+				 SELECT 
+				Userreceived.iduser as iduserreceived,
+				Userreceived.name as namereceived,
+				Userreceived.nick as nickreceived,
+				Userreceived.userrname as userrnamereceived,
+				Userreceived.imagee as imageereceived,
+  
+				Usersender.iduser as idusersender,
+				Usersender.name as namesender,
+				Usersender.nick as nicksender,
+				Usersender.userrname as userrnamesender,
+				Usersender.imagee as imageesender,
+  
+				UserrMessage.idusermessages,
+				UserrMessage.title,
+				UserrMessage.textt,
+				UserrMessage.dateetime,
+				UserrMessage.seen,
+				UserrMessage.answered
+  
+				FROM 
+				Userr as Userreceived
+				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+				WHERE 
+				Usersender.Active=1 and
+				Userreceived.Active=1 and 
+				UserrMessage.idusermessages=1
+
+				UPDATE UserrMessage set seen=1 where idusermessages=1
         END   
 
 
@@ -416,7 +443,7 @@ select * from  LikeVideo
 select * from  LikeComment
 select * from  LikeSubComment
 
-  UPDATE UserImages SET Likes = 1 where iduserimages=2
+  UPDATE Userr SET Coverphoto = ''
    UPDATE UserImages SET Likes = 1 where iduserimages=3
     UPDATE UserImages SET Likes = 1 where iduserimages=4
 	 UPDATE UserImages SET Likes = 1 where iduserimages=5
@@ -468,7 +495,36 @@ select * from userr
 select * from userrmessage
 select * from userrmesage
 
-
+  let array=[];
+        let querysearch=
+        `
+        SELECT 
+        Userreceived.iduser as iduserreceived,
+        Userreceived.name as namereceived,
+        Userreceived.nick as nickreceived,
+        Userreceived.userrname as userrnamereceived,
+        Userreceived.imagee as imageereceived,
+  
+        Usersender.iduser as idusersender,
+        Usersender.name as namesender,
+        Usersender.nick as nicksender,
+        Usersender.userrname as userrnamesender,
+        Usersender.imagee as imageesender,
+  
+        UserrMessage.idusermessages,
+        UserrMessage.title,
+        UserrMessage.textt,
+        UserrMessage.dateetime,
+        UserrMessage.seen,
+        UserrMessage.answered
+  
+        FROM 
+        Userr as Userreceived
+        inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+        inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+        WHERE 
+        Usersender.Active=1 and
+        Userreceived.Active=1 
 
 insert into UserrMessage values (1,3,'TitleMessage1','Text',getutcdate(),0,0)
 insert into UserrMessage values (1,4,'TitleMessage2','Text',getutcdate(),0,0)
@@ -482,6 +538,38 @@ insert into UserrMessage values (1,11,'TitleMessage9','Text',getutcdate(),0,0)
 insert into UserrMessage values (1,13,'TitleMessage','Text',getutcdate(),0,0)
 insert into UserrMessage values (1,12,'TitleMessage','Text',getutcdate(),0,0)
 insert into UserrMessage values (1,24,'TitleMessage','Text',getutcdate(),0,0)
+
+
+
+ SELECT 
+        Userreceived.iduser as iduserreceived,
+        Userreceived.name as namereceived,
+        Userreceived.nick as nickreceived,
+        Userreceived.userrname as userrnamereceived,
+        Userreceived.imagee as imageereceived,
+  
+        Usersender.iduser as idusersender,
+        Usersender.name as namesender,
+        Usersender.nick as nicksender,
+        Usersender.userrname as userrnamesender,
+        Usersender.imagee as imageesender,
+  
+        UserrMessage.idusermessages,
+        UserrMessage.title,
+        UserrMessage.textt,
+        UserrMessage.dateetime,
+        UserrMessage.seen,
+        UserrMessage.answered
+  
+        FROM 
+        Userr as Userreceived
+        inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+        inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+        WHERE 
+        Usersender.Active=1 and
+        Userreceived.Active=1 
+
+
 
 
 

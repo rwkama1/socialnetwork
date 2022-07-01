@@ -28,6 +28,8 @@
      urlfacebook = "";  
     image = "";
     visibility = "";
+    coverphoto = "";
+    
     
  
 //#endregion

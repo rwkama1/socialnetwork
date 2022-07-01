@@ -110,6 +110,183 @@ class DataMessage {
     //#endregion
     //#region  GETS
 
+    static getMessage=async(idmessage)=>
+    {
+        
+        let resultquery;
+        let querysearch=
+        `
+        IF NOT EXISTS 
+		(
+				SELECT 
+				Userreceived.iduser as iduserreceived,
+				Userreceived.name as namereceived,
+				Userreceived.nick as nickreceived,
+				Userreceived.userrname as userrnamereceived,
+				Userreceived.imagee as imageereceived,
+  
+				Usersender.iduser as idusersender,
+				Usersender.name as namesender,
+				Usersender.nick as nicksender,
+				Usersender.userrname as userrnamesender,
+				Usersender.imagee as imageesender,
+  
+				UserrMessage.idusermessages,
+				UserrMessage.title,
+				UserrMessage.textt,
+				UserrMessage.dateetime,
+				UserrMessage.seen,
+				UserrMessage.answered
+  
+				FROM 
+				Userr as Userreceived
+				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+				WHERE 
+				Usersender.Active=1 and
+				Userreceived.Active=1 and 
+				UserrMessage.idusermessages=${idmessage}
+		)
+        BEGIN
+             select -1 as notexistmessage  
+        END
+        ELSE
+        BEGIN
+				 SELECT 
+				Userreceived.iduser as iduserreceived,
+				Userreceived.name as namereceived,
+				Userreceived.nick as nickreceived,
+				Userreceived.userrname as userrnamereceived,
+				Userreceived.imagee as imageereceived,
+  
+				Usersender.iduser as idusersender,
+				Usersender.name as namesender,
+				Usersender.nick as nicksender,
+				Usersender.userrname as userrnamesender,
+				Usersender.imagee as imageesender,
+  
+				UserrMessage.idusermessages,
+				UserrMessage.title,
+				UserrMessage.textt,
+				UserrMessage.dateetime,
+				UserrMessage.seen,
+				UserrMessage.answered
+  
+				FROM 
+				Userr as Userreceived
+				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+				WHERE 
+				Usersender.Active=1 and
+				Userreceived.Active=1 and 
+				UserrMessage.idusermessages=${idmessage}
+        END   
+        `;
+ 
+      let pool = await Conection.conection();
+      const result = await pool.request()
+      .query(querysearch)
+      resultquery = result.recordset[0].notexistmessage; 
+        if (resultquery===undefined) {
+             let message = new DTOMessage(); 
+            this.getInformation(message, result.recordset[0]);
+            resultquery=message
+           }
+     pool.close();
+     return resultquery;
+    }
+
+    static getMessageMarkRead=async(idmessage)=>
+    {
+        
+        let resultquery;
+        let querysearch=
+        `
+        IF NOT EXISTS 
+		(
+				SELECT 
+				Userreceived.iduser as iduserreceived,
+				Userreceived.name as namereceived,
+				Userreceived.nick as nickreceived,
+				Userreceived.userrname as userrnamereceived,
+				Userreceived.imagee as imageereceived,
+  
+				Usersender.iduser as idusersender,
+				Usersender.name as namesender,
+				Usersender.nick as nicksender,
+				Usersender.userrname as userrnamesender,
+				Usersender.imagee as imageesender,
+  
+				UserrMessage.idusermessages,
+				UserrMessage.title,
+				UserrMessage.textt,
+				UserrMessage.dateetime,
+				UserrMessage.seen,
+				UserrMessage.answered
+  
+				FROM 
+				Userr as Userreceived
+				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+				WHERE 
+				Usersender.Active=1 and
+				Userreceived.Active=1 and 
+				UserrMessage.idusermessages=${idmessage}
+		)
+        BEGIN
+             select -1 as notexistmessage  
+        END
+        ELSE
+        BEGIN
+				 SELECT 
+				Userreceived.iduser as iduserreceived,
+				Userreceived.name as namereceived,
+				Userreceived.nick as nickreceived,
+				Userreceived.userrname as userrnamereceived,
+				Userreceived.imagee as imageereceived,
+  
+				Usersender.iduser as idusersender,
+				Usersender.name as namesender,
+				Usersender.nick as nicksender,
+				Usersender.userrname as userrnamesender,
+				Usersender.imagee as imageesender,
+  
+				UserrMessage.idusermessages,
+				UserrMessage.title,
+				UserrMessage.textt,
+				UserrMessage.dateetime,
+				UserrMessage.seen,
+				UserrMessage.answered
+  
+				FROM 
+				Userr as Userreceived
+				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
+				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
+				WHERE 
+				Usersender.Active=1 and
+				Userreceived.Active=1 and 
+				UserrMessage.idusermessages=${idmessage}
+
+				UPDATE UserrMessage set seen=1 where idusermessages=${idmessage}
+        END   
+
+        `;
+ 
+        let pool = await Conection.conection();
+        const result = await pool.request()
+        .query(querysearch)
+        resultquery = result.recordset[0].notexistmessage; 
+          if (resultquery===undefined) {
+               let message = new DTOMessage(); 
+              this.getInformation(message, result.recordset[0]);
+              resultquery=message
+             }
+       pool.close();
+       return resultquery;
+    }
+
+//********************************************** */
+
     static getMessagesByUserReceived=async(iduserlogin)=>
     {
         
@@ -193,6 +370,7 @@ class DataMessage {
         Userreceived.Active=1 and
         Usersender.name LIKE '%${name}%' and
         Userreceived.iduser=${iduserlogin}
+        ORDER BY dateetime desc
         `;
  
       let pool = await Conection.conection();
@@ -257,11 +435,7 @@ class DataMessage {
 
         
     //#endregion
-    //#region OTHERS
-
-   
  
-    //#endregion
 
     //#region  GetInformation
 

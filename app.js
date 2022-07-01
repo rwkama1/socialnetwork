@@ -165,6 +165,19 @@ let usermaintenance=async()=>
 
     // await insertProfilePicture();
 
+
+    // async function insertCoverPicture() {
+
+    //     let insertCoverPicture = await DataUser.insertCoverPicture('Imageurl', 'UserName70');
+    //      if (insertCoverPicture===-1)
+    //       {
+    //         throw new Error("The user name does not exists");
+    //       }
+    //         console.log("The Cover Imagee was added successfully");
+    // }
+
+    // await insertCoverPicture();
+
     // async function deleteProfilePicture() {
 
     //     let deleteProfilePicture = await DataUser.deleteProfilePicture('UserName2');
@@ -179,6 +192,20 @@ let usermaintenance=async()=>
 
     // await deleteProfilePicture();
 
+
+    //   async function deleteCoverPicture() {
+
+    //     let deleteCoverPicture = await DataUser.deleteCoverPicture('UserName70');
+    //      if (deleteCoverPicture===-1)
+    //         {
+    //         throw new Error("The user name does not exists");
+    //       }
+
+    //         console.log("The Cover Imagee was deleted successfully");
+
+    //  }
+
+    // await deleteCoverPicture();
 
 
 
@@ -210,7 +237,7 @@ let usermaintenance=async()=>
 // let getusers = await DataUser.getUsers();
 // console.log(getusers);
 
-//   let getUsersSearchs = await DataUser.getUsersSearchs("4");
+//   let getUsersSearchs = await DataUser.getUsersSearchs("70");
 // console.log(getUsersSearchs);
 
 //   let getUsersbyBirthDate = await DataUser.getUsersbyBirthDate(
@@ -1775,6 +1802,7 @@ let Messages=async()=>
     //     }
     //     await deleteMessage();
     
+
 //  async function getMessagesByUserReceived() {
 //     let array=await DataMessage.getMessagesByUserReceived(1);
 //     for (const subcommentv of array) {
@@ -1784,6 +1812,8 @@ let Messages=async()=>
     
 // }
 // await getMessagesByUserReceived();
+
+
 
 // async function getSearchNameMessagesByUserReceived() {
 //     let array=await DataMessage.getSearchNameMessagesByUserReceived(1);
@@ -1807,12 +1837,42 @@ let Messages=async()=>
 // }
 // await getMessagesByUserSender();
 
+// async function getMessage() {
+//     let getMessage=await DataMessage.getMessage(1);
+//     if (getMessage===-1) 
+//     {
+//         throw new Error("The message does not exists ");    
+//     }
+//      console.log(getMessage);
+       
+        
+// }
+// await getMessage();
+
+
+async function getMessageMarkRead() {
+    let getMessageMarkRead=await DataMessage.getMessageMarkRead(3);
+    if (getMessageMarkRead===-1) 
+    {
+        throw new Error("The message does not exists ");    
+    }
+     console.log(getMessageMarkRead);
+       
+        
+}
+await getMessageMarkRead();
+
+
+
+
+
+
 
 
 }
 Messages().then()
 
-//#region 
+//#endregion 
 
 
 

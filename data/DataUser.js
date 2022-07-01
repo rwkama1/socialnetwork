@@ -1,44 +1,45 @@
 const { Conection } = require("./Connection");
-
 const { VarChar,Int ,Date} = require("mssql");
 const { DTOUser } = require("../entity/DTOUser");
 class DataUser {
 //#region CRUD
- static  registerUser=async(dtuser)=>
-{
-    let resultquery=0;
-    let queryinsert = `
-    IF EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName and Active=1)
-    BEGIN
-    select -1 as existusername
-    END
-    else
-    begin
-        insert into Userr values (@Name,@Nick,@UserrName,@Passwordd,@Hashh,@BirthDate,getutcdate(),1,@Email,'','','','','','','','',@Country,'','','','','','','Public')
-        select 1 insertsuccess
-    end
-    `
-    let pool = await Conection.conection();
-    const result = await pool.request()
-        .input('Name', VarChar, dtuser.name)
-        .input('Nick', VarChar, dtuser.nick)
-        .input('UserrName', VarChar, dtuser.userrname)
-        .input('Passwordd', VarChar, dtuser.password)
-        .input('Hashh', VarChar, dtuser.hash)
-        .input('BirthDate', Date, dtuser.datebirth)
-        .input('Email', VarChar, dtuser.email)
-        .input('Country', VarChar, dtuser.country)
-        .query(queryinsert)
-        resultquery = result.recordset[0].existusername;
-         if(resultquery===undefined)
-         {
-            resultquery = result.recordset[0].insertsuccess;
-         }
-        pool.close();
-    return resultquery;
-    
-}
- static  deleteUser=async(iduser)=>
+
+    static  registerUser=async(dtuser)=>
+    {
+        let resultquery=0;
+        let queryinsert = `
+        IF EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName and Active=1)
+        BEGIN
+        select -1 as existusername
+        END
+        else
+        begin
+            insert into Userr values (@Name,@Nick,@UserrName,@Passwordd,@Hashh,@BirthDate,getutcdate(),1,@Email,'','','','','','','','',@Country,'','','','','','','','Public')
+            select 1 insertsuccess
+        end
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+            .input('Name', VarChar, dtuser.name)
+            .input('Nick', VarChar, dtuser.nick)
+            .input('UserrName', VarChar, dtuser.userrname)
+            .input('Passwordd', VarChar, dtuser.password)
+            .input('Hashh', VarChar, dtuser.hash)
+            .input('BirthDate', Date, dtuser.datebirth)
+            .input('Email', VarChar, dtuser.email)
+            .input('Country', VarChar, dtuser.country)
+
+            .query(queryinsert)
+            resultquery = result.recordset[0].existusername;
+            if(resultquery===undefined)
+            {
+                resultquery = result.recordset[0].insertsuccess;
+            }
+            pool.close();
+        return resultquery;
+        
+    }
+    static  deleteUser=async(iduser)=>
     {
         let resultquery=0;
         let deletequery = `
@@ -235,6 +236,7 @@ class DataUser {
         return resultquery;    
         
     }
+
      static insertProfilePicture=async(imagee,username)=>
     {  
         let resultquery=0;
@@ -264,6 +266,37 @@ class DataUser {
         return resultquery;    
         
     }
+
+    static insertCoverPicture=async(imagee,username)=>
+    {  
+        let resultquery=0;
+        let queryupdate = `
+        IF NOT EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName and Active=1)
+        BEGIN
+            select -1 as notexistusername
+        END
+        ELSE
+        BEGIN
+            Update Userr Set Coverphoto=@Imagee where UserrName=@UserrName
+            select 1 as updatesuccess
+        END
+        `
+ 
+        let pool = await Conection.conection();
+
+        const result = await pool.request()    
+            .input('Imagee', VarChar, imagee)
+            .input('UserrName', VarChar, username)
+            .query(queryupdate)
+            resultquery = result.recordset[0].notexistusername;
+            if (resultquery===undefined) {
+                resultquery = result.recordset[0].updatesuccess;
+            }
+        pool.close();
+        return resultquery;    
+        
+    }
+
      static deleteProfilePicture=async(username)=>
     {  
         let resultquery=0;
@@ -290,6 +323,34 @@ class DataUser {
         pool.close();
         return resultquery;    
         
+    }
+
+    static deleteCoverPicture=async(username)=>
+        {  
+            let resultquery=0;
+            let queryupdate = `
+            IF NOT EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName and Active=1)
+            BEGIN
+            select -1 as notexistusername
+            END
+            ELSE
+            BEGIN
+                Update Userr Set Coverphoto='' where UserrName=@UserrName
+                select 1 as deleteprofilesuccess
+            END
+            `
+        
+            let pool = await Conection.conection();
+            const result = await pool.request()    
+                .input('UserrName', VarChar, username)
+                .query(queryupdate)
+                resultquery = result.recordset[0].notexistusername;
+                if (resultquery===undefined) {
+                    resultquery = result.recordset[0].deleteprofilesuccess;
+                }
+            pool.close();
+            return resultquery;    
+            
     }
   
       //#region Exists
@@ -448,7 +509,7 @@ class DataUser {
 
       
    }
- static getUsersSearchs=async(name="",nick="",userrname="",email="",website="",
+    static getUsersSearchs=async(name="",nick="",userrname="",email="",website="",
 ocupation="",city="",country="")=>
    {
      
@@ -468,7 +529,7 @@ ocupation="",city="",country="")=>
            AND City LIKE '%${city}%' 
            AND Country LIKE '%${country}%' 
            AND Active = 1 
-         order by 
+           order by 
            iduser desc         
                   `;
            let pool = await Conection.conection();
@@ -482,9 +543,8 @@ ocupation="",city="",country="")=>
            }  
           pool.close();
           return arrayuser;  
-    }
-     
-static getUsersbyBirthDate=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
+    }     
+    static getUsersbyBirthDate=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
     )=>
         {
           
@@ -509,7 +569,7 @@ static getUsersbyBirthDate=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
      
             
          }
-static getUsersbyDateEntry=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
+    static getUsersbyDateEntry=async(datebirth1="1700-01-01",datebirth2="2200-01-01"
     )=>
         {
            
@@ -602,6 +662,8 @@ static getLikesVideoUsers=async(idvideo)=>// get all users who liked the video
        pool.close();
        return array;
 }
+
+
 
 static getLikesPostUsers=async(idpost)=>// get all users who liked the post
 {
@@ -720,6 +782,7 @@ static getLikesSubCommentUsers=async(idsubcomment)=>// get all users who liked t
     userr.urllinkedin= result.recordset[0].UrlLinkedin;
     userr.urltwitter= result.recordset[0].UrlTwitter;
     userr.dateentry= result.recordset[0].DateEntry;
+    userr.coverphoto= result.recordset[0].Coverphoto;
 }
  static getinformationList(userr,u) {
 
@@ -749,6 +812,7 @@ static getLikesSubCommentUsers=async(idsubcomment)=>// get all users who liked t
    userr.urllinkedin= u.UrlLinkedin;
    userr.urltwitter= u.UrlTwitter;
    userr.dateentry= u.DateEntry;
+   userr.coverphoto= u.Coverphoto;
 }
 //#endregion
 }
