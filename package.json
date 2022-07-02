@@ -1,5 +1,5 @@
 {
-  "name": "socialnetwork",
+  "name": "socialnetworkk",
   "version": "1.0.0",
   "description": "This package contains a backend of what would be the logic of a social network software, the architecture used is made in 2 layers",
   "main": "app.js",
