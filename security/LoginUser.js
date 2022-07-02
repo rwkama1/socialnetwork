@@ -1,5 +1,5 @@
 const { DataUser } = require("../data/DataUser");
-const { DTOUser } = require("../entity/DTOUser");
+
 const { HashPassword } = require("./hashPassword");
 
  class LoginUser

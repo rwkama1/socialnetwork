@@ -106,7 +106,36 @@ class DataMessage {
         return resultquery;
         
     }
-
+    static markallMessagesasreadbyUser=async(iduserlogin)=>
+    {
+        let resultquery;
+        let queryupdate = 
+        `
+        IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser=@iduserlogin and Active=1 )
+        BEGIN
+             select -1 as notexistuserreceived  
+        END
+        ELSE
+        BEGIN
+            UPDATE UserrMessage SET seen=1 WHERE IdUser=@iduserlogin
+            select 1 updatemessage      
+        END
+    
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+       .input('iduserlogin', Int,iduserlogin)
+       .query(queryupdate)
+       resultquery = result.recordset[0].notexistuserreceived;
+       if(resultquery===undefined)
+       {
+         resultquery = result.recordset[0].updatemessage;
+         
+       }
+        pool.close();
+        return resultquery;
+        
+    }
     //#endregion
     //#region  GETS
 
@@ -269,7 +298,6 @@ class DataMessage {
 
 				UPDATE UserrMessage set seen=1 where idusermessages=${idmessage}
         END   
-
         `;
  
         let pool = await Conection.conection();
@@ -284,6 +312,8 @@ class DataMessage {
        pool.close();
        return resultquery;
     }
+
+  
 
 //********************************************** */
 
@@ -321,6 +351,8 @@ class DataMessage {
         Usersender.Active=1 and
         Userreceived.Active=1 and
         Userreceived.iduser=${iduserlogin}
+
+        ORDER BY dateetime desc
         `;
  
       let pool = await Conection.conection();

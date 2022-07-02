@@ -1,7 +1,7 @@
 const { DTOCommentPost } = require("../entity/DTOCommentPost");
 const { Conection } = require("./Connection");
 const { VarChar,Int } = require("mssql");
-const { DataUser } = require("./DataUser");
+
 
 class DataCommentPost {
     //#region CRUD
