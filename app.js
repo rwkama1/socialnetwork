@@ -14,7 +14,10 @@
 // const { DataPhotoPostVideo } = require("./data/DataPhotoPostVideo");
 // const { DataPost } = require("./data/DataPost");
 // const { DataSubComment } = require("./data/DataSubComment");
-// const { DataUser } = require("./data/DataUser");
+const { DataLoginUser } = require("./data/DataLoginUser");
+const { DataUser } = require("./data/DataUser");
+const { DTOUser } = require("./entity/DTOUser");
+const { LoginUser } = require("./security/LoginUser");
 // const { DataUserRelation } = require("./data/DataUserRelation");
 // const { DataVideo } = require("./data/DataVideo");
 // const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
@@ -29,33 +32,31 @@
 
 
 // //#region User
-// let usermaintenance=async()=>
-// {
-//     async function registerUser() {
-//         for (let index = 1; index < 100; index++) {
+let usermaintenance=async()=>
+{
+    // async function registerUser() {
+    //     for (let index = 1; index < 100; index++) {
 
-//             let dtouser = new DTOUser();
-//             dtouser.name = "User" + index.toString();
-//             dtouser.nick = "UserNick" + index.toString();
-//             dtouser.userrname = "UserName" + index.toString();
-//             dtouser.password = "Password2" + index.toString();
-//             let year = 1960 + index;
-//             dtouser.country="United Kingdom";
-//             dtouser.datebirth = new Date(year, 05, 02);
+    //         let dtouser = new DTOUser();
+    //         dtouser.name = "User" + index.toString();
+    //         dtouser.nick = "UserNick" + index.toString();
+    //         dtouser.userrname = "UserName" + index.toString();
+    //         dtouser.password = "Password2" + index.toString();
+    //         let year = 1960 + index;
+    //         dtouser.country="United Kingdom";
+    //         dtouser.datebirth = new Date(year, 05, 02);
 
-//             dtouser.email = "email" + index.toString() + "@gmail.com";
+    //         dtouser.email = "email" + index.toString() + "@gmail.com";
 
-//             const passh = HashPassword.hashPassword(dtouser.password);
-//             dtouser.password = passh.hash;
-//             dtouser.hash = passh.salt;
-//             let registeruser = await DataUser.registerUser(dtouser);
-//             if (registeruser===-1) {
-//                 throw new Error("The username already exists");
-//             }
-//                 console.log("The user registered successfully");
-//         }
-//     }
-//      await registerUser();
+           
+    //         let registeruser = await DataUser.registerUser(dtouser);
+    //         if (registeruser===-1) {
+    //             throw new Error("The username already exists");
+    //         }
+    //             console.log("The user registered successfully");
+    //     }
+    // }
+    //  await registerUser();
 
 //     async function updateUserProfile() {
 //         let dtouserupdate = new DTOUser();
@@ -210,15 +211,16 @@
 
 
 
-// let loginuser = await LoginUser.loginUser('UserName13','Password213')
-// console.log(loginuser);
+let loginuser = await LoginUser.loginUser("UserName8","Password28")
+console.log(loginuser);
 
 
-// let getuserlogin = await LoginUser.getuserlogin()
-// console.log(getuserlogin);
 
-// let logout = await LoginUser.logoutUser()
-// console.log(logout);
+let getuserlogin = await LoginUser.getuserlogin()
+console.log(getuserlogin);
+
+let logout = await LoginUser.logoutUser()
+console.log(logout);
 
 
 
@@ -254,8 +256,8 @@
 //  );
 // console.log(getUsersbyDateEntry);
 
-// }
-// usermaintenance().then()
+}
+usermaintenance().then()
 // //#endregion
 // //#region UserRelation
 // let userrelation=async()=>

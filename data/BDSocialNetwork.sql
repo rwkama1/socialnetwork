@@ -1,5 +1,3 @@
-use socialnetwork
-go
 
 ---------------------------------------------
 ----TABLES
@@ -184,9 +182,24 @@ CREATE TABLE LikeSubComment(
 )
 go
 
+CREATE TABLE LoginUser(
+	IdLoginUser int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	LoginDateAndTime DateTime  not null,
+)
+go
+CREATE TABLE Logs(
+	IdLog int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUser int not null Foreign Key References Userr(IdUser),
+	LogDateAndTime DateTime  not null,
+	DetailLog varchar(30) not null
+)
+go
 
 
 
+--drop table Log
+--drop table LoginUser
 --drop table LikeSubComment
 --drop table LikeComment
 --drop table LikePost
@@ -215,5 +228,23 @@ go
 --drop table Userr
 
 
+select * from AlbumUserImages
+select * from AlbumUserVideos
+select * from UserImages
+select * from UserVideos
+select * from UserPost
+select * from UserrRelations
+
+select * from Logs
+select * from LoginUser
+select * from Userr
+select * from UserrCommentsImage
+select * from UserrCommentsPost
+select * from  UserrCommentsVideo
+select * from UserrComments
+select * from UserrSubComments
+select * from UserrMessage
+
+select * from Userr where UserrName='UserName3' and Passwordd=  HASHBYTES('SHA2_256', 'Password23') and active=1
 
 

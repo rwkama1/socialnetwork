@@ -1,4 +1,5 @@
 const { DataUser } = require("../data/DataUser");
+const { DataLoginUser } = require("../data/DataLoginUser");
 
 const { HashPassword } = require("./hashPassword");
 
@@ -19,21 +20,18 @@ const { HashPassword } = require("./hashPassword");
   //#region Login
       static loginUser=async(username,password)=>
     {
-        // if (!(await DataUser.existUserByUserName(username))) {
-      
-        // } 
-        let getuser = await DataUser.getUserbyUserName(username);
-        if (getuser===-1) {
-           throw new Error("That User does not exists in the system"); 
-        }
-        const verifyp=await HashPassword.verifyPassword(password,getuser.password,getuser.hash);
-   
-        if(verifyp===false)
-        {
-            throw new Error("Wrong password");
-        }
-   
-       this.userlogin=getuser;
+       
+       
+        let loginuser = await DataLoginUser.loginUser(username,password)
+        if (loginuser===-1)
+            {
+                    throw new Error("User is already logged in");
+             }
+             if (loginuser===-2)
+            {
+                    throw new Error("Incorrect username and/or password");
+             }
+       this.userlogin=loginuser;
       
        return this.userlogin;
     }
@@ -50,10 +48,15 @@ const { HashPassword } = require("./hashPassword");
             throw new Error("There is no User logged in");
         }
     }
-     static  logoutUser()
+     static async logoutUser()
     {
         if(this.userlogin!=null)
         {
+            let logout=await DataLoginUser.logout(this.userlogin.iduser);
+            if(logout===-1)
+            {
+                throw new Error("There is no User logged in")
+            }
             this.userlogin=null;
             return true;
             

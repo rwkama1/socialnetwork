@@ -113,6 +113,20 @@ This package contains a backend of what would be the logic of a social network s
 
 ## Usage
 
+
+### API
+
+
+https://apin-ext-socialnetworkk.vercel.app/
+
+
+### Code
+
+
+https://github.com/rwkama1/APINextSocialnetworkk
+
+
+
 ```Javascript
 
 const { DataAlbumImages } = require("./data/DataAlbumImage");

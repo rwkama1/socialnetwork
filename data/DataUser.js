@@ -10,12 +10,30 @@ class DataUser {
         let queryinsert = `
         IF EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName and Active=1)
         BEGIN
-        select -1 as existusername
+            select -1 as existusername
         END
         else
         begin
-            insert into Userr values (@Name,@Nick,@UserrName,@Passwordd,@Hashh,@BirthDate,getutcdate(),1,@Email,'','','','','','','','',@Country,'','','','','','','','Public')
-            select 1 insertsuccess
+
+                BEGIN TRANSACTION  
+
+                insert into Userr values (@Name,@Nick,@UserrName,
+                HASHBYTES('SHA2_256', @Passwordd),'',@BirthDate,getutcdate(),1,@Email,'','','','','','','','',@Country,'','','','','','','','Public')
+
+              
+                insert into Logs values (SCOPE_IDENTITY(),GETUTCDATE(),'New registered user')
+
+                select 1 insertsuccess
+            IF(@@ERROR > 0)  
+            BEGIN  
+                ROLLBACK TRANSACTION  
+            END  
+            ELSE  
+            BEGIN  
+            COMMIT TRANSACTION  
+            END
+           
+           
         end
         `
         let pool = await Conection.conection();
@@ -178,6 +196,7 @@ class DataUser {
       
         
     }
+    
      static updateStateUser=async(state,username)=>
     {  
         let resultquery=0;
