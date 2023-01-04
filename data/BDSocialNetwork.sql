@@ -248,3 +248,5 @@ select * from UserrMessage
 select * from Userr where UserrName='UserName3' and Passwordd=  HASHBYTES('SHA2_256', 'Password23') and active=1
 
 
+delete from LoginUser
+delete from Logs

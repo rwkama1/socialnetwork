@@ -98,30 +98,20 @@ let usermaintenance=async()=>
 //     }
 //     await deleteUser();
 
-//     async function updateUserNamePassword() {
-//         // if (!await DataUser.existUserById(5)) {
-//         //     throw new Error("The user does not exists");
-//         // }
-//         const passh = HashPassword.hashPassword("Passwordupdate1");
-//         let hashpassword = passh.hash;
-//         let salt = passh.salt;
-//         // if (await DataUser.existUserByUserName("UserName2")) {
-//         //     throw new Error("The user name already exists");
-//         // }
-//         // else {
-//             let updateusernamepassword = await DataUser.updateUserNamePassword("UserName80", hashpassword, salt, 64);
-//             if (updateusernamepassword===-1) {
-//                 throw new Error("The user does not exists");
-//             }
-//             if (updateusernamepassword===-2) {
-//                 throw new Error("The username already exists");
-//             }
-//                 console.log("The username and password updated successfully");
+    async function updatePassword() {
+       
+        
+            let updatepassword = await DataUser.updatePassword("UserName1","Password12","Password1");
+            if (updatepassword===-1) {
+                throw new Error("Incorrect username and/or password");
+            }
+           
+                console.log("Password updated successfully");
 
-//         }
+        }
 
 
-//         await updateUserNamePassword();
+        await updatePassword();
 
 //     async function updateStateUser() {
 
@@ -211,16 +201,16 @@ let usermaintenance=async()=>
 
 
 
-let loginuser = await LoginUser.loginUser("UserName8","Password28")
-console.log(loginuser);
+// let loginuser = await LoginUser.loginUser("UserName1","Password21")
+// console.log(loginuser);
 
 
 
-let getuserlogin = await LoginUser.getuserlogin()
-console.log(getuserlogin);
+// let getuserlogin = await LoginUser.getuserlogin()
+// console.log(getuserlogin);
 
-let logout = await LoginUser.logoutUser()
-console.log(logout);
+// let logout = await LoginUser.logoutUser()
+// console.log(logout);
 
 
 

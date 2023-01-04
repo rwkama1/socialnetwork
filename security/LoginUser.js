@@ -22,25 +22,34 @@ const { HashPassword } = require("./hashPassword");
     {
        
        
-        let loginuser = await DataLoginUser.loginUser(username,password)
+        let loginuser = await DataLoginUser.loginUser(username,password);
         if (loginuser===-1)
             {
-                    throw new Error("User is already logged in");
+                throw new Error("User is already logged in");
+                    
              }
-             if (loginuser===-2)
+        else  if (loginuser===-2)
             {
                     throw new Error("Incorrect username and/or password");
              }
-       this.userlogin=loginuser;
+        else
+        {
+
+            this.userlogin=loginuser;
+            return this.userlogin;
+        }
+    
       
-       return this.userlogin;
+       
     }
     
      static  getuserlogin()
     {
-        if(this.userlogin!=null)
+        let userlogin=this.userlogin;
+        if(userlogin!=null)
         {
-            return this.userlogin;
+            
+            return userlogin;
              
         }
         else

@@ -152,44 +152,63 @@ class DataUser {
       
         
     }
-     static updateUserNamePassword=async(username,password,hash,iduser)=>
+     static updatePassword=async(username,currentpassword,newpassword)=>
     {
   
         let resultquery=0;
         let queryupdate = `
-        IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser = @IdUser and Active=1 )
+        IF NOT EXISTS (SELECT * FROM Userr WHERE 
+            UserrName = @UserrName AND Passwordd = HASHBYTES('SHA2_256', @CurrentPasswordd) 
+            AND Active = 1)
         BEGIN
-        select -1 as notexistuser  
-        END
-        IF EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName and Active=1)
-        BEGIN
-        select -2 as existusername
+            SELECT -1 as usernamepasswordincorrect
         END
         ELSE
         BEGIN
-        Update Userr Set UserrName=@UserrName,Passwordd=@Passwordd,Hashh=@Hashh where IdUser=@IdUser
-        select 1 as updatesuccess
+             BEGIN TRANSACTION  
+
+               
+
+                    
+                INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+                VALUES ((SELECT IdUser FROM Userr WHERE 
+                    UserrName = @UserrName AND Passwordd = HASHBYTES('SHA2_256', @CurrentPasswordd) 
+                    AND Active = 1)
+                    , GETUTCDATE(), 'Update password')
+
+                    Update Userr Set 
+                    Passwordd = HASHBYTES('SHA2_256', @NewPasswordd) 
+                    where UserrName=@UserrName
+
+                select 1 as updatesuccess
+            
+            IF(@@ERROR > 0)  
+            BEGIN  
+                ROLLBACK TRANSACTION  
+            END  
+            ELSE  
+            BEGIN  
+            COMMIT TRANSACTION  
+            END
+
         END
+
         `;
    
     
-        //  where IDCard=@IDCard";
         let pool = await Conection.conection();
-    //   let sqltools=Conection.sqlserver();
+
         const result = await pool.request()        
-            .input('UserrName', VarChar, username)
-            .input('Passwordd', VarChar, password)
-            .input('Hashh', VarChar, hash)
-            .input('IdUser', Int, iduser)
-            .query(queryupdate)
-            resultquery = result.recordset[0].notexistuser;
-            if(resultquery===undefined)
-            {
-            resultquery = result.recordset[0].existusername;
-                if (resultquery===undefined) {
-                    resultquery = result.recordset[0].updatesuccess;
-                }
             
+            .input('CurrentPasswordd', VarChar, currentpassword)
+            .input('NewPasswordd', VarChar, newpassword)
+            .input('UserrName', VarChar, username)
+            .query(queryupdate)
+            resultquery = result.recordset[0].usernamepasswordincorrect;
+            if(resultquery===undefined)
+            {  
+                    resultquery = result.recordset[0].updatesuccess;
+ 
             }
         pool.close();
         return resultquery;
