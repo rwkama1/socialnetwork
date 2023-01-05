@@ -195,6 +195,15 @@ CREATE TABLE Logs(
 	DetailLog varchar(30) not null
 )
 go
+CREATE TABLE Followers(
+	IdFollow int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdFollowerUser int not null Foreign Key References Userr(IdUser),
+	IdFollowedUser int not null Foreign Key References Userr(IdUser),
+)
+go
+
+
+
 
 
 
@@ -250,3 +259,4 @@ select * from Userr where UserrName='UserName3' and Passwordd=  HASHBYTES('SHA2_
 
 delete from LoginUser
 delete from Logs
+delete from UserImages

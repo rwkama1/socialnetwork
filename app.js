@@ -1,5 +1,5 @@
 
-// const { DataAlbumImages } = require("./data/DataAlbumImage");
+const { DataAlbumImages } = require("./data/DataAlbumImage");
 // const { DataAlbumVideo } = require("./data/DataAlbumVideo");
 // const { DataCommentImage } = require("./data/DataCommentImage");
 // const { DataCommentPost } = require("./data/DataCommentPost");
@@ -20,14 +20,14 @@ const { DTOUser } = require("./entity/DTOUser");
 const { LoginUser } = require("./security/LoginUser");
 // const { DataUserRelation } = require("./data/DataUserRelation");
 // const { DataVideo } = require("./data/DataVideo");
-// const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
+const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
 // const { DTOAlbumVideo } = require("./entity/DTOAlbumVideos");
 // const { DTOPhoto } = require("./entity/DTOPhoto");
 // const { DTOPost } = require("./entity/DTOPost");
 // const { DTOUser } = require("./entity/DTOUser");
 // const {  DTOUserRelation } = require("./entity/DTOUserRelation");
 // const { DTOVideo } = require("./entity/DTOVideo");
-// const { HashPassword } = require("./security/hashPassword");
+
 // const { LoginUser } = require("./security/LoginUser");
 
 
@@ -86,32 +86,32 @@ let usermaintenance=async()=>
 //     }
 //     await updateUserProfile();
 
-//     async function deleteUser() {
-//             let deleteuser = await DataUser.deleteUser(4);
-//              if (deleteuser===-1) {
-//                     throw new Error("The user does not exists");
-//                 }
-//             console.log("The user was successfully unsubscribed");
+    async function deleteUser() {
+            let deleteuser = await DataUser.deleteUser(4);
+             if (deleteuser===-1) {
+                    throw new Error("The user does not exists");
+                }
+            console.log("The user was successfully unsubscribed");
 
 
 
-//     }
-//     await deleteUser();
+    }
+    await deleteUser();
 
-    async function updatePassword() {
+    // async function updatePassword() {
        
         
-            let updatepassword = await DataUser.updatePassword("UserName1","Password12","Password1");
-            if (updatepassword===-1) {
-                throw new Error("Incorrect username and/or password");
-            }
+    //         let updatepassword = await DataUser.updatePassword("UserName1","Password12","Password1");
+    //         if (updatepassword===-1) {
+    //             throw new Error("Incorrect username and/or password");
+    //         }
            
-                console.log("Password updated successfully");
+    //             console.log("Password updated successfully");
 
-        }
+    //     }
 
 
-        await updatePassword();
+    //     await updatePassword();
 
 //     async function updateStateUser() {
 
@@ -157,17 +157,29 @@ let usermaintenance=async()=>
 //     await insertProfilePicture();
 
 
-//     async function insertCoverPicture() {
+    // async function insertCoverPicture() {
 
-//         let insertCoverPicture = await DataUser.insertCoverPicture('Imageurl', 'UserName70');
-//          if (insertCoverPicture===-1)
-//           {
-//             throw new Error("The user name does not exists");
-//           }
-//             console.log("The Cover Imagee was added successfully");
-//     }
+    //     let insertCoverPicture = await DataUser.insertCoverPicture('Imageurl', 'UserName70');
+    //      if (insertCoverPicture===-1)
+    //       {
+    //         throw new Error("The user name does not exists");
+    //       }
+    //         console.log("The Cover Imagee was added successfully");
+    // }
 
-//     await insertCoverPicture();
+    // await insertCoverPicture();
+
+    // async function insertCoverProfilePicture() {
+
+    //     let insertCoverProfilePicture = await DataUser.insertCoverProfilePicture('ProfileImageUrl2',"CoverImageUrl2", 'UserName1');
+    //      if (insertCoverProfilePicture===-1)
+    //       {
+    //         throw new Error("The user name does not exists");
+    //       }
+    //         console.log("The Cover and Profile Imagee was added successfully");
+    // }
+
+    // await insertCoverProfilePicture();
 
 //     async function deleteProfilePicture() {
 
@@ -216,7 +228,7 @@ let usermaintenance=async()=>
 
 
 
-// let getuser = await DataUser.getUser(70);
+// let getuser = await DataUser.getUser(1);
 // console.log(getuser);
 
 // let getUserbyUserName = await DataUser.getUserbyUserName("UserName70");
@@ -379,23 +391,25 @@ usermaintenance().then()
 // userrelation().then()
 // //#endregion
 // //#region AlbumPhotos
-//  let albumimage=async()=>
-//  {
-//     async function addAlbum() {
-//         for (let index = 1; index < 100; index++) {
-//             let dtoalbumimage = new DTOAlbumPhoto();
-//             dtoalbumimage.user.iduser = index;
-//             dtoalbumimage.title = "AlbumImage" + index.toString();
-//             let registerAlbumImage = await DataAlbumImages.addAlbumImage(dtoalbumimage);
-//             if (registerAlbumImage===-1) {
-//                throw new Error("The user does not exists");
-//                 }
-//                console.log("The album of images was registered successfully");
+ let albumimage=async()=>
+ {
+    // async function addAlbum() {
+    //     for (let index = 1; index < 100; index++) {
+          
+    //      let userid = index;
+    //       let albumtitle = "AlbumImage" + index.toString();
+    //         let arrayurlimage=["urlimage1","urlimage2","urlimage3","urlimage4"
+    //         ,"urlimg5"]
+    //         let registerAlbumImage = await DataAlbumImages.addAlbumImage(albumtitle,userid,arrayurlimage);
+    //         if (registerAlbumImage===-1) {
+    //            throw new Error("The user does not exists");
+    //             }
+    //            console.log("The album of images was registered successfully");
 
-//             }
-//         }
+    //         }
+    //     }
 
-//      await addAlbum();
+    //  await addAlbum();
 
 //     async function updateTitleAlbumImages() {
 
@@ -433,8 +447,8 @@ usermaintenance().then()
 
 
 
-// }
-//   albumimage().then()
+}
+  albumimage().then()
 // //#endregion
 // //#region Images
 // let images=async()=>

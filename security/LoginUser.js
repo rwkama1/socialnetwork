@@ -1,7 +1,7 @@
 const { DataUser } = require("../data/DataUser");
 const { DataLoginUser } = require("../data/DataLoginUser");
 
-const { HashPassword } = require("./hashPassword");
+
 
  class LoginUser
 {

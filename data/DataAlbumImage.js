@@ -4,25 +4,42 @@ const { VarChar,Int ,Date} = require("mssql");
 
  class DataAlbumImages {
 //#region CRUD
- static  addAlbumImage=async(dtalbumphoto)=>
+ static  addAlbumImage=async(albumtitle,userid,arrayurlimages)=>
 {
   let resultquery;
     let queryinsert = `
     IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
     BEGIN
-    select -1 as notexistuser
+     select -1 as notexistuser
     END
     ELSE
     BEGIN
-    insert into AlbumUserImages values (@IdUser,@Title,1)
-    select 1 as albumadded
+      BEGIN TRANSACTION
+
+      insert into AlbumUserImages values (@IdUser,@Title,1)
+
+      ${this.forAddImages(arrayurlimages)}
+
+      INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+      VALUES (@IdUser, GETUTCDATE(), 'AlbumImage Added')
+
+      select 1 as albumadded
+
+      IF(@@ERROR > 0)  
+      BEGIN  
+          ROLLBACK TRANSACTION  
+      END  
+      ELSE  
+      BEGIN  
+          COMMIT TRANSACTION  
+      END
     END
 `
     let pool = await Conection.conection();
 
     const result = await pool.request()
-        .input('IdUser', Int,dtalbumphoto.user.iduser)
-        .input('Title', VarChar, dtalbumphoto.title)
+        .input('IdUser', Int,userid)
+        .input('Title', VarChar, albumtitle)
         .query(queryinsert)
         resultquery = result.recordset[0].notexistuser;
         if(resultquery===undefined)
@@ -293,6 +310,27 @@ const { VarChar,Int ,Date} = require("mssql");
     albumphoto.active = album.Active;
    
 }
+
+static forAddImages(arrayurlimages)
+   {
+    let stringelement="";
+    for (let index = 0; index < arrayurlimages.length; index++) {
+      const urlimg = arrayurlimages[index];
+     
+
+        stringelement=stringelement+
+        `
+
+        INSERT INTO UserImages (IdUser, IdAlbumImages, Title, Descriptionn, Likes, Urlimage, Visibility, DatePublish, Active)
+        VALUES (@IdUser, IDENT_CURRENT('AlbumUserImages'), 'UpdateTitle', 'UpdateDescription', 0, '${urlimg}', 'Public', GETUTCDATE(), 1)
+        
+        `
+      
+     
+    }
+    return stringelement
+   
+   }
 //#endregion
 }
 module.exports = { DataAlbumImages };

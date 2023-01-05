@@ -61,14 +61,33 @@ class DataUser {
     {
         let resultquery=0;
         let deletequery = `
-        IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser = @IdUser and Active=1 )
+
+        IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser = @IdUser and Active=1 )
         BEGIN
         select -1 as notexistuser  
         END
         else
         begin
-        update Userr set Active=0 where IdUser=@IdUser
-        select 1 as deleteusersuccess
+
+            BEGIN TRANSACTION  
+
+            insert into Logs values (@IdUser,
+            GETUTCDATE(),'Delete user')
+
+            update Userr set Active=0 where IdUser=@IdUser
+
+          
+
+            select 1 as deleteusersuccess
+            
+            IF(@@ERROR > 0)  
+            BEGIN  
+                ROLLBACK TRANSACTION  
+            END  
+            ELSE  
+            BEGIN  
+            COMMIT TRANSACTION  
+            END  
         end
 
         `
@@ -166,11 +185,8 @@ class DataUser {
         ELSE
         BEGIN
              BEGIN TRANSACTION  
-
-               
-
-                    
-                INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+            
+         INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
                 VALUES ((SELECT IdUser FROM Userr WHERE 
                     UserrName = @UserrName AND Passwordd = HASHBYTES('SHA2_256', @CurrentPasswordd) 
                     AND Active = 1)
@@ -334,7 +350,59 @@ class DataUser {
         return resultquery;    
         
     }
+    static insertCoverProfilePicture=async(profileimage,coverimage,username)=>
+    {  
+        let resultquery=0;
+        let queryupdate = `
 
+        IF NOT EXISTS ( SELECT * FROM Userr WHERE 
+            UserrName =@UserrName and Active=1)
+        BEGIN
+            select -1 as notexistusername
+        END
+        ELSE
+        BEGIN
+            BEGIN TRANSACTION  
+
+            Update Userr Set Coverphoto=@CoverImage,Imagee=@ProfileImage  
+            where UserrName=@UserrName
+
+            INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+            VALUES (
+                (SELECT IdUser FROM Userr WHERE 
+                UserrName = @UserrName 
+                AND Active = 1)
+                ,GETUTCDATE(), 
+                'Update profile and cover image')
+
+            select 1 as updatesuccess
+             
+            IF(@@ERROR > 0)  
+            BEGIN  
+                ROLLBACK TRANSACTION  
+            END  
+            ELSE  
+            BEGIN  
+                COMMIT TRANSACTION  
+            END
+        END
+        `
+ 
+        let pool = await Conection.conection();
+
+        const result = await pool.request()    
+            .input('ProfileImage', VarChar, profileimage)
+            .input('CoverImage', VarChar, coverimage)
+            .input('UserrName', VarChar, username)
+            .query(queryupdate)
+            resultquery = result.recordset[0].notexistusername;
+            if (resultquery===undefined) {
+                resultquery = result.recordset[0].updatesuccess;
+            }
+        pool.close();
+        return resultquery;    
+        
+    }
      static deleteProfilePicture=async(username)=>
     {  
         let resultquery=0;
