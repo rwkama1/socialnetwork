@@ -15,6 +15,7 @@ const { DataAlbumImages } = require("./data/DataAlbumImage");
 // const { DataPost } = require("./data/DataPost");
 // const { DataSubComment } = require("./data/DataSubComment");
 const { DataLoginUser } = require("./data/DataLoginUser");
+const { DataFollowers } = require("./data/DataFollowers");
 const { DataUser } = require("./data/DataUser");
 const { DTOUser } = require("./entity/DTOUser");
 const { LoginUser } = require("./security/LoginUser");
@@ -40,8 +41,8 @@ let usermaintenance=async()=>
     //         let dtouser = new DTOUser();
     //         dtouser.name = "User" + index.toString();
     //         dtouser.nick = "UserNick" + index.toString();
-    //         dtouser.userrname = "UserName" + index.toString();
-    //         dtouser.password = "Password2" + index.toString();
+    //         dtouser.userrname = "Usernam" + index.toString();
+    //         dtouser.password = "Password" + index.toString();
     //         let year = 1960 + index;
     //         dtouser.country="United Kingdom";
     //         dtouser.datebirth = new Date(year, 05, 02);
@@ -52,6 +53,12 @@ let usermaintenance=async()=>
     //         let registeruser = await DataUser.registerUser(dtouser);
     //         if (registeruser===-1) {
     //             throw new Error("The username already exists");
+    //         }
+    //         if (registeruser===-2) {
+    //             throw new Error("Username must have more than 8 characters");
+    //         }
+    //         if (registeruser===-3) {
+    //             throw new Error("Passwordd must have more than 8 characters");
     //         }
     //             console.log("The user registered successfully");
     //     }
@@ -86,24 +93,27 @@ let usermaintenance=async()=>
 //     }
 //     await updateUserProfile();
 
-    async function deleteUser() {
-            let deleteuser = await DataUser.deleteUser(4);
-             if (deleteuser===-1) {
-                    throw new Error("The user does not exists");
-                }
-            console.log("The user was successfully unsubscribed");
+    // async function deleteUser() {
+    //         let deleteuser = await DataUser.deleteUser(4);
+    //          if (deleteuser===-1) {
+    //                 throw new Error("The user does not exists");
+    //             }
+    //         console.log("The user was successfully unsubscribed");
 
 
 
-    }
-    await deleteUser();
+    // }
+    // await deleteUser();
 
     // async function updatePassword() {
        
         
-    //         let updatepassword = await DataUser.updatePassword("UserName1","Password12","Password1");
+    //         let updatepassword = await DataUser.updatePassword("Username1","Password1","Password12");
     //         if (updatepassword===-1) {
     //             throw new Error("Incorrect username and/or password");
+    //         }
+    //         if (updatepassword===-2) {
+    //             throw new Error("New Passwordd must have more than 8 characters");
     //         }
            
     //             console.log("Password updated successfully");
@@ -112,6 +122,21 @@ let usermaintenance=async()=>
 
 
     //     await updatePassword();
+
+    // async function updateDescription() {
+
+    //     let updateDescription = await DataUser.updateDescription('Description', 1);
+    //     if (updateDescription===-1)
+    //     {
+    //       throw new Error("The user  does not exists");
+    //      }
+
+    //         console.log("The description was updated successfully");
+
+    // }
+
+
+    // await updateDescription();
 
 //     async function updateStateUser() {
 
@@ -390,6 +415,57 @@ usermaintenance().then()
 // }
 // userrelation().then()
 // //#endregion
+// //#region FOLLOWERS 
+let followersmaintenace=async()=>
+{
+//       async function addFollower() {
+//         for (let index = 1; index < 100; index++) {
+//            let iduserfollower=index;
+//            let iduserfollowed=index+1;
+
+//             let addFollower = await DataFollowers.
+//             addFollower(iduserfollower,iduserfollowed);
+//             if (addFollower===-1) {
+//                 throw new Error("The user follower does not exists");
+//             }
+//             if (addFollower===-2) {
+//                 throw new Error("The user followed does not exists");
+//             }
+//             if (addFollower===-3) {
+//                 throw new Error("The follow already exists");
+//             }
+//              console.log("Follow added");
+//       }
+
+//    }
+//    await addFollower();
+
+    //     async function unfollow() {
+          
+    //            let iduserfollower=1;
+    //            let iduserfollowed=2;
+    
+    //             let addFollower = await DataFollowers.
+    //             unFollow(iduserfollower,iduserfollowed);
+    //             if (addFollower===-1) {
+    //                 throw new Error("The follow does not exists");
+    //             }
+    //              console.log("Follow deleted");
+    //         }
+    // await unfollow();
+
+    
+    // let getFollowersByUser = await DataFollowers.getFollowersByUser(2);
+    //  console.log(getFollowersByUser);
+
+    // let NumberOfFollowers = await DataFollowers.NumberOfFollowers(2);
+    //  console.log(NumberOfFollowers);
+     
+
+}
+followersmaintenace().then()
+
+// //#endregion FOLLOWERS
 // //#region AlbumPhotos
  let albumimage=async()=>
  {

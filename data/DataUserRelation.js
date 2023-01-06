@@ -10,22 +10,7 @@ const { DataUser } = require("./DataUser");
 class DataUserRelation 
 {
 //#region CRUD
-// static  addUserRelation=async(dtousderelation)=>
-// {
 
-//     let queryinsert = `insert into UserrRelations values 
-//     (@IdUser,@IdFriend,'Pending')`
-
-//     let pool = await Conection.conection();
-
-//     const result = await pool.request()
-//         .input('IdUser', Int, dtousderelation.user.iduser)
-//         .input('IdFriend', Int,dtousderelation.friend.iduser)
-//         .query(queryinsert)
-//     pool.close();
-//     return true;
-    
-// }
 static  addUserRelation=async(dtousderelation)=>
 {
 

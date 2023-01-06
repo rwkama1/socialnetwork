@@ -8,32 +8,44 @@ class DataUser {
     {
         let resultquery=0;
         let queryinsert = `
-        IF EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName and Active=1)
+        IF EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName
+             and Active=1)
         BEGIN
             select -1 as existusername
         END
         else
         begin
-
-                BEGIN TRANSACTION  
-
-                insert into Userr values (@Name,@Nick,@UserrName,
-                HASHBYTES('SHA2_256', @Passwordd),'',@BirthDate,getutcdate(),1,@Email,'','','','','','','','',@Country,'','','','','','','','Public')
-
-              
-                insert into Logs values (SCOPE_IDENTITY(),GETUTCDATE(),'New registered user')
-
-                select 1 insertsuccess
-            IF(@@ERROR > 0)  
-            BEGIN  
-                ROLLBACK TRANSACTION  
-            END  
-            ELSE  
-            BEGIN  
-            COMMIT TRANSACTION  
+            IF LEN(@UserrName) < 8
+            BEGIN
+                select -2 as incorrectusername
             END
-           
-           
+            ELSE
+            BEGIN
+                IF LEN(@Passwordd) < 8
+                BEGIN
+                    select -3 as incorrectpassword
+                END
+                ELSE
+                BEGIN
+                    BEGIN TRANSACTION  
+
+                    insert into Userr values (@Name,@Nick,@UserrName,
+                    HASHBYTES('SHA2_256', @Passwordd),'',@BirthDate,getutcdate(),1,@Email,'','','','','','','','',@Country,'','','','','','','','Public')
+
+                
+                    insert into Logs values (SCOPE_IDENTITY(),GETUTCDATE(),'New registered user')
+
+                    select 1 insertsuccess
+                    IF(@@ERROR > 0)  
+                    BEGIN  
+                        ROLLBACK TRANSACTION  
+                    END  
+                    ELSE  
+                    BEGIN  
+                    COMMIT TRANSACTION  
+                    END
+                END
+            END
         end
         `
         let pool = await Conection.conection();
@@ -51,7 +63,15 @@ class DataUser {
             resultquery = result.recordset[0].existusername;
             if(resultquery===undefined)
             {
-                resultquery = result.recordset[0].insertsuccess;
+                resultquery = result.recordset[0].incorrectusername;
+                if(resultquery===undefined)
+                {
+                    resultquery = result.recordset[0].incorrectpassword;
+                    if(resultquery===undefined)
+                    {
+                        resultquery = result.recordset[0].insertsuccess;
+                    }
+                }
             }
             pool.close();
         return resultquery;
@@ -184,29 +204,35 @@ class DataUser {
         END
         ELSE
         BEGIN
-             BEGIN TRANSACTION  
-            
-         INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
-                VALUES ((SELECT IdUser FROM Userr WHERE 
-                    UserrName = @UserrName AND Passwordd = HASHBYTES('SHA2_256', @CurrentPasswordd) 
-                    AND Active = 1)
-                    , GETUTCDATE(), 'Update password')
-
-                    Update Userr Set 
-                    Passwordd = HASHBYTES('SHA2_256', @NewPasswordd) 
-                    where UserrName=@UserrName
-
-                select 1 as updatesuccess
-            
-            IF(@@ERROR > 0)  
-            BEGIN  
-                ROLLBACK TRANSACTION  
-            END  
-            ELSE  
-            BEGIN  
-            COMMIT TRANSACTION  
+            IF LEN(@NewPasswordd) < 8
+            BEGIN
+                select -2 as incorrectnewpassword
             END
+            ELSE
+            BEGIN
+                BEGIN TRANSACTION  
+                
+                INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+                    VALUES ((SELECT IdUser FROM Userr WHERE 
+                        UserrName = @UserrName AND Passwordd = HASHBYTES('SHA2_256', @CurrentPasswordd) 
+                        AND Active = 1)
+                        , GETUTCDATE(), 'Update password')
 
+                        Update Userr Set 
+                        Passwordd = HASHBYTES('SHA2_256', @NewPasswordd) 
+                        where UserrName=@UserrName
+
+                    select 1 as updatesuccess
+                
+                IF(@@ERROR > 0)  
+                BEGIN  
+                    ROLLBACK TRANSACTION  
+                END  
+                ELSE  
+                BEGIN  
+                COMMIT TRANSACTION  
+                END
+            END
         END
 
         `;
@@ -223,7 +249,12 @@ class DataUser {
             resultquery = result.recordset[0].usernamepasswordincorrect;
             if(resultquery===undefined)
             {  
-                    resultquery = result.recordset[0].updatesuccess;
+                    resultquery = result.recordset[0].incorrectnewpassword;
+                    if(resultquery===undefined)
+                    {  
+                         resultquery = result.recordset[0].updatesuccess;
+         
+                    }
  
             }
         pool.close();
@@ -231,7 +262,38 @@ class DataUser {
       
         
     }
-    
+    static updateDescription=async(description,iduser)=>
+    {  
+        let resultquery=0;
+        let queryupdate = `
+        
+        IF NOT EXISTS ( SELECT iduser FROM Userr WHERE 
+            iduser=@IdUser and Active=1)
+        BEGIN
+         select -1 as notexistuser
+        END
+        ELSE
+        BEGIN
+            UPDATE Userr Set Descriptionn=@Description 
+            where iduser=@IdUser
+            select 1 as updatesuccess
+        END
+        `
+      
+        let pool = await Conection.conection();
+   
+        const result = await pool.request()    
+            .input('Description', VarChar, description)
+            .input('IdUser', Int, iduser)
+            .query(queryupdate)
+            resultquery = result.recordset[0].notexistuser;
+            if (resultquery===undefined) {
+                resultquery = result.recordset[0].updatesuccess;
+            }
+        pool.close();
+        return resultquery;    
+        
+    }
      static updateStateUser=async(state,username)=>
     {  
         let resultquery=0;

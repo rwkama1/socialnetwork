@@ -206,7 +206,7 @@ go
 
 
 
-
+--drop table Followers
 --drop table Log
 --drop table LoginUser
 --drop table LikeSubComment
@@ -244,6 +244,7 @@ select * from UserVideos
 select * from UserPost
 select * from UserrRelations
 
+select * from Followers
 select * from Logs
 select * from LoginUser
 select * from Userr
@@ -260,3 +261,4 @@ select * from Userr where UserrName='UserName3' and Passwordd=  HASHBYTES('SHA2_
 delete from LoginUser
 delete from Logs
 delete from UserImages
+ update Userr set Active=1
