@@ -24,8 +24,26 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
       END
       ELSE
       BEGIN
-         insert into UserImages values  (@IdUser,@IdAlbumImages,@Title,@Descriptionn ,@Likes,@Urlimage,'Public',GETUTCDATE(),1)
+         BEGIN TRANSACTION
+
+         insert into UserImages values  (@IdUser,
+            @IdAlbumImages,@Title,@Descriptionn ,@Likes,@Urlimage,'Public'
+         ,GETUTCDATE(),1)
+
+         INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+         VALUES (@IdUser, GETUTCDATE(), 'Image Added')
+
          select 1 as addedphoto
+
+         
+         IF(@@ERROR > 0)  
+         BEGIN  
+             ROLLBACK TRANSACTION  
+         END  
+         ELSE  
+         BEGIN  
+             COMMIT TRANSACTION  
+         END
       END
     END
     
@@ -725,43 +743,8 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
     } 
 //#endregion
 //#region Others
-// static DiffDatePublishDateNow=async(dtophoto)=>
-// {
-      
-//         let querysearch = `     
-// 		WITH
-//         differencee AS ( 
-//         SELECT DATEDIFF(second,@DatePublish , GETUTCDATE() ) AS seconds,
-//                DATEDIFF(minute,@DatePublish ,GETUTCDATE() ) AS minutess,
-//                 DATEDIFF(hour, @DatePublish,GETUTCDATE() ) AS hourss,
-//                DATEDIFF(day,@DatePublish ,GETUTCDATE() ) AS dayss,
-//                 DATEDIFF(month,@DatePublish, GETUTCDATE()) AS months,
-//                 DATEDIFF(year,@DatePublish,GETUTCDATE() ) AS years
-//        )
-//        SELECT 	
-//        CASE  WHEN seconds<60   THEN (select seconds )  END  AS difsecond ,
-//        CASE  WHEN seconds>=60 and minutess<60   THEN (select minutess )  END  AS difminutes ,
-//        CASE WHEN minutess>=60 and hourss<24 THEN  (SELECT hourss ) END AS difhour,
-//        CASE  WHEN hourss>=24 and dayss<31 THEN  (SELECT dayss) END AS difdays,
-//        CASE  WHEN dayss>=31 and months<12 THEN  (SELECT months) END AS difmonth,
-//        CASE  WHEN months>=12  THEN  (SELECT years) END AS difyears	
-//        FROM differencee
-//      `  
-//         let pool = await Conection.conection();
-//         const result = await pool.request()      
-//         .input('DatePublish', DateTime,dtophoto.DateTimePublish)
-//         .query(querysearch)
-         
-//         dtophoto.diffsecond = result.recordset[0].difsecond;
-//         dtophoto.diffminutes = result.recordset[0].difminutes;
-//         dtophoto.diffhour = result.recordset[0].difhour;
-//         dtophoto.diffdays = result.recordset[0].difdays;
-//         dtophoto.diffmonth = result.recordset[0].difmonth;
-//         dtophoto.diffyear = result.recordset[0].difyears;
 
-//        pool.close();
-       
-//  }
+
 //#endregion
 
 

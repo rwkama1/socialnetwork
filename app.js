@@ -1,35 +1,34 @@
 
 const { DataAlbumImages } = require("./data/DataAlbumImage");
-// const { DataAlbumVideo } = require("./data/DataAlbumVideo");
-// const { DataCommentImage } = require("./data/DataCommentImage");
-// const { DataCommentPost } = require("./data/DataCommentPost");
-// const { DataCommentVideo } = require("./data/DataCommentVideo");
-// const { DataLikeComment } = require("./data/DataLikeComment");
-// const { DataLikeImage } = require("./data/DataLikeImage");
-// const { DataLikePost } = require("./data/DataLikePost");
-// const { DataLikeSubComment } = require("./data/DataLikeSubComment");
-// const { DataLikeVideo } = require("./data/DataLikeVideo");
-// const { DataMessage } = require("./data/DataMessage");
-// const { DataPhoto } = require("./data/DataPhoto");
-// const { DataPhotoPostVideo } = require("./data/DataPhotoPostVideo");
-// const { DataPost } = require("./data/DataPost");
-// const { DataSubComment } = require("./data/DataSubComment");
+const { DataAlbumVideo } = require("./data/DataAlbumVideo");
+const { DataCommentImage } = require("./data/DataCommentImage");
+const { DataCommentPost } = require("./data/DataCommentPost");
+const { DataCommentVideo } = require("./data/DataCommentVideo");
+const { DataLikeComment } = require("./data/DataLikeComment");
+const { DataLikeImage } = require("./data/DataLikeImage");
+const { DataLikePost } = require("./data/DataLikePost");
+const { DataLikeSubComment } = require("./data/DataLikeSubComment");
+const { DataLikeVideo } = require("./data/DataLikeVideo");
+const { DataMessage } = require("./data/DataMessage");
+const { DataPhoto } = require("./data/DataPhoto");
+const { DataPhotoPostVideo } = require("./data/DataPhotoPostVideo");
+const { DataPost } = require("./data/DataPost");
+const { DataSubComment } = require("./data/DataSubComment");
 const { DataLoginUser } = require("./data/DataLoginUser");
 const { DataFollowers } = require("./data/DataFollowers");
 const { DataUser } = require("./data/DataUser");
 const { DTOUser } = require("./entity/DTOUser");
 const { LoginUser } = require("./security/LoginUser");
-// const { DataUserRelation } = require("./data/DataUserRelation");
-// const { DataVideo } = require("./data/DataVideo");
+ const { DataUserRelation } = require("./data/DataUserRelation");
+const { DataVideo } = require("./data/DataVideo");
 const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
-// const { DTOAlbumVideo } = require("./entity/DTOAlbumVideos");
-// const { DTOPhoto } = require("./entity/DTOPhoto");
-// const { DTOPost } = require("./entity/DTOPost");
-// const { DTOUser } = require("./entity/DTOUser");
-// const {  DTOUserRelation } = require("./entity/DTOUserRelation");
-// const { DTOVideo } = require("./entity/DTOVideo");
 
-// const { LoginUser } = require("./security/LoginUser");
+const { DTOAlbumVideo } = require("./entity/DTOAlbumVideos");
+const { DTOPhoto } = require("./entity/DTOPhoto");
+const { DTOPost } = require("./entity/DTOPost");
+
+ const {  DTOUserRelation } = require("./entity/DTOUserRelation");
+const { DTOVideo } = require("./entity/DTOVideo");
 
 
 // //#region User
@@ -94,7 +93,7 @@ let usermaintenance=async()=>
 //     await updateUserProfile();
 
     // async function deleteUser() {
-    //         let deleteuser = await DataUser.deleteUser(4);
+    //         let deleteuser = await DataUser.deleteUser(16);
     //          if (deleteuser===-1) {
     //                 throw new Error("The user does not exists");
     //             }
@@ -236,23 +235,6 @@ let usermaintenance=async()=>
 //     await deleteCoverPicture();
 
 
-
-
-// let loginuser = await LoginUser.loginUser("UserName1","Password21")
-// console.log(loginuser);
-
-
-
-// let getuserlogin = await LoginUser.getuserlogin()
-// console.log(getuserlogin);
-
-// let logout = await LoginUser.logoutUser()
-// console.log(logout);
-
-
-
-
-
 // let getuser = await DataUser.getUser(1);
 // console.log(getuser);
 
@@ -286,11 +268,35 @@ let usermaintenance=async()=>
 }
 usermaintenance().then()
 // //#endregion
+//#region LOGIN USER
+
+let loginuser=async()=>
+{
+
+//     let loginuser = await LoginUser.loginUser("Usernam1","Password1")
+// console.log(loginuser);
+
+
+
+
+// let getuserlogin = await LoginUser.getuserlogin()
+// console.log(getuserlogin);
+
+// let logout = await LoginUser.logoutUser()
+// console.log(logout);
+
+
+// let existLoginUser = await DataLoginUser.existLoginUser(1)
+// console.log(existLoginUser);
+
+}
+loginuser().then()
+//#endregion
 // //#region UserRelation
-// let userrelation=async()=>
-// {
+ let userrelation=async()=>
+ {
 //   async function addUserRelation() {
-//         for (let index = 33; index < 100; index++) {
+//         for (let index = 1; index < 100; index++) {
 //             let dtour = new DTOUserRelation();
 //             dtour.user.iduser = index;
 //             dtour.friend.iduser = index+1;
@@ -388,6 +394,14 @@ usermaintenance().then()
 // console.log(getConfirmedFriendsbyUser);
 
 
+
+// let getConfirmedFriendsbyUserLoginUser = await DataUserRelation.getConfirmedFriendsbyUserLoginUser(2);
+// console.log(getConfirmedFriendsbyUserLoginUser);
+
+// let getPendingFriendsbyUserLoginUser = await DataUserRelation.getPendingFriendsbyUserLoginUser(2);
+// console.log(getPendingFriendsbyUserLoginUser);
+
+
 //  let getSentPendingUsersbyUser = await DataUserRelation.getSentPendingUsersbyUser(14);
 // console.log(getSentPendingUsersbyUser);
 
@@ -412,9 +426,9 @@ usermaintenance().then()
 
 //  let NumberMutualFriends = await DataUserRelation.NumberMutualFriends(14,10);
 // console.log(NumberMutualFriends);
-// }
-// userrelation().then()
-// //#endregion
+}
+userrelation().then()
+// //#endregion1
 // //#region FOLLOWERS 
 let followersmaintenace=async()=>
 {
@@ -458,6 +472,10 @@ let followersmaintenace=async()=>
     // let getFollowersByUser = await DataFollowers.getFollowersByUser(2);
     //  console.log(getFollowersByUser);
 
+    // let existFollow = await DataFollowers.existFollow(1,3);
+    //  console.log(existFollow);
+     
+
     // let NumberOfFollowers = await DataFollowers.NumberOfFollowers(2);
     //  console.log(NumberOfFollowers);
      
@@ -467,8 +485,8 @@ followersmaintenace().then()
 
 // //#endregion FOLLOWERS
 // //#region AlbumPhotos
- let albumimage=async()=>
- {
+//  let albumimage=async()=>
+//  {
     // async function addAlbum() {
     //     for (let index = 1; index < 100; index++) {
           
@@ -523,8 +541,8 @@ followersmaintenace().then()
 
 
 
-}
-  albumimage().then()
+// }
+//   albumimage().then()
 // //#endregion
 // //#region Images
 // let images=async()=>
@@ -702,14 +720,14 @@ followersmaintenace().then()
 // //#endregion
 // //#region AlbumVideos
 
-// let albumvideo=async()=>
-// {
+let albumvideo=async()=>
+{
 //    async function addAlbum() {
 //        for (let index = 1; index < 100; index++) {
-//            let dtoalvideo = new DTOAlbumVideo();
-//            dtoalvideo.user.iduser = index;
-//            dtoalvideo.title = "AlbumVideo" + index.toString();
-//            let addAlbumVideo = await DataAlbumVideo.addAlbumVideo(dtoalvideo);
+//             let userid = index;
+//             let albumtitle = "AlbumVideo" + index.toString();
+//          let arrayurlvideo=["urlvideo1","urlvideo2","urlvideo3","urlvideo4"]
+//            let addAlbumVideo = await DataAlbumVideo.addAlbumVideo(albumtitle,userid,arrayurlvideo);
 //            if (addAlbumVideo===-1) {
 //               throw new Error("The user does not exists");
 //                }
@@ -755,35 +773,51 @@ followersmaintenace().then()
 // let getAlbumVideoByTitleUser = await DataAlbumVideo.getAlbumVideoByTitleUser("",3);
 // console.log(getAlbumVideoByTitleUser);
 
-// }
-// albumvideo().then()
+}
+albumvideo().then()
 // //#endregion
 // //#region Video
-// let videos=async()=>
-//  {
-//     async function addvideo() {
-//         for (let index = 1; index < 100; index++) {
-//             let dtovid = new DTOVideo();
-//             dtovid.user.iduser = index;
-//             dtovid.albumvideo.idalbumvideo = index;
-//             dtovid.title = "Video" + index.toString();
-//             dtovid.description = "Description" + index.toString();
-//             dtovid.DateTimePublish = new Date();
-//             dtovid.urlvideo = "UrlVideo" + index.toString();
-//             let addImage = await DataVideo.addVideo(dtovid);
-//             if (addImage===-1) {
-//                 throw new Error("The user does not exists");
-//                 }
-//             if (addImage===-2) {
-//                 throw new Error("The album of videos does not exists");
-//             }
+let videos=async()=>
+ {
+    // async function addvideo() {
+    //     for (let index = 1; index < 100; index++) {
+    //         let dtovid = new DTOVideo();
+    //         dtovid.user.iduser = index;
+    //         dtovid.albumvideo.idalbumvideo = index;
+    //         dtovid.title = "Video" + index.toString();
+    //         dtovid.description = "Description" + index.toString();
+    //         dtovid.DateTimePublish = new Date();
+    //         dtovid.urlvideo = "UrlVideo" + index.toString();
+    //         let addVideo = await DataVideo.addVideo(dtovid);
+    //         if (addVideo===-1) {
+    //             throw new Error("The user does not exists");
+    //             }
+    //         if (addVideo===-2) {
+    //             throw new Error("The album of videos does not exists");
+    //         }
 
-//              console.log("The video was added successfully");
+    //          console.log("The video was added successfully");
 
 
-//         }
-//     }
-//     await addvideo();
+    //     }
+    // }
+    // await addvideo();
+
+    //   async function updateVideo() {
+
+    //     let updateVideo = await DataVideo.updateVideo(5,"Video5","Description5"
+    //     ,"Public");
+    //     if (updateVideo===-1) {
+    //         throw new Error("The video does not exists");
+    //         }
+    //         if (updateVideo===-2) {
+    //             throw new Error("Visibility should only be Public or Private");
+    //             }
+    //         console.log("The visibility was updated successfully");
+
+    // }
+    // await updateVideo();
+
 
 //       async function updateVisibilityVideo() {
 
@@ -807,16 +841,16 @@ followersmaintenace().then()
 //     }
 //     await updateTitleDescriptionVideo();
    
-//       async function deleteVideo() {
+    //   async function deleteVideo() {
 
-//         let deleteVideo = await DataVideo.deleteVideo(3);
-//            if (deleteVideo===-1) {
-//             throw new Error("The video does not exists");
-//             }
-//             console.log("The video was deleted successfully");
+    //     let deleteVideo = await DataVideo.deleteVideo(34);
+    //        if (deleteVideo===-1) {
+    //         throw new Error("The video does not exists");
+    //         }
+    //         console.log("The video was deleted successfully");
 
-//     }
-//     await deleteVideo();
+    // }
+    // await deleteVideo();
 
       
 
@@ -830,6 +864,49 @@ followersmaintenace().then()
 //         console.log(getVideo);
 //     }
 //     await getVideo();
+
+    // async function getSearchVideos() {
+    //     let getSearchVideos=await DataVideo.getSearchVideos("","Descr","Update");
+    //     for (const vid of getSearchVideos) {
+    //         vid.DiffDatePublishDateNow()
+    //          vid.showDiffDatePublishDateNow()
+    //          console.log(vid);
+    //         }
+    // }
+    // await getSearchVideos();
+
+    //  async function getVideosOrderByDatePublish() {
+    //     let getVideosOrderByDatePublish=await DataVideo.getVideosOrderByDatePublish();
+    //     for (const vid of getVideosOrderByDatePublish) {
+    //         vid.DiffDatePublishDateNow()
+    //          vid.showDiffDatePublishDateNow()
+    //          console.log(vid);
+    //         }
+    // }
+    // await getVideosOrderByDatePublish();
+
+    // async function getVideosByLikeUser() {
+    //     let getVideosByLikeUser=await DataVideo.getVideosOrderByLikes();
+    //     for (const vid of getVideosByLikeUser) {
+    //         vid.DiffDatePublishDateNow()
+    //          vid.showDiffDatePublishDateNow()
+    //          console.log(vid);
+    //         }
+    // }
+    // await getVideosByLikeUser();
+
+    
+    async function getVideosOrderbyComments() {
+        let getVideosOrderbyComments=await DataVideo.getVideosOrderbyComments();
+        for (const vid of getVideosOrderbyComments) {
+            vid.DiffDatePublishDateNow()
+             vid.showDiffDatePublishDateNow()
+             console.log(vid);
+            }
+    }
+    await getVideosOrderbyComments();
+
+
 
 //      async function getVideosbyAlbum() {
 //         let array=await DataVideo.getVideosbyAlbum(6)
@@ -947,11 +1024,8 @@ followersmaintenace().then()
 //     }
 //     await getVideosByLikeUser();
 
-
-    
-   
-//  }
-//  videos().then()
+ }
+ videos().then()
 // //#endregion
 // //#region Post
 // let posts=async()=>

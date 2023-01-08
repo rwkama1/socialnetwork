@@ -84,7 +84,6 @@ class DataLoginUser {
         
     }
 
-
     static  logout=async(iduser)=>
     {
         let resultquery=0;
@@ -99,8 +98,8 @@ class DataLoginUser {
         begin
             BEGIN TRANSACTION  
 
-            DELETE FROM LoginUser WHERE IdUser = @IdUser
-
+           
+            delete from LoginUser where iduser=@IdUser
         
             INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
             VALUES (@IdUser, GETUTCDATE(), 'logged out user')
@@ -134,6 +133,29 @@ class DataLoginUser {
         
     }
   
+//#region  Exists
+ static existLoginUser=async(iduser)=>
+ {
+    
+      let querysearch=`
+
+      SELECT CASE WHEN COUNT(*) > 0 
+      THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS Exist
+      FROM LoginUser
+      WHERE IdUser = @IdUser
+
+      `;
+         let pool = await Conection.conection();   
+        const result = await pool.request()
+        .input('IdUser', Int, iduser)
+        .query(querysearch)
+      let exist = result.recordset[0].Exist;
+        pool.close();
+        return exist;
+     
+ 
+  }
+ //#endregion
 
 
 

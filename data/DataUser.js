@@ -82,7 +82,7 @@ class DataUser {
         let resultquery=0;
         let deletequery = `
 
-        IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser = @IdUser and Active=1 )
+        IF NOT EXISTS (SELECT iduser FROM Userr WHERE IdUser = @IdUser and Active=1 )
         BEGIN
         select -1 as notexistuser  
         END
@@ -90,6 +90,8 @@ class DataUser {
         begin
 
             BEGIN TRANSACTION  
+
+            DELETE FROM LoginUser WHERE IdUser = @IdUser
 
             insert into Logs values (@IdUser,
             GETUTCDATE(),'Delete user')

@@ -3,8 +3,8 @@ const { VarChar,Int ,Date} = require("mssql");
 const { DTOAlbumVideo } = require("../entity/DTOAlbumVideos");
 
 class DataAlbumVideo {
-    //#region CRUD
-     static  addAlbumVideo=async(dtoalbumvide)=>
+   
+     static  addAlbumVideo=async(albumtitle,userid,arrayurlvideos)=>
     {
       let resultquery;
         let queryinsert = `
@@ -14,15 +14,32 @@ class DataAlbumVideo {
         END
         ELSE
         BEGIN
-        insert into AlbumUserVideos values (@IdUser,@Title,1)
-        select 1 as albumadded
+            BEGIN TRANSACTION
+
+          insert into AlbumUserVideos values (@IdUser,@Title,1)
+
+          ${this.forAddVideos(arrayurlvideos)}
+
+          INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+          VALUES (@IdUser, GETUTCDATE(), 'AlbumVideo Added')
+
+          select 1 as albumadded
+
+          IF(@@ERROR > 0)  
+          BEGIN  
+              ROLLBACK TRANSACTION  
+          END  
+          ELSE  
+          BEGIN  
+              COMMIT TRANSACTION  
+          END
         END
     `
         let pool = await Conection.conection();
     
         const result = await pool.request()
-            .input('IdUser', Int,dtoalbumvide.user.iduser)
-            .input('Title', VarChar, dtoalbumvide.title)
+            .input('IdUser', Int,userid)
+            .input('Title', VarChar, albumtitle)
             .query(queryinsert)
             resultquery = result.recordset[0].notexistuser;
             if(resultquery===undefined)
@@ -43,8 +60,8 @@ class DataAlbumVideo {
         END
         ELSE
         BEGIN
-        update AlbumUserVideos set Title=@Title where IdAlbumVideos=@IdAlbumVideos
-        select 1 as albumupdated
+          update AlbumUserVideos set Title=@Title where IdAlbumVideos=@IdAlbumVideos
+          select 1 as albumupdated
         END
         `
         let pool = await Conection.conection();
@@ -284,6 +301,26 @@ static getinformation(albumvideo, result) {
     albumvideo.active = album.Active;
    
 }
+static forAddVideos(arrayurlvideos)
+   {
+    let stringelement="";
+    for (let index = 0; index < arrayurlvideos.length; index++) {
+      const urlvideo = arrayurlvideos[index];
+     
+
+        stringelement=stringelement+
+        `
+
+        INSERT INTO UserVideos (IdUser, IdAlbumVideos, Title, Descriptionn, Likes, Urlvideos, Visibility, DatePublish, Active)
+        VALUES (@IdUser, IDENT_CURRENT('AlbumUserVideos'), 'UpdateTitle', 'UpdateDescription', 0, '${urlvideo}', 'Public', GETUTCDATE(), 1)
+        
+        `
+      
+     
+    }
+    return stringelement
+   
+   }
 //#endregion
 }
 module.exports = { DataAlbumVideo };

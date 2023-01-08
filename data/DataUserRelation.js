@@ -378,7 +378,65 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
              return arrayuser;
         
        }
+       
+       static getConfirmedFriendsbyUserLoginUser=async(iduser)=>
+       {
+           let arrayuser=[];
+               let querysearch=`
+
+               SELECT u.*
+               FROM Userr u
+               INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
+               LEFT JOIN LoginUser lu ON u.IdUser = lu.IdUser
+               WHERE ur.IdUser = @IdUser
+               AND ur.Statee = 'Confirmed'
+               ORDER BY lu.IdLoginUser DESC
+
+             
+                 `;
+               let pool = await Conection.conection();
           
+                   const result = await pool.request()
+                   .input('IdUser', Int, iduser)
+                   .query(querysearch)
+                   for (var recorduser of result.recordset) {
+                       let user = new DTOUser();   
+                     DataUser.getinformationList(user, recorduser);
+                     arrayuser.push(user);
+                    }
+              pool.close();
+              return arrayuser;
+         
+        }
+        static getPendingFriendsbyUserLoginUser=async(iduser)=>
+        {
+            let arrayuser=[];
+                let querysearch=`
+ 
+                SELECT u.*
+                FROM Userr u
+                INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
+                LEFT JOIN LoginUser lu ON u.IdUser = lu.IdUser
+                WHERE ur.IdUser = @IdUser
+                AND ur.Statee = 'Pending'
+                ORDER BY lu.IdLoginUser DESC
+ 
+              
+                  `;
+                let pool = await Conection.conection();
+           
+                    const result = await pool.request()
+                    .input('IdUser', Int, iduser)
+                    .query(querysearch)
+                    for (var recorduser of result.recordset) {
+                        let user = new DTOUser();   
+                      DataUser.getinformationList(user, recorduser);
+                      arrayuser.push(user);
+                     }
+               pool.close();
+               return arrayuser;
+          
+         }
       static getSentPendingUsersbyUser=async(iduser)=>
       {
           let arrayuser=[];

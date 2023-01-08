@@ -108,6 +108,31 @@ let resultquery;
 
     //#region Exists
 
+    static existFollow=async(iduserfollower,iduserfollowed)=>
+    {
+       
+         let querysearch=`
+   
+         SELECT
+         CASE WHEN EXISTS (
+             SELECT 1 FROM Followers
+             WHERE idfolloweduser = @IdUserFollowed  AND
+              idfolloweruser = @IdUserFollower
+         ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS Exist
+
+         `;
+            let pool = await Conection.conection();   
+           const result = await pool.request()
+           .input('IdUserFollower', Int, iduserfollower)
+           .input('IdUserFollowed', Int, iduserfollowed)
+           .query(querysearch)
+           let exist = result.recordset[0].Exist;
+           pool.close();
+           return exist;
+        
+    
+     }
+
     //#endregion
     
     //#region GETS
