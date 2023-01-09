@@ -264,23 +264,4 @@ delete from Logs
 delete from UserImages
  delete from Followers
 
- update  UserVideos set likes=1 where iduservideos=34
-
-
-    SELECT
-            UserVideos.*,
-            AlbumUserVideos.Title AS AlbumTitle,
-            Userr.Name,
-            Userr.Nick,
-            Userr.Email,
-            Userr.Imagee,
-               (SELECT COUNT(*) FROM UserrCommentsVideo WHERE UserrCommentsVideo.IdUserVideos = UserVideos.IdUserVideos) AS NumComments,
-            FROM UserVideos
-            INNER JOIN UserrCommentsVideo
-			ON UserVideos.IdUserVideos = UserrCommentsVideo.IdUserVideos
-			INNER JOIN AlbumUserVideos
-			ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
-			INNER JOIN Userr
-			ON AlbumUserVideos.IdUser = Userr.IdUser
-			ORDER BY
-			NumComments DESC
+ update  UserrRelations set Statee='Confirmed'

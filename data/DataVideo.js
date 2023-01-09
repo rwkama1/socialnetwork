@@ -20,10 +20,12 @@ class DataVideo {
           END
           ELSE
           BEGIN
+          IF @Visibility = 'Public' OR @Visibility = 'Private'
+          BEGIN
              BEGIN TRANSACTION
 
              insert into UserVideos values (@IdUser,@IdAlbumVideos,
-              @Title,@Likes,@Descriptionn,@UrlVideo,'Public',
+              @Title,@Likes,@Descriptionn,@UrlVideo,@Visibility,
               GETUTCDATE(),1)
             
               
@@ -41,6 +43,11 @@ class DataVideo {
                 COMMIT TRANSACTION  
             END
           END
+          ELSE
+          BEGIN
+            select -3 as visibilityerror
+          END
+        END
         END
         
     
@@ -52,6 +59,7 @@ class DataVideo {
             .input('IdAlbumVideos', Int, dtvideos.albumvideo.idalbumvideo)
             .input('Title', VarChar, dtvideos.title)
             .input('Descriptionn', VarChar, dtvideos.description)
+            .input('Visibility', VarChar, dtvideos.visibility)
             .input('Likes', Int, dtvideos.likes)
             .input('UrlVideo', VarChar, dtvideos.urlvideo)       
             .query(queryinsert)
@@ -59,9 +67,15 @@ class DataVideo {
             if(resultquery===undefined)
             {
               resultquery = result.recordset[0].notexistalbum;
+
               if(resultquery===undefined)
               {
-                resultquery = result.recordset[0].addvideo;
+                resultquery = result.recordset[0].visibilityerror;
+                if(resultquery===undefined)
+                {
+                  resultquery = result.recordset[0].addvideo;
+                }
+                
               }
             }
         pool.close();
@@ -412,25 +426,54 @@ static getVideo=async(idvideo)=>
     {
             let arrav=[];
             let querysearch = `
-         
             SELECT
-            UserVideos.*,
+            UserVideos.IdUserVideos,
+            UserVideos.IdUser,
+            UserVideos.IdAlbumVideos,
+            UserVideos.Title,
+            UserVideos.Likes,
+            UserVideos.Urlvideos,
+            UserVideos.Visibility,
+            UserVideos.DatePublish,
+            UserVideos.Active,
+          UserVideos.Descriptionn,
             AlbumUserVideos.Title AS AlbumTitle,
             Userr.Name,
             Userr.Nick,
             Userr.Email,
             Userr.Imagee,
-            (SELECT COUNT(*) FROM UserrCommentsVideo WHERE UserrCommentsVideo.IdUserVideos = UserVideos.IdUserVideos) AS NumComments
-            FROM UserVideos
-            INNER JOIN UserrCommentsVideo
-            ON UserVideos.IdUserVideos = UserrCommentsVideo.IdUserVideos
-            INNER JOIN AlbumUserVideos
-            ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
-            INNER JOIN Userr
-            ON AlbumUserVideos.IdUser = Userr.IdUser
-            ORDER BY
-            NumComments DESC
+            COUNT(UserrCommentsVideo.IdUserCommentVideo) AS NumComments
+        FROM UserVideos
+        LEFT JOIN UserrCommentsVideo
+        ON UserVideos.IdUserVideos = UserrCommentsVideo.IdUserVideos
+        INNER JOIN AlbumUserVideos
+        ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
+        INNER JOIN Userr
+        ON AlbumUserVideos.IdUser = Userr.IdUser
 
+        WHERE
+        Userr.Active = 1 
+        and AlbumUserVideos.Active = 1 
+        and UserVideos.Active = 1 
+
+        GROUP BY
+          UserVideos.IdUserVideos,
+            UserVideos.IdUser,
+            UserVideos.IdAlbumVideos,
+            UserVideos.Title,
+            UserVideos.Likes,
+            UserVideos.Urlvideos,
+            UserVideos.Visibility,
+            UserVideos.DatePublish,
+          UserVideos.Descriptionn,
+            UserVideos.Active,
+            AlbumUserVideos.Title,
+            Userr.Name,
+            Userr.Nick,
+            Userr.Email,
+            Userr.Imagee
+           ORDER BY
+                    NumComments DESC
           
             `  
             let pool = await Conection.conection();
@@ -439,14 +482,114 @@ static getVideo=async(idvideo)=>
             for (var p of result.recordset) {
                let vide = new DTOVideo();   
                this.getinformationList(vide,p);
-               vide.numbercomments = result.recordset[0].NumComments;
+               vide.numbercomments = p.NumComments;
                arrav.push(vide);
             }
          
            pool.close();
            return arrav;
      }
+     static getUserFollowerVideos=async(iduser)=>
+     {
+             let arrav=[];
+             let querysearch = `
+             SELECT 
+             UserVideos.*,
+             AlbumUserVideos.Title as AlbumTitle,
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee
+            FROM UserVideos
+            INNER JOIN AlbumUserVideos ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
+            INNER JOIN Userr ON Userr.IdUser = AlbumUserVideos.IdUser
+            INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+            WHERE Followers.IdFollowerUser = @IdUser
+             AND Userr.Active = 1 
+             AND AlbumUserVideos.Active = 1 
+             AND UserVideos.Active = 1 
 
+            ORDER BY UserVideos.DatePublish DESC
+           
+             `  
+             let pool = await Conection.conection();
+             const result = await pool.request() 
+             .input('IdUser', Int,iduser)
+             .query(querysearch)
+             for (var p of result.recordset) {
+                let vide = new DTOVideo();   
+                this.getinformationList(vide,p);
+                
+                arrav.push(vide);
+             }
+          
+            pool.close();
+            return arrav;
+      }
+      static getVideosSuggestedUser=async(iduser,iduserlogin)=>
+      {
+              let arrav=[];
+              let querysearch = `
+
+           
+               SELECT 
+              UserVideos.*,
+              AlbumUserVideos.Title as AlbumTitle,
+              Userr.Name,
+              Userr.Nick,
+              Userr.Email,
+              Userr.Imagee
+             FROM UserVideos
+             INNER JOIN AlbumUserVideos ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
+             INNER JOIN Userr ON Userr.IdUser = AlbumUserVideos.IdUser
+             INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+             WHERE Followers.IdFollowerUser = @IdUser
+              AND Userr.Active = 1 
+              AND AlbumUserVideos.Active = 1 
+              AND UserVideos.Active = 1 
+              AND Userr.IdUser != @IdUserLogin
+             
+ 
+  
+
+             UNION
+
+             SELECT 
+             UserVideos.*,
+             AlbumUserVideos.Title as AlbumTitle,
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee
+            FROM UserVideos
+            INNER JOIN AlbumUserVideos ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
+            INNER JOIN Userr ON Userr.IdUser = AlbumUserVideos.IdUser
+            INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+            WHERE Followers.IdFollowerUser = @IdUserLogin
+             AND Userr.Active = 1 
+             AND AlbumUserVideos.Active = 1 
+             AND UserVideos.Active = 1 
+             AND Userr.IdUser != @IdUserLogin
+             
+
+            ORDER BY UserVideos.DatePublish DESC
+              `  
+              let pool = await Conection.conection();
+              const result = await pool.request() 
+              .input('IdUser', Int,iduser)
+              .input('IdUserLogin', Int,iduserlogin)
+              .query(querysearch)
+              for (var p of result.recordset) {
+                 let vide = new DTOVideo();   
+                 this.getinformationList(vide,p);
+                 
+                 arrav.push(vide);
+              }
+           
+             pool.close();
+             return arrav;
+       }
+  
   static getVideosbyAlbum=async(idalbumvideo)=>
   {
      let arrayv=[];
@@ -641,6 +784,7 @@ static getVideo=async(idvideo)=>
                 and UserrRelations.Statee = 'Confirmed' 
                 and (UserVideos.Visibility='Public' or UserVideos.Visibility='Friend') 
                 and UserrRelations.IdUser = ${iduser}
+                ORDER BY datepublish desc
          `  
            let pool = await Conection.conection();
            const result = await pool.request()      

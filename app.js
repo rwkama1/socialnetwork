@@ -785,6 +785,7 @@ let videos=async()=>
     //         dtovid.user.iduser = index;
     //         dtovid.albumvideo.idalbumvideo = index;
     //         dtovid.title = "Video" + index.toString();
+    //         dtovid.visibility = "Public";
     //         dtovid.description = "Description" + index.toString();
     //         dtovid.DateTimePublish = new Date();
     //         dtovid.urlvideo = "UrlVideo" + index.toString();
@@ -795,7 +796,9 @@ let videos=async()=>
     //         if (addVideo===-2) {
     //             throw new Error("The album of videos does not exists");
     //         }
-
+    //         if (addVideo===-3) {
+    //             throw new Error("Visibility should only be Public or Private");
+    //         }
     //          console.log("The video was added successfully");
 
 
@@ -896,15 +899,41 @@ let videos=async()=>
     // await getVideosByLikeUser();
 
     
-    async function getVideosOrderbyComments() {
-        let getVideosOrderbyComments=await DataVideo.getVideosOrderbyComments();
-        for (const vid of getVideosOrderbyComments) {
-            vid.DiffDatePublishDateNow()
-             vid.showDiffDatePublishDateNow()
-             console.log(vid);
-            }
-    }
-    await getVideosOrderbyComments();
+    // async function getVideosOrderbyComments() {
+    //     let getVideosOrderbyComments=await DataVideo.getVideosOrderbyComments();
+    //     for (const vid of getVideosOrderbyComments) {
+    //         vid.DiffDatePublishDateNow()
+    //          vid.showDiffDatePublishDateNow()
+    //          console.log(vid);
+    //         }
+    // }
+    // await getVideosOrderbyComments();
+
+    
+    // async function getUserFollowerVideos() {
+    //     let getUserFollowerVideos=await DataVideo.getUserFollowerVideos(1);
+    //     for (const vid of getUserFollowerVideos) {
+    //         vid.DiffDatePublishDateNow()
+    //          vid.showDiffDatePublishDateNow()
+    //          console.log(vid);
+    //         }
+    // }
+    // await getUserFollowerVideos();
+
+     
+    // async function getVideosSuggestedUser() {
+    //     let getVideosSuggestedUser=
+    //     await DataVideo.getVideosSuggestedUser(1,2);
+    //     for (const vid of getVideosSuggestedUser) {
+    //         vid.DiffDatePublishDateNow()
+    //          vid.showDiffDatePublishDateNow()
+    //          console.log(vid);
+    //         }
+    // }
+    // await getVideosSuggestedUser();
+
+
+
 
 
 
@@ -978,16 +1007,16 @@ let videos=async()=>
 //     await getVideosVisibilityPublicUser();
 
 
-//     async function getVideosbyFriendUser() {
-//         let array=await DataVideo.getVideosbyFriendUser(4)
-//         for (const vid of array) {
-//             vid.DiffDatePublishDateNow()
-//             vid.showDiffDatePublishDateNow()
-//             console.log(vid);
-//         }
+    // async function getVideosbyFriendUser() {
+    //     let array=await DataVideo.getVideosbyFriendUser(1)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
       
-//     }
-//     await getVideosbyFriendUser();
+    // }
+    // await getVideosbyFriendUser();
 
 
 
@@ -1675,22 +1704,23 @@ let videos=async()=>
 // //#endregion
 // //#region CommentVideo
 
-// let CommentVideo=async()=>
-// {
+let CommentVideo=async()=>
+{
 
-//        async function CommentVideo() {
+    //    async function CommentVideo() {
    
-//            let CommentVideo = await DataCommentVideo.CommentVideo(4,1,"VideoComment");
-//            if (CommentVideo===-1) {
-//                throw new Error("The video does not exists");
-//            }
-//            if (CommentVideo===-2) {
-//                throw new Error("The user does not exists");
-//            }
-//             console.log("The comment video was added successfully");
+    //        let CommentVideo = await DataCommentVideo.CommentVideo(
+    //          11,6,"VideoComment");
+    //        if (CommentVideo===-1) {
+    //            throw new Error("The video does not exists");
+    //        }
+    //        if (CommentVideo===-2) {
+    //            throw new Error("The user does not exists");
+    //        }
+    //         console.log("The comment video was added successfully");
       
-//         }
-//         await CommentVideo();
+    //     }
+    //     await CommentVideo();
 
 
 //     async function UpdateTextCommentVideo() {
@@ -1756,8 +1786,8 @@ let videos=async()=>
 
 // let NumberOfCommentVideo = await DataCommentVideo.NumberOfCommentVideo(1);
 // console.log(NumberOfCommentVideo);
-// }
-// CommentVideo().then()
+}
+CommentVideo().then()
 
 // //#endregion
 // //#region SubComment
