@@ -12,22 +12,26 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
    let resultquery;
     let queryinsert = `
 
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
+    IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
     BEGIN
       select -1 as notexistuser
     END
     ELSE
     BEGIN
-      IF NOT EXISTS ( SELECT * FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
+      IF NOT EXISTS ( SELECT IdAlbumImages FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
       BEGIN
          select -2 as notexistalbum
       END
       ELSE
       BEGIN
+
+      IF @Visibility = 'Public' OR @Visibility = 'Private'
+      BEGIN
+
          BEGIN TRANSACTION
 
          insert into UserImages values  (@IdUser,
-            @IdAlbumImages,@Title,@Descriptionn ,@Likes,@Urlimage,'Public'
+            @IdAlbumImages,@Title,@Descriptionn ,@Likes,@Urlimage,@Visibility
          ,GETUTCDATE(),1)
 
          INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
@@ -45,6 +49,11 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
              COMMIT TRANSACTION  
          END
       END
+      ELSE
+         BEGIN
+          select -3 as visibilityerror
+         END
+      END
     END
     
 
@@ -56,6 +65,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
         .input('IdAlbumImages', Int, dtimages.albumphoto.idalbumphoto)
         .input('Title', VarChar, dtimages.title)
         .input('Descriptionn', VarChar, dtimages.description)
+        .input('Visibility', VarChar,  dtimages.visibility)
         .input('Likes', Int, dtimages.likes)
         .input('Urlimage', VarChar, dtimages.urlimage)       
         .query(queryinsert)
@@ -65,7 +75,11 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
           resultquery = result.recordset[0].notexistalbum;
           if(resultquery===undefined)
           {
-            resultquery = result.recordset[0].addedphoto;
+            resultquery = result.recordset[0].visibilityerror;
+            if(resultquery===undefined)
+            {
+               resultquery = result.recordset[0].addedphoto;
+            }
           }
         }
     pool.close();
@@ -76,13 +90,16 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 {
    let resultquery;
     let queryupdate = `
-    IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@IdUserImages and Active=1)
+    IF NOT EXISTS 
+    ( SELECT * FROM UserImages 
+      WHERE IdUserImages=@IdUserImages and Active=1)
     BEGIN
     select -1 as notexistimage
     END
     ELSE
     BEGIN
-    update UserImages set Visibility=@Visibility where IdUserImages=@IdUserImages
+    update UserImages
+     set Visibility=@Visibility where IdUserImages=@IdUserImages
     select 1 as updatedphoto
     END
     `
@@ -100,6 +117,52 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
     return resultquery;
     
 }
+static updatePhoto=async(idimage,title,description,visibility)=>
+{
+   let resultquery;
+    let queryupdate = `
+    IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE IdUserImages=@IdUserImages and Active=1)
+    BEGIN
+    select -1 as notexistimage
+    END
+    ELSE
+    BEGIN
+      IF @Visibility = 'Public' OR @Visibility = 'Private'
+      BEGIN
+         update UserImages set Visibility=@Visibility,
+         Descriptionn=@Descriptionn,
+         Title=@Title
+         where IdUserImages=@IdUserImages
+         select 1 as updatedphoto
+         
+      END
+      ELSE
+      BEGIN
+         select -2 as visibilityerror
+      END
+END
+    `
+    let pool = await Conection.conection();
+         const result = await pool.request()
+         .input('Visibility', VarChar,visibility)
+         .input('Title', VarChar,title)
+         .input('Descriptionn', VarChar,description)
+        .input('IdUserImages', Int, idimage)   
+        .query(queryupdate)
+        resultquery = result.recordset[0].notexistimage;
+        if(resultquery===undefined)
+        {
+          resultquery = result.recordset[0].visibilityerror;
+          if(resultquery===undefined)
+          {
+            resultquery = result.recordset[0].updatedphoto;
+          }
+        }
+    pool.close();
+    return resultquery;
+    
+}
+
  static updateTitleDescriptionPhoto=async(idimage,description,title)=>
 {
    let resultquery;
@@ -135,7 +198,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
    let resultquery;
     let queryupdate = `
 
-    IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@IdUserImages and Active=1)
+    IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE IdUserImages=@IdUserImages and Active=1)
     BEGIN
     select -1 as notexistimage
     END
@@ -190,7 +253,7 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
 {
         let resultquery;
         let querysearch = `  
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=${idimage} and Active=1)
+        IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE IdUserImages=${idimage} and Active=1)
          BEGIN
          select -1 as notexistimage
          END
@@ -433,6 +496,76 @@ const { DTOPhoto } = require("../entity/DTOPhoto");
            pool.close();
            return arrayphoto;
      }
+
+     static getImagessOrderbyComments=async()=>
+     {
+             let arrav=[];
+             let querysearch = `
+
+             SELECT
+             UserrImages.IdUserImages,
+             UserrImages.IdUser,
+             UserrImages.IdAlbumImages,
+             UserrImages.Title,
+             UserrImages.Likes,
+             UserrImages.UrlImages,
+             UserrImages.Visibility,
+             UserrImages.DatePublish,
+             UserrImages.Active,
+           UserrImages.Descriptionn,
+             AlbumUserImages.Title AS AlbumTitle,
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee,
+             COUNT(UserrCommentsImage.IdUserCommentImage) AS NumComments
+         FROM UserrImages
+         LEFT JOIN UserrCommentsImage
+         ON UserrImages.IdUserImages = UserrCommentsImage.IdUserImages
+         INNER JOIN AlbumUserImages
+         ON UserrImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
+         INNER JOIN Userr
+         ON AlbumUserImages.IdUser = Userr.IdUser
+ 
+         WHERE
+         Userr.Active = 1 
+         and AlbumUserImages.Active = 1 
+         and UserrImages.Active = 1 
+ 
+         GROUP BY
+           UserrImages.IdUserImages,
+             UserrImages.IdUser,
+             UserrImages.IdAlbumImages,
+             UserrImages.Title,
+             UserrImages.Likes,
+             UserrImages.UrlImages,
+             UserrImages.Visibility,
+             UserrImages.DatePublish,
+             UserrImages.Descriptionn,
+             UserrImages.Active,
+             AlbumUserImages.Title
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee
+            ORDER BY
+                     NumComments DESC
+           
+             `  
+             let pool = await Conection.conection();
+             const result = await pool.request()      
+             .query(querysearch)
+             for (var p of result.recordset) {
+                let img = new DTOPhoto();   
+                this.getinformationList(img,p);
+                img.numbercomments = p.NumComments;
+                arrav.push(img);
+             }
+          
+            pool.close();
+            return arrav;
+      }
+
    static getImagesbyFriendUser=async(iduser)=>     {
       let arrayphoto=[];
            let querysearch = `  

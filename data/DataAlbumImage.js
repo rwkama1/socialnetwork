@@ -8,7 +8,7 @@ const { VarChar,Int ,Date} = require("mssql");
 {
   let resultquery;
     let queryinsert = `
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
+    IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
     BEGIN
      select -1 as notexistuser
     END
@@ -54,7 +54,7 @@ const { VarChar,Int ,Date} = require("mssql");
 {
     let resultquery;
     let queryinsert =`
-    IF NOT EXISTS ( SELECT * FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
+    IF NOT EXISTS ( SELECT IdAlbumImages FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
     BEGIN
     select -1 as notexistalbum
     END
@@ -83,7 +83,7 @@ const { VarChar,Int ,Date} = require("mssql");
 {
   let resultquery;
     let queryinsert = `
-    IF NOT EXISTS ( SELECT * FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
+    IF NOT EXISTS ( SELECT IdAlbumImages FROM AlbumUserImages WHERE IdAlbumImages=@IdAlbumImages and Active=1)
     BEGIN
     select -1 as notexistalbum
     END

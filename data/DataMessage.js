@@ -13,13 +13,13 @@ class DataMessage {
 
         let queryinsert = 
         `
-        IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=@iduserreceived and Active=1)
+        IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser=@iduserreceived and Active=1)
         BEGIN
              select -1 as notexistuserreceived  
         END
         ELSE
         BEGIN
-            IF NOT EXISTS (SELECT * FROM Userr WHERE IdUser=@idusersender and Active=1)
+            IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser=@idusersender and Active=1)
             BEGIN
                 select -2 as notexistusersender 
             END
@@ -56,19 +56,19 @@ class DataMessage {
         let resultquery;
         let queryupdate = 
         `
-        IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser = @iduserreceived and Active=1 )
+        IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser = @iduserreceived and Active=1 )
         BEGIN
              select -1 as notexistuserreceived  
         END
         ELSE
         BEGIN
-            IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser=@idusersender and Active=1 )
+            IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser=@idusersender and Active=1 )
             BEGIN
                 select -2 as notexistusersender 
             END
             ELSE
             BEGIN
-                IF NOT EXISTS (SELECT *FROM UserrMessage WHERE IdUserMessages=@IdUserMessages and IdUser=@iduserreceived  
+                IF NOT EXISTS (SELECT IdUserMessages  FROM UserrMessage WHERE IdUserMessages=@IdUserMessages and IdUser=@iduserreceived  
                     and IdSender=@idusersender  )
                 BEGIN
                     select -3 as notexistmessage 
@@ -111,7 +111,7 @@ class DataMessage {
         let resultquery;
         let queryupdate = 
         `
-        IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser=@iduserlogin and Active=1 )
+        IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser=@iduserlogin and Active=1 )
         BEGIN
              select -1 as notexistuserreceived  
         END

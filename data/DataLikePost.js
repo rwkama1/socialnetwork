@@ -13,19 +13,19 @@ class DataLikePost {
         let queryinsert = 
         `
 
-        IF NOT EXISTS ( SELECT * FROM UserPost WHERE idpost=@idpost and Active=1)
+        IF NOT EXISTS ( SELECT idpost FROM UserPost WHERE idpost=@idpost and Active=1)
         BEGIN
             select -1 as notexistpost
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  EXISTS ( SELECT * FROM LikePost WHERE IdUser=@iduser and idpost=@idpost)
+                IF  EXISTS ( SELECT IdUser FROM LikePost WHERE IdUser=@iduser and idpost=@idpost)
                 BEGIN
                 select -3 as existduplicate
                 END
@@ -77,19 +77,19 @@ class DataLikePost {
         let queryupdate = 
         `
 
-        IF NOT EXISTS ( SELECT * FROM UserPost WHERE idpost=@idpost and Active=1)
+        IF NOT EXISTS ( SELECT idpost FROM UserPost WHERE idpost=@idpost and Active=1)
         BEGIN
             select -1 as notexistpost
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  NOT EXISTS ( SELECT * FROM LikePost WHERE IdUser=@iduser and idpost=@idpost)
+                IF  NOT EXISTS ( SELECT IdUser FROM LikePost WHERE IdUser=@iduser and idpost=@idpost)
                 BEGIN
                 select -3 as noexistlike
                 END

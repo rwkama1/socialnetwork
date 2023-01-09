@@ -10,13 +10,13 @@ class DataCommentVideo {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE iduservideos=@idvideo and Active=1)
+        IF NOT EXISTS ( SELECT iduservideos FROM UserVideos WHERE iduservideos=@idvideo and Active=1)
         BEGIN
             select -1 as notexistvideo
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
@@ -63,26 +63,26 @@ class DataCommentVideo {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsVideo WHERE idusercomment=@idusercomment 
+        IF NOT EXISTS ( SELECT idusercomment FROM UserrCommentsVideo WHERE idusercomment=@idusercomment 
             and iduservideos=@idvideo)
         BEGIN
             select -1 as notexistcommentvideo
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM UserVideos WHERE iduservideos=@idvideo and Active=1)
+            IF NOT EXISTS ( SELECT iduservideos FROM UserVideos WHERE iduservideos=@idvideo and Active=1)
             BEGIN
                 select -2 as notexistvideos
             END
            ELSE
            BEGIN
-                IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+                IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
                 BEGIN
                     select -3 as notexistuser
                 END
                 ELSE
                 BEGIN
-                    IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
+                    IF NOT EXISTS ( SELECT IdUser FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
                     BEGIN
                         select -4 as notexistcomment
                     END

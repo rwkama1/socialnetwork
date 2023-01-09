@@ -17,19 +17,19 @@ static  addUserRelation=async(dtousderelation)=>
     let resultquery=0;
     let queryinsert = `
   
-	IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
+	IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
   BEGIN
   select -1 as notexistuser
   END
 ELSE
 BEGIN
-  IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdFriend and Active=1)
+  IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdFriend and Active=1)
   BEGIN
     select -2 as notexistfriend
   END
   ELSE
   BEGIN
-    IF  EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
+    IF  EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
     BEGIN
       select -3 as existduplicate
     END
@@ -78,19 +78,19 @@ static  deleteUserRelation=async(iduser,idfriend)=>
 {
 let resultquery;
     let query = `
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${iduser} and Active=1)
+    IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=${iduser} and Active=1)
     BEGIN
     select -1 as notexistuser
     END
 	ELSE
 	BEGIN 
-		 IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${idfriend} and Active=1)
+		 IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=${idfriend} and Active=1)
 		BEGIN
 		select -2 as notexistfriend
 		END
 		ELSE
 		BEGIN 
-			IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
+			IF  NOT EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
 			BEGIN
 			select -3 as notexistduplicate
 			END
@@ -139,19 +139,19 @@ static  confirmFriend=async(iduser,idfriend)=>
 let resultquery;
     let query = `
 
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
+    IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
     BEGIN
     select -1 as notexistuser
     END
     ELSE
     BEGIN
-      IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdFriend and Active=1)
+      IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdFriend and Active=1)
       BEGIN
       select -2 as notexistfriend
       END
       ELSE
       BEGIN
-        IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
+        IF  NOT EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
         BEGIN
         select -3 as notexistduplicate
         END
@@ -199,19 +199,19 @@ static  blockFriend=async(iduser,idfriend)=>
 {
   let resultquery;
     let query = `
-    IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${iduser} and Active=1)
+    IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=${iduser} and Active=1)
     BEGIN
     select -1 as notexistuser
     END
     ELSE 
     BEGIN 
-      IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=${idfriend} and Active=1)
+      IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=${idfriend} and Active=1)
       BEGIN
       select -2 as notexistfriend
       END
       ELSE
       BEGIN        
-        IF  NOT EXISTS ( SELECT * FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
+        IF  NOT EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
         BEGIN
         select -3 as notexistduplicate
         END
@@ -260,7 +260,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
     SELECT 
     CASE WHEN EXISTS (
       SELECT 
-        * 
+      IdUser
       FROM 
         UserrRelations 
       WHERE 
@@ -284,7 +284,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
             let querysearch=`
             IF NOT EXISTS (
                       select 
-                      UserrRelations.* 
+                      UserrRelations.IdFriend
                 from 
                   UserrRelations 
                   inner join Userr on Userr.IdUser = UserrRelations.IdFriend 

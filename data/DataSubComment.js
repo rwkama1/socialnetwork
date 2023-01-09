@@ -11,13 +11,13 @@ class DataSubComment {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrComments WHERE idusercomment=@idusercomment)
+        IF NOT EXISTS ( SELECT idusercomment FROM UserrComments WHERE idusercomment=@idusercomment)
         BEGIN
             select -1 as notexistcomment
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
@@ -53,19 +53,19 @@ class DataSubComment {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrComments WHERE idusercomment=@idusercomment)
+        IF NOT EXISTS ( SELECT idusercomment FROM UserrComments WHERE idusercomment=@idusercomment)
             BEGIN
                 select -1 as notexistcomment
             END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE iduser=@iduser)
+            IF NOT EXISTS ( SELECT iduser FROM Userr WHERE iduser=@iduser)
             BEGIN
                 select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF NOT EXISTS ( SELECT * FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
+                IF NOT EXISTS ( SELECT idsubusercomment FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
                 BEGIN
                     select -3 as notexistsubcomment
                 END 
@@ -110,13 +110,13 @@ class DataSubComment {
         let resultquery;
         let queryupdate = 
         `
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
                 BEGIN
                 select -1 as notexistuser
                 END
             ELSE
             BEGIN
-                IF NOT EXISTS ( SELECT * FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
+                IF NOT EXISTS ( SELECT idsubusercomment FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
                 BEGIN
                     select -2 as notexistsubcomment
                 END 

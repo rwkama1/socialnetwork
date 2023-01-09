@@ -428,7 +428,7 @@ loginuser().then()
 // console.log(NumberMutualFriends);
 }
 userrelation().then()
-// //#endregion1
+// //#endregion
 // //#region FOLLOWERS 
 let followersmaintenace=async()=>
 {
@@ -485,8 +485,8 @@ followersmaintenace().then()
 
 // //#endregion FOLLOWERS
 // //#region AlbumPhotos
-//  let albumimage=async()=>
-//  {
+ let albumimage=async()=>
+ {
     // async function addAlbum() {
     //     for (let index = 1; index < 100; index++) {
           
@@ -541,36 +541,59 @@ followersmaintenace().then()
 
 
 
-// }
-//   albumimage().then()
+}
+  albumimage().then()
 // //#endregion
 // //#region Images
-// let images=async()=>
-//  {
-//     async function addImage() {
-//         for (let index = 11; index < 100; index++) {
-//             let dtophoto = new DTOPhoto();
-//             dtophoto.user.iduser = index;
-//             dtophoto.albumphoto.idalbumphoto = index;
-//             dtophoto.title = "Image" + index.toString();
-//             dtophoto.description = "Description" + index.toString();
-//             dtophoto.DateTimePublish = new Date();
+let images=async()=>
+ {
+    // async function addImage() {
+    //     for (let index = 11; index < 100; index++) {
+    //         let dtophoto = new DTOPhoto();
+    //         dtophoto.user.iduser = index;
+    //         dtophoto.albumphoto.idalbumphoto = index;
+    //         dtophoto.title = "Image" + index.toString();
+    //         dtophoto.visibility = "Public";
+    //         dtophoto.description = "Description" + index.toString();
+    //         dtophoto.DateTimePublish = new Date();
 
-//             dtophoto.urlimage = "Urlimage" + index.toString();
-//             let addImage = await DataPhoto.addImages(dtophoto);
-//             if (addImage===-1) {
-//                 throw new Error("The user does not exists");
-//                 }
-//             if (addImage===-2) {
-//                 throw new Error("The album of images does not exists");
-//             }
+    //         dtophoto.urlimage = "Urlimage" + index.toString();
+    //         let addImage = await DataPhoto.addImages(dtophoto);
+    //         if (addImage===-1) {
+    //             throw new Error("The user does not exists");
+    //             }
+    //         if (addImage===-2) {
+    //             throw new Error("The album of images does not exists");
+    //         }
+    //         if (addImage===-3) {
+    //             throw new Error("Visibility should only be Public or Private");
+    //         }
+        
+        
 
-//              console.log("The image was added successfully");
+    //          console.log("The image was added successfully");
 
 
-//         }
-//     }
-//     await addImage();
+    //     }
+    // }
+    // await addImage();
+
+    // async function updatePhoto() {
+
+    //     let updatePhoto = await 
+    //     DataPhoto.updatePhoto(41,'ImageUpdated',"DecriptionUpdated","Public");
+    //          if (updatePhoto===-1) {
+    //         throw new Error("The image does not exists");
+    //         }
+    //         if (updatePhoto===-2) {
+    //             throw new Error("Visibility should only be Public or Private");
+    //         }
+    //         console.log("The visibility was updated successfully");
+
+    // }
+    // await updatePhoto();
+
+
 
 //     async function updateVisibilityPhoto() {
 
@@ -714,8 +737,8 @@ followersmaintenace().then()
 
 
 
-//  }
-//   images().then()
+ }
+  images().then()
 
 // //#endregion
 // //#region AlbumVideos
@@ -1057,8 +1080,8 @@ let videos=async()=>
  videos().then()
 // //#endregion
 // //#region Post
-// let posts=async()=>
-//  {
+let posts=async()=>
+ {
 //     async function addpost() {
 //         for (let index = 1; index < 100; index++) {
 //             let dtopost = new DTOPost();
@@ -1208,8 +1231,8 @@ let videos=async()=>
 
 
 
-//  }
-//  posts().then()
+ }
+ posts().then()
 // //#endregion
 // //#region  PostVideoImages
 
@@ -1525,22 +1548,23 @@ let videos=async()=>
 // //#endregion    
 // //#region CommentImage
 
-// let CommentImage=async()=>
-// {
+let CommentImage=async()=>
+{
 
-//        async function commentimage() {
+       async function commentimage() {
    
-//            let commentimage = await DataCommentImage.CommentImage(4,1,"Comment");
-//            if (commentimage===-1) {
-//                throw new Error("The image does not exists");
-//            }
-//            if (commentimage===-2) {
-//                throw new Error("The user does not exists");
-//            }
-//             console.log("The comment image was added successfully");
+           let commentimage = await
+            DataCommentImage.CommentImage(11,41,"Comment");
+           if (commentimage===-1) {
+               throw new Error("The image does not exists");
+           }
+           if (commentimage===-2) {
+               throw new Error("The user does not exists");
+           }
+            console.log("The comment image was added successfully");
       
-//    }
-//    await commentimage();
+   }
+   await commentimage();
 
 
 //     async function UpdateTextCommentImage() {
@@ -1609,8 +1633,8 @@ let videos=async()=>
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);
 
-// }
-// CommentImage().then()
+}
+CommentImage().then()
 
 // //#endregion
 // //#region CommentPost

@@ -8,13 +8,13 @@ class DataVideo {
        let resultquery;
         let queryinsert = `
     
-        IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
+        IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
         BEGIN
           select -1 as notexistuser
         END
         ELSE
         BEGIN
-          IF NOT EXISTS ( SELECT * FROM AlbumUserVideos WHERE IdAlbumVideos=@IdAlbumVideos and Active=1)
+          IF NOT EXISTS ( SELECT IdAlbumVideos FROM AlbumUserVideos WHERE IdAlbumVideos=@IdAlbumVideos and Active=1)
           BEGIN
              select -2 as notexistalbum
           END
@@ -86,7 +86,7 @@ class DataVideo {
     {
        let resultquery;
         let queryupdate = `
-        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE 
+        IF NOT EXISTS ( SELECT IdUserVideos FROM UserVideos WHERE 
           IdUserVideos=@IdUserVideos and Active=1)
         BEGIN
         select -1 as notexistv
@@ -190,7 +190,7 @@ class DataVideo {
     {
        let resultquery;
         let queryupdate = `
-        IF NOT EXISTS ( SELECT * FROM UserVideos
+        IF NOT EXISTS ( SELECT IdUserVideos FROM UserVideos
            WHERE IdUserVideos=@IdUserVideos and Active=1)
         BEGIN
           select -1 as notexistv
@@ -245,7 +245,7 @@ static getVideo=async(idvideo)=>
 {
         let resultquery;
         let querysearch = `  
-        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE IdUserVideos=${idvideo} and Active=1)
+        IF NOT EXISTS ( SELECT IdUserVideos FROM UserVideos WHERE IdUserVideos=${idvideo} and Active=1)
          BEGIN
          select -1 as noexistv
          END

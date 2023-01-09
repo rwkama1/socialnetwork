@@ -8,7 +8,7 @@ class DataAlbumVideo {
     {
       let resultquery;
         let queryinsert = `
-        IF NOT EXISTS ( SELECT * FROM Userr WHERE  IdUser=@IdUser and Active=1)
+        IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE  IdUser=@IdUser and Active=1)
         BEGIN
         select -1 as notexistuser
         END
@@ -54,7 +54,7 @@ class DataAlbumVideo {
     {
         let resultquery;
         let queryinsert =`
-        IF NOT EXISTS ( SELECT * FROM AlbumUserVideos WHERE IdAlbumVideos=@IdAlbumVideos and Active=1)
+        IF NOT EXISTS ( SELECT IdAlbumVideos FROM AlbumUserVideos WHERE IdAlbumVideos=@IdAlbumVideos and Active=1)
         BEGIN
         select -1 as notexistalbum
         END
@@ -83,7 +83,7 @@ class DataAlbumVideo {
     {
       let resultquery;
         let queryinsert = `
-        IF NOT EXISTS ( SELECT * FROM AlbumUserVideos WHERE IdAlbumVideos=@IdAlbumVideos and Active=1)
+        IF NOT EXISTS ( SELECT IdAlbumVideos FROM AlbumUserVideos WHERE IdAlbumVideos=@IdAlbumVideos and Active=1)
         BEGIN
         select -1 as notexistalbum
         END
@@ -136,7 +136,7 @@ static existAlbumById=async(idalbum)=>
       let resultquery;
         let querysearch=`
         IF NOT EXISTS (
-          SELECT  * FROM  AlbumUserVideos WHERE  IdAlbumVideos = ${idalbum} and Active = 1
+          SELECT  IdAlbumVideos FROM  AlbumUserVideos WHERE  IdAlbumVideos = ${idalbum} and Active = 1
         ) 
         BEGIN 
          select -1 as notexistalbum 

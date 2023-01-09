@@ -11,19 +11,19 @@ class DataLikeVideo {
 
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE IdUserVideos=@iduservideo and Active=1)
+        IF NOT EXISTS ( SELECT IdUserVideos FROM UserVideos WHERE IdUserVideos=@iduservideo and Active=1)
         BEGIN
             select -1 as notexistvideo
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  EXISTS ( SELECT * FROM LikeVideo WHERE IdUser=@iduser and IdUserVideos=@iduservideo)
+                IF  EXISTS ( SELECT IdUser FROM LikeVideo WHERE IdUser=@iduser and IdUserVideos=@iduservideo)
                 BEGIN
                  select -3 as existduplicate
                 END
@@ -75,19 +75,19 @@ class DataLikeVideo {
         let queryupdate = 
         `
 
-        IF NOT EXISTS ( SELECT * FROM UserVideos WHERE IdUserVideos=@iduservideos and Active=1)
+        IF NOT EXISTS ( SELECT IdUserVideos FROM UserVideos WHERE IdUserVideos=@iduservideos and Active=1)
         BEGIN
             select -1 as notexistvideo
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  NOT EXISTS ( SELECT * FROM LikeVideo WHERE IdUser=@iduser and IdUserVideos=@iduservideos)
+                IF  NOT EXISTS ( SELECT IdUser FROM LikeVideo WHERE IdUser=@iduser and IdUserVideos=@iduservideos)
                 BEGIN
                 select -3 as noexistlikevideo
                 END

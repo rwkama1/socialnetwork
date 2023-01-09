@@ -8,7 +8,7 @@ class DataPost {
        let resultquery;
         let queryinsert = `
     
-        IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@IdUser and Active=1)
+        IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
         BEGIN
           select -1 as notexistuser
         END
@@ -39,7 +39,7 @@ class DataPost {
     {
        let resultquery;
         let queryupdate = `
-        IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=@IdPost and Active=1)
+        IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=@IdPost and Active=1)
         BEGIN
              select -1 as notexistpost
         END
@@ -67,7 +67,7 @@ class DataPost {
     {
        let resultquery;
         let queryupdate = `
-        IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=@IdPost and Active=1)
+        IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=@IdPost and Active=1)
         BEGIN
              select -1 as notexistpost
         END
@@ -98,7 +98,7 @@ class DataPost {
        let resultquery;
         let queryupdate = `
     
-        IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=@IdPost and Active=1)
+        IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=@IdPost and Active=1)
         BEGIN
              select -1 as notexistpost
         END
@@ -151,7 +151,7 @@ class DataPost {
      {
              let resultquery;
              let querysearch = `  
-             IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=${idpost} and Active=1)
+             IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=${idpost} and Active=1)
               BEGIN
                     select -1 as notexistpost
               END
@@ -352,7 +352,7 @@ class DataPost {
            let arrayp=[];
            let querysearch = `   
     
-        IF EXISTS ( SELECT UserrRelations.* FROM  UserrRelations 
+        IF EXISTS ( SELECT UserrRelations.IdFriend FROM  UserrRelations 
                    INNER JOIN Userr ON Userr.IdUser = UserrRelations.IdFriend 
                   WHERE 
                    Userr.Active = 1 
@@ -412,7 +412,7 @@ class DataPost {
            let querysearch = `            
           IF EXISTS (
             select 
-              UserrRelations.*
+              UserrRelations.IdFriend
             from 
               UserrRelations 
               inner join Userr on Userr.IdUser = UserrRelations.IdFriend 

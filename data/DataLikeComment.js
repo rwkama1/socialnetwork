@@ -13,19 +13,19 @@ class DataLikeComment {
 
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUserComment=@idusercomment)
+        IF NOT EXISTS ( SELECT IdUserComment FROM UserrComments WHERE IdUserComment=@idusercomment)
         BEGIN
             select -1 as notexistcomment
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUserComment FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  EXISTS ( SELECT * FROM LikeComment WHERE IdUser=@iduser and idusercomment=@idusercomment)
+                IF  EXISTS ( SELECT IdUser FROM LikeComment WHERE IdUser=@iduser and idusercomment=@idusercomment)
                 BEGIN
                 select -3 as existduplicate
                 END
@@ -77,19 +77,19 @@ class DataLikeComment {
         let queryupdate = 
         `
 
-        IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUserComment=@idusercomment)
+        IF NOT EXISTS ( SELECT IdUserComment FROM UserrComments WHERE IdUserComment=@idusercomment)
         BEGIN
             select -1 as notexistcomment
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  NOT EXISTS ( SELECT * FROM LikeComment WHERE IdUser=@iduser and idusercomment=@idusercomment)
+                IF  NOT EXISTS ( SELECT IdUser FROM LikeComment WHERE IdUser=@iduser and idusercomment=@idusercomment)
                 BEGIN
                 select -3 as noexistlike
                 END

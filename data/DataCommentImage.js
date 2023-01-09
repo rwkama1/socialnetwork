@@ -10,13 +10,13 @@ class DataCommentImage {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE iduserimages=@iduserimages and Active=1)
+        IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE iduserimages=@iduserimages and Active=1)
         BEGIN
             select -1 as notexistimage
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
@@ -63,26 +63,26 @@ class DataCommentImage {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=@idusercomment 
+        IF NOT EXISTS ( SELECT idusercomment FROM UserrCommentsImage WHERE idusercomment=@idusercomment 
             and iduserimages=@iduserimages)
         BEGIN
             select -1 as notexistcommentimage
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM UserImages WHERE iduserimages=@iduserimages and Active=1)
+            IF NOT EXISTS ( SELECT iduserimages FROM UserImages WHERE iduserimages=@iduserimages and Active=1)
             BEGIN
                 select -2 as notexistimage
             END
            ELSE
            BEGIN
-                IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+                IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
                 BEGIN
                     select -3 as notexistuser
                 END
                 ELSE
                 BEGIN
-                    IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
+                    IF NOT EXISTS ( SELECT IdUser FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
                     BEGIN
                         select -4 as notexistcomment
                     END

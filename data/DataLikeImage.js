@@ -12,19 +12,19 @@ class DataLikeImage {
 
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
+        IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
         BEGIN
             select -1 as notexistimage
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  EXISTS ( SELECT * FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
+                IF  EXISTS ( SELECT IdUser FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
                 BEGIN
                 select -3 as existduplicate
                 END
@@ -76,19 +76,19 @@ class DataLikeImage {
         let queryupdate = 
         `
 
-        IF NOT EXISTS ( SELECT * FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
+        IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE IdUserImages=@iduserimage and Active=1)
         BEGIN
             select -1 as notexistimage
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  NOT EXISTS ( SELECT * FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
+                IF  NOT EXISTS ( SELECT IdUser FROM LikeImage WHERE IdUser=@iduser and IdUserImages=@iduserimage)
                 BEGIN
                 select -3 as noexistlike
                 END

@@ -8,7 +8,7 @@ class DataUser {
     {
         let resultquery=0;
         let queryinsert = `
-        IF EXISTS ( SELECT * FROM Userr WHERE UserrName =@UserrName
+        IF EXISTS ( SELECT UserrName FROM Userr WHERE UserrName =@UserrName
              and Active=1)
         BEGIN
             select -1 as existusername
@@ -131,7 +131,7 @@ class DataUser {
     {
     let resultquery=0;
         let queryupdate = `
-    IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser = @IdUser and Active=1 )
+    IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser = @IdUser and Active=1 )
     BEGIN
     select -1 as notexistuser  
     END
@@ -198,7 +198,7 @@ class DataUser {
   
         let resultquery=0;
         let queryupdate = `
-        IF NOT EXISTS (SELECT * FROM Userr WHERE 
+        IF NOT EXISTS (SELECT UserrName FROM Userr WHERE 
             UserrName = @UserrName AND Passwordd = HASHBYTES('SHA2_256', @CurrentPasswordd) 
             AND Active = 1)
         BEGIN
@@ -419,7 +419,7 @@ class DataUser {
         let resultquery=0;
         let queryupdate = `
 
-        IF NOT EXISTS ( SELECT * FROM Userr WHERE 
+        IF NOT EXISTS ( SELECT UserrName FROM Userr WHERE 
             UserrName =@UserrName and Active=1)
         BEGIN
             select -1 as notexistusername
@@ -574,7 +574,7 @@ class DataUser {
 {
     let resultquery=0;
         let querysearch = `
-        IF NOT EXISTS (SELECT *FROM Userr WHERE IdUser = @IdUser and Active=1 )
+        IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser = @IdUser and Active=1 )
         BEGIN
         select -1 as notexistuser  
         END

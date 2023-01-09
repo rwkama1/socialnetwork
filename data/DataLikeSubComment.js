@@ -13,19 +13,19 @@ class DataLikeSubComment {
 
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrSubComments WHERE IdSubUserComment=@idsubcomment)
+        IF NOT EXISTS ( SELECT IdSubUserComment FROM UserrSubComments WHERE IdSubUserComment=@idsubcomment)
         BEGIN
             select -1 as notexistsubcomment
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
             ELSE
             BEGIN
-                IF  EXISTS ( SELECT * FROM LikeSubComment WHERE IdUser=@iduser and idsubusercomment=@idsubcomment)
+                IF  EXISTS ( SELECT IdUser FROM LikeSubComment WHERE IdUser=@iduser and idsubusercomment=@idsubcomment)
                 BEGIN
                 select -3 as existduplicate
                 END

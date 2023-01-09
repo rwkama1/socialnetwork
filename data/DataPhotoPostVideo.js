@@ -140,7 +140,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin,country)=>
 
          IF EXISTS (
 				SELECT 
-				UserrRelations.*
+				UserrRelations.IdFriend
 				FROM 
 				UserrRelations 
 				INNER JOIN Userr on Userr.IdUser = UserrRelations.IdFriend 
