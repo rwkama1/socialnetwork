@@ -1,5 +1,4 @@
-// import DTOPhoto from "../shared/entity/DTOPhoto";
-// import { DataException } from "../shared/exceptions/dataexception";
+
 const { Conection } = require("./Connection");
 const { VarChar,Int ,DateTime} = require("mssql");
 const { DTOPhoto } = require("../entity/DTOPhoto");
@@ -326,6 +325,42 @@ END
         pool.close();
         return arrayphoto;
   }
+  static getSearchImages=async(nameuser="",description="",title="")=>
+ {
+         let arrav=[];
+         let querysearch = `     
+       
+         SELECT
+            UserImages.*,
+            AlbumUserImages.Title AS AlbumTitle,
+            Userr.Name,
+            Userr.Nick,
+            Userr.Email,
+            Userr.Imagee
+         FROM UserImages
+         INNER JOIN AlbumUserImages ON AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages
+         INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+         WHERE
+         Userr.Active = 1
+         AND AlbumUserImages.Active = 1
+         AND UserImages.Active = 1
+         AND Userr.Name LIKE '%${nameuser}%'
+         AND UserImages.Title LIKE '%${title}%'
+         AND UserImages.Descriptionn LIKE '%${description}%'
+  
+         `  
+         let pool = await Conection.conection();
+         const result = await pool.request()      
+         .query(querysearch)
+         for (var p of result.recordset) {
+            let img = new DTOPhoto();   
+            this.getinformationList(img,p);
+            arrav.push(img);
+         }
+      
+        pool.close();
+        return arrav;
+  }
   static getImagesbyAlbum=async(idalbum)=>
   {
      let arrayphoto=[];
@@ -496,61 +531,99 @@ END
            pool.close();
            return arrayphoto;
      }
-
+     static getImagesOrderByLikes=async()=>
+     {
+             let arrav=[];
+             let querysearch = `
+  
+             select 
+             UserImages.*, 
+             AlbumUserImages.Title as AlbumTitle, 
+             Userr.Name, 
+             Userr.Nick, 
+             Userr.Email, 
+             Userr.Imagee 
+           from 
+           UserImages 
+             inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+             inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+           where 
+             Userr.Active = 1 
+             and AlbumUserImages.Active = 1 
+             and UserImages.Active = 1
+             order by Likes desc
+           
+             `  
+             let pool = await Conection.conection();
+             const result = await pool.request()      
+             .query(querysearch)
+             for (var p of result.recordset) {
+                let photo = new DTOPhoto();   
+                this.getinformationList(photo,p);
+                arrav.push(photo);
+             }
+          
+            pool.close();
+            return arrav;
+      }
      static getImagessOrderbyComments=async()=>
      {
              let arrav=[];
              let querysearch = `
 
              SELECT
-             UserrImages.IdUserImages,
-             UserrImages.IdUser,
-             UserrImages.IdAlbumImages,
-             UserrImages.Title,
-             UserrImages.Likes,
-             UserrImages.UrlImages,
-             UserrImages.Visibility,
-             UserrImages.DatePublish,
-             UserrImages.Active,
-           UserrImages.Descriptionn,
+             UserImages.IdUserImages,
+             UserImages.IdUser,
+             UserImages.IdAlbumImages,
+             UserImages.Title,
+             UserImages.Likes,
+             UserImages.UrlImage,
+             UserImages.Visibility,
+             UserImages.DatePublish,
+             UserImages.Active,
+           UserImages.Descriptionn,
              AlbumUserImages.Title AS AlbumTitle,
              Userr.Name,
              Userr.Nick,
              Userr.Email,
              Userr.Imagee,
-             COUNT(UserrCommentsImage.IdUserCommentImage) AS NumComments
-         FROM UserrImages
+             COUNT(UserrCommentsImage.IdUserCommentImg) AS NumComments
+         FROM UserImages
          LEFT JOIN UserrCommentsImage
-         ON UserrImages.IdUserImages = UserrCommentsImage.IdUserImages
+         ON UserImages.IdUserImages = UserrCommentsImage.IdUserImages
          INNER JOIN AlbumUserImages
-         ON UserrImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
+         ON UserImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
          INNER JOIN Userr
          ON AlbumUserImages.IdUser = Userr.IdUser
  
          WHERE
          Userr.Active = 1 
          and AlbumUserImages.Active = 1 
-         and UserrImages.Active = 1 
+         and UserImages.Active = 1 
  
          GROUP BY
-           UserrImages.IdUserImages,
-             UserrImages.IdUser,
-             UserrImages.IdAlbumImages,
-             UserrImages.Title,
-             UserrImages.Likes,
-             UserrImages.UrlImages,
-             UserrImages.Visibility,
-             UserrImages.DatePublish,
-             UserrImages.Descriptionn,
-             UserrImages.Active,
-             AlbumUserImages.Title
+           UserImages.IdUserImages,
+             UserImages.IdUser,
+             UserImages.IdAlbumImages,
+             UserImages.Title,
+             UserImages.Likes,
+             UserImages.UrlImage,
+             UserImages.Visibility,
+             UserImages.DatePublish,
+             UserImages.Descriptionn,
+             UserImages.Active,
+             AlbumUserImages.Title,
              Userr.Name,
              Userr.Nick,
              Userr.Email,
              Userr.Imagee
             ORDER BY
                      NumComments DESC
-           
+
+
+
+
+
              `  
              let pool = await Conection.conection();
              const result = await pool.request()      
@@ -565,6 +638,105 @@ END
             pool.close();
             return arrav;
       }
+      static getUserFollowerImages=async(iduser)=>
+      {
+              let arrav=[];
+              let querysearch = `
+              SELECT 
+              UserImages.*,
+              AlbumUserImages.Title AS AlbumTitle,
+              Userr.Name,
+              Userr.Nick,
+              Userr.Email,
+              Userr.Imagee
+          FROM UserImages
+          INNER JOIN AlbumUserImages ON UserImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
+          INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+          INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+          WHERE Followers.IdFollowerUser = @IdUser
+          AND Userr.Active = 1 
+          AND AlbumUserImages.Active = 1 
+          AND UserImages.Active = 1 
+          ORDER BY UserImages.DatePublish DESC
+          
+            
+              `  
+              let pool = await Conection.conection();
+              const result = await pool.request() 
+              .input('IdUser', Int,iduser)
+              .query(querysearch)
+              for (var p of result.recordset) {
+                 let img = new DTOPhoto();   
+                 this.getinformationList(img,p);
+                 
+                 arrav.push(img);
+              }
+           
+             pool.close();
+             return arrav;
+       }
+       static getImageSuggestedUser=async(iduser,iduserlogin)=>
+       {
+               let arrav=[];
+               let querysearch = `
+ 
+            
+               SELECT 
+               UserImages.*,
+               AlbumUserImages.Title AS AlbumTitle,
+               Userr.Name,
+               Userr.Nick,
+               Userr.Email,
+               Userr.Imagee
+           FROM UserImages
+           INNER JOIN AlbumUserImages ON UserImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
+           INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+           INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+           WHERE Followers.IdFollowerUser = @IdUser
+               AND Userr.Active = 1 
+               AND AlbumUserImages.Active = 1 
+               AND UserImages.Active = 1 
+               AND Userr.IdUser != @IdUserLogin
+           
+           UNION
+           
+ 
+           SELECT 
+           UserImages.*,
+           AlbumUserImages.Title AS AlbumTitle,
+           Userr.Name,
+           Userr.Nick,
+           Userr.Email,
+           Userr.Imagee
+       FROM UserImages
+       INNER JOIN AlbumUserImages ON UserImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
+       INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+       INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+       WHERE Followers.IdFollowerUser = @IdUserLogin
+           AND Userr.Active = 1 
+           AND AlbumUserImages.Active = 1 
+           AND UserImages.Active = 1 
+           AND Userr.IdUser != @IdUserLogin
+       ORDER BY UserImages.DatePublish DESC
+       
+               `  
+               let pool = await Conection.conection();
+               const result = await pool.request() 
+               .input('IdUser', Int,iduser)
+               .input('IdUserLogin', Int,iduserlogin)
+               .query(querysearch)
+               for (var p of result.recordset) {
+                  let img = new DTOPhoto();   
+                  this.getinformationList(img,p);
+                  
+                  arrav.push(img);
+               }
+            
+              pool.close();
+              return arrav;
+        }
+
+
 
    static getImagesbyFriendUser=async(iduser)=>     {
       let arrayphoto=[];
@@ -588,6 +760,7 @@ END
                 and UserrRelations.Statee = 'Confirmed' 
                 and (UserImages.Visibility='Public' or UserImages.Visibility='Friend') 
                 and UserrRelations.IdUser = ${iduser}
+                ORDER BY datepublish desc
          `  
            let pool = await Conection.conection();
            const result = await pool.request()      

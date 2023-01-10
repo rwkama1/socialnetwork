@@ -2,6 +2,7 @@ const { DTOCommentImage } = require("../entity/DTOCommentImage");
 const { Conection } = require("./Connection");
 const { VarChar,Int ,Date} = require("mssql");
 const { DataUser } = require("./DataUser");
+
 class DataCommentImage {
     //#region CRUD
 
@@ -135,32 +136,32 @@ class DataCommentImage {
         let resultquery;
         let queryupdate = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=@idcomment and iduserimages=@idimage)
+        IF NOT EXISTS ( SELECT idusercomment FROM UserrCommentsImage WHERE idusercomment=@idcomment and iduserimages=@idimage)
         BEGIN
             select -1 as notexistcommentimage
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM UserImages WHERE iduserimages=@idimage and Active=1)
+            IF NOT EXISTS ( SELECT iduserimages FROM UserImages WHERE iduserimages=@idimage and Active=1)
             BEGIN
                 select -2 as notexistimage
             END
             ELSE
             BEGIN
-                IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+                IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
                 BEGIN
                     select -3 as notexistuser
                 END
                 ELSE
                 BEGIN
-                    IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idcomment)
+                    IF NOT EXISTS ( SELECT IdUser FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idcomment)
                     BEGIN
                         select -4 as notexistcomment
                     END
                     ELSE
                     BEGIN
                             BEGIN TRANSACTION  
-                            IF EXISTS ( SELECT * FROM UserrSubComments WHERE  idusercomment=@idcomment)
+                            IF EXISTS ( SELECT idusercomment FROM UserrSubComments WHERE  idusercomment=@idcomment)
                             BEGIN
                                 delete from UserrSubComments where idusercomment=@idcomment
                             END

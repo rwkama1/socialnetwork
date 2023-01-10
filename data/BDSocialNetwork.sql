@@ -247,6 +247,9 @@ select * from UserrRelations
 select * from Followers
 select * from Logs
 select * from LoginUser
+
+
+
  
 select * from Userr
 select * from UserrCommentsImage
@@ -256,7 +259,6 @@ select * from UserrComments
 select * from UserrSubComments
 select * from UserrMessage
 
-select * from Userr where UserrName='UserName3' and Passwordd=  HASHBYTES('SHA2_256', 'Password23') and active=1
 
 
 delete from LoginUser
@@ -264,4 +266,9 @@ delete from Logs
 delete from UserImages
  delete from Followers
 
- update  UserrRelations set Statee='Confirmed'
+
+
+
+
+
+  

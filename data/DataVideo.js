@@ -283,7 +283,7 @@ static getVideo=async(idvideo)=>
        return resultquery;
  }
 
- static getSearchVideos=async(nameuser,description,title)=>
+ static getSearchVideos=async(nameuser="",description="",title="")=>
  {
          let arrav=[];
          let querysearch = `     

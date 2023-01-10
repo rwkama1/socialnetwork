@@ -11,13 +11,13 @@ class DataCommentPost {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=@idpost and Active=1)
+        IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=@idpost and Active=1)
         BEGIN
             select -1 as notexistpost
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
@@ -64,26 +64,26 @@ class DataCommentPost {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsPost WHERE idusercomment=@idusercomment 
+        IF NOT EXISTS ( SELECT idusercomment FROM UserrCommentsPost WHERE idusercomment=@idusercomment 
             and IdPost=@idpost)
         BEGIN
             select -1 as notexistcommentpost
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM UserPost WHERE IdPost=@idpost and Active=1)
+            IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=@idpost and Active=1)
             BEGIN
                 select -2 as notexistpost
             END
            ELSE
            BEGIN
-                IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+                IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
                 BEGIN
                     select -3 as notexistuser
                 END
                 ELSE
                 BEGIN
-                    IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
+                    IF NOT EXISTS ( SELECT IdUser FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
                     BEGIN
                         select -4 as notexistcomment
                     END
@@ -136,32 +136,32 @@ class DataCommentPost {
         let resultquery;
         let queryupdate = 
         `
-        IF NOT EXISTS ( SELECT * FROM UserrCommentsPost WHERE idusercomment=@idcomment and IdPost=@idpost)
+        IF NOT EXISTS ( SELECT idusercomment FROM UserrCommentsPost WHERE idusercomment=@idcomment and IdPost=@idpost)
         BEGIN
             select -1 as notexistcommentpost
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT * FROM UserPost WHERE idpost=@idpost and Active=1)
+            IF NOT EXISTS ( SELECT idpost FROM UserPost WHERE idpost=@idpost and Active=1)
             BEGIN
                 select -2 as notexistpost
             END
             ELSE
             BEGIN
-                IF NOT EXISTS ( SELECT * FROM Userr WHERE IdUser=@iduser and Active=1)
+                IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
                 BEGIN
                     select -3 as notexistuser
                 END
                 ELSE
                 BEGIN
-                    IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idcomment)
+                    IF NOT EXISTS ( SELECT IdUser FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idcomment)
                     BEGIN
                         select -4 as notexistcomment
                     END
                     ELSE
                     BEGIN
                             BEGIN TRANSACTION  
-                            IF EXISTS ( SELECT * FROM UserrSubComments WHERE  idusercomment=@idcomment)
+                            IF EXISTS ( SELECT idusercomment FROM UserrSubComments WHERE  idusercomment=@idcomment)
                             BEGIN
                                 delete from UserrSubComments where idusercomment=@idcomment
                             END

@@ -682,17 +682,77 @@ let images=async()=>
 //     }
 //     await getImagesbyIdUser();
 
-//      async function getImagesbyFriendUser() {
-//         let array=await DataPhoto.getImagesbyFriendUser(26);
-//         for (const image of array) {
-//           image.DiffDatePublishDateNow()
-//           image.showDiffDatePublishDateNow()
-//             console.log(image);
-//         }
+    //    async function getImagesOrderByLikes() {
+    //     let array=await DataPhoto.getImagesOrderByLikes();
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
 
-//     }
-//     await getImagesbyFriendUser();
+    // }
+    // await getImagesOrderByLikes();
+    
 
+    //    async function getImagessOrderbyComments() {
+    //     let array=await DataPhoto.getImagessOrderbyComments();
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+
+    // }
+    // await getImagessOrderbyComments();
+
+    //  async function getImagesbyFriendUser() {
+    //     let array=await DataPhoto.getImagesbyFriendUser(1);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+
+    // }
+    // await getImagesbyFriendUser();
+
+
+    //  async function getSearchImages() {
+    //     let array=await DataPhoto.getSearchImages("","","Im");
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+
+    // }
+    // await getSearchImages();
+
+    async function getUserFollowerImages() {
+        let array=await DataPhoto.getUserFollowerImages(11);
+        for (const image of array) {
+          image.DiffDatePublishDateNow()
+          image.showDiffDatePublishDateNow()
+            console.log(image);
+        }
+
+    }
+    await getUserFollowerImages();
+
+
+
+    //      async function getImageSuggestedUser() {
+    //     let array=await DataPhoto.getImageSuggestedUser(42,43);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+
+    // }
+    // await getImageSuggestedUser();
+
+    
 
 //      async function getImagesVisibilityFriendUser() {
 //         let array=await DataPhoto.getImagesVisibilityFriendUser(25);
@@ -1551,20 +1611,20 @@ let posts=async()=>
 let CommentImage=async()=>
 {
 
-       async function commentimage() {
+    //    async function commentimage() {
    
-           let commentimage = await
-            DataCommentImage.CommentImage(11,41,"Comment");
-           if (commentimage===-1) {
-               throw new Error("The image does not exists");
-           }
-           if (commentimage===-2) {
-               throw new Error("The user does not exists");
-           }
-            console.log("The comment image was added successfully");
+    //        let commentimage = await
+    //         DataCommentImage.CommentImage(9,42,"Image Comment");
+    //        if (commentimage===-1) {
+    //            throw new Error("The image does not exists");
+    //        }
+    //        if (commentimage===-2) {
+    //            throw new Error("The user does not exists");
+    //        }
+    //         console.log("The comment image was added successfully");
       
-   }
-   await commentimage();
+    //     }
+    //         await commentimage();
 
 
 //     async function UpdateTextCommentImage() {
@@ -1598,7 +1658,7 @@ let CommentImage=async()=>
 //           if (loginuserid!=4) {
 //             throw new Error("Only the logged in user can delete his comment");
 //             }
-//            let deleteCommentImage = await DataCommentImage.deleteCommentImage(4,6,1);
+//            let deleteCommentImage = await DataCommentImage.deleteCommentImage(11,8,41);
 //            if (deleteCommentImage===-1) {
 //              throw new Error("The comment images does not exists");
 //                 }
