@@ -8,15 +8,44 @@ class DataPost {
        let resultquery;
         let queryinsert = `
     
-        IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
+        IF NOT EXISTS
+         ( SELECT IdUser FROM Userr WHERE IdUser=@IdUser and Active=1)
         BEGIN
           select -1 as notexistuser
         END
         ELSE
         BEGIN
-             insert into UserPost values (@IdUser,@Title,@Descriptionn ,0,'Public',GETUTCDATE(),1)
-             select 1 as addedpost    
-        END
+           
+        IF @Visibility = 'Public' OR @Visibility = 'Private'
+        BEGIN
+
+         BEGIN TRANSACTION
+
+         insert into UserPost values  (@IdUser,
+            @Title,@Descriptionn ,0,
+            @Visibility
+         ,GETUTCDATE(),1)
+
+         INSERT INTO Logs (IdUser, LogDateAndTime, DetailLog)
+         VALUES (@IdUser, GETUTCDATE(), 'Post Added')
+
+         select 1 as addedpost
+
+         
+         IF(@@ERROR > 0)  
+         BEGIN  
+             ROLLBACK TRANSACTION  
+         END  
+         ELSE  
+         BEGIN  
+             COMMIT TRANSACTION  
+         END
+      END
+      ELSE
+         BEGIN
+          select -2 as visibilityerror
+         END
+      END
 
         `
         let pool = await Conection.conection();
@@ -24,17 +53,23 @@ class DataPost {
         const result = await pool.request()
             .input('IdUser', Int,dtpost.user.iduser)
             .input('Title', VarChar,dtpost.title)
+            .input('Visibility', VarChar,dtpost.visibility)
             .input('Descriptionn', VarChar, dtpost.description)
             .query(queryinsert)
             resultquery = result.recordset[0].notexistuser;
             if(resultquery===undefined)
             {
-             resultquery = result.recordset[0].addedpost;      
+             resultquery = result.recordset[0].visibilityerror;      
+             if(resultquery===undefined)
+             {
+              resultquery = result.recordset[0].addedpost;      
+             }
             }
         pool.close();
         return resultquery;
         
     }  
+
      static updateVisibilityPost=async(idpost,visibility)=>
     {
        let resultquery;
@@ -93,6 +128,54 @@ class DataPost {
         return resultquery;
         
     }
+    static updatePost=async(idpost,title,description,visibility)=>
+{
+   let resultquery;
+    let queryupdate = `
+    
+    IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=@IdUserPost and Active=1)
+    BEGIN
+      SELECT -1 as notexistpost
+    END
+    ELSE
+    BEGIN
+      IF @Visibility = 'Public' OR @Visibility = 'Private'
+      BEGIN
+        UPDATE UserPost SET Visibility=@Visibility,
+        Descriptionn=@Descriptionn,
+        Title=@Title
+        WHERE IdPost=@IdUserPost
+        SELECT 1 as updatedpost
+      END
+      ELSE
+      BEGIN
+        SELECT -2 as visibilityerror
+      END
+    END
+    
+
+
+    `
+    let pool = await Conection.conection();
+         const result = await pool.request()
+         .input('Visibility', VarChar,visibility)
+         .input('Title', VarChar,title)
+         .input('Descriptionn', VarChar,description)
+        .input('IdUserPost', Int, idpost)   
+        .query(queryupdate)
+        resultquery = result.recordset[0].notexistpost;
+        if(resultquery===undefined)
+        {
+          resultquery = result.recordset[0].visibilityerror;
+          if(resultquery===undefined)
+          {
+            resultquery = result.recordset[0].updatedpost;
+          }
+        }
+    pool.close();
+    return resultquery;
+    
+}
      static deletePost=async(idpost)=>
     {
        let resultquery;
@@ -203,7 +286,7 @@ class DataPost {
            where 
              Userr.Active = 1 
              and UserPost.Active = 1
-           
+           order by datepublish desc
              `  
              let pool = await Conection.conection();
              const result = await pool.request()      
@@ -217,7 +300,139 @@ class DataPost {
             pool.close();
             return arrayp;
       }
-    
+      static getSearchPost=async(nameuser="",title="",description="")=>
+     {
+        let arrayp=[];
+             let querysearch = `     
+             SELECT
+             UserPost.*,
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee
+            FROM UserPost
+            INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+            WHERE
+            Userr.Active = 1
+            AND UserPost.Active = 1
+            AND Userr.Name LIKE '%${nameuser}%'
+            AND UserPost.Title LIKE '%${title}%'
+            AND UserPost.Descriptionn LIKE '%${description}%'
+            order by datepublish desc
+             `  
+             let pool = await Conection.conection();
+             const result = await pool.request()      
+             .query(querysearch)
+             for (var p of result.recordset) {
+                let post = new DTOPost();   
+                this.getinformationList(post,p);
+                arrayp.push(post);
+             }
+          
+            pool.close();
+            return arrayp;
+      }
+      static getPostOrderByLikes=async()=>
+     {
+             let arrayp=[];
+             let querysearch = `
+
+          select
+             UserPost.*, 
+             Userr.Name, 
+             Userr.Nick, 
+             Userr.Email, 
+             Userr.Imagee 
+           from 
+           UserPost 
+             inner join Userr on Userr.IdUser = UserPost.IdUser 
+           where 
+             Userr.Active = 1 
+             and UserPost.Active = 1
+             order by Likes desc
+
+
+           
+             `  
+             let pool = await Conection.conection();
+             const result = await pool.request()      
+             .query(querysearch)
+             for (var p of result.recordset) {
+              let post = new DTOPost();   
+              this.getinformationList(post,p);
+              arrayp.push(post);
+             }
+          
+            pool.close();
+            return arrayp;
+      }
+      static getPostsOrderbyComments=async()=>
+      {
+              let arrayp=[];
+              let querysearch = `
+              SELECT
+              UserPost.IdPost,
+              UserPost.IdUser,
+              UserPost.Title,
+              UserPost.Likes,
+              UserPost.Visibility,
+              UserPost.DatePublish,
+              UserPost.Active,
+              UserPost.Descriptionn,
+              Userr.Name,
+              Userr.Nick,
+              Userr.Email,
+              Userr.Imagee,
+              COUNT(UserrCommentsPost.IdUserCommentPost) AS NumComments
+          FROM UserPost
+          LEFT JOIN UserrCommentsPost
+          ON UserPost.IdPost = UserrCommentsPost.IdPost
+          INNER JOIN Userr
+          ON UserPost.IdUser = Userr.IdUser
+  
+          WHERE
+          Userr.Active = 1 
+          and UserPost.Active = 1 
+  
+          GROUP BY
+            UserPost.IdPost,
+              UserPost.IdUser,
+              UserPost.Title,
+              UserPost.Likes,
+              UserPost.Visibility,
+              UserPost.DatePublish,
+              UserPost.Descriptionn,
+              UserPost.Active,
+              Userr.Name,
+              Userr.Nick,
+              Userr.Email,
+              Userr.Imagee
+             ORDER BY
+                      NumComments DESC
+
+
+
+  
+  
+ 
+              `  
+              let pool = await Conection.conection();
+              const result = await pool.request()      
+              .query(querysearch)
+              for (var p of result.recordset) {
+                let post = new DTOPost();   
+                this.getinformationList(post,p);
+               
+                post.numbercomments = p.NumComments;
+                 arrayp.push(post);
+              }
+           
+             pool.close();
+             return arrayp;
+       }
+
+
+
       static getPostbyIdUser=async(iduser)=>
   {
      let arrayp=[];

@@ -728,21 +728,8 @@ let images=async()=>
     // }
     // await getSearchImages();
 
-    async function getUserFollowerImages() {
-        let array=await DataPhoto.getUserFollowerImages(11);
-        for (const image of array) {
-          image.DiffDatePublishDateNow()
-          image.showDiffDatePublishDateNow()
-            console.log(image);
-        }
-
-    }
-    await getUserFollowerImages();
-
-
-
-    //      async function getImageSuggestedUser() {
-    //     let array=await DataPhoto.getImageSuggestedUser(42,43);
+    // async function getUserFollowerImages() {
+    //     let array=await DataPhoto.getUserFollowerImages(1);
     //     for (const image of array) {
     //       image.DiffDatePublishDateNow()
     //       image.showDiffDatePublishDateNow()
@@ -750,7 +737,20 @@ let images=async()=>
     //     }
 
     // }
-    // await getImageSuggestedUser();
+    // await getUserFollowerImages();
+
+
+
+    //      async function getImageSuggestedUser() {
+    //     let array=await DataPhoto.getImageSuggestedUser(2,1);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
+
+    // }
+    //  await getImageSuggestedUser();
 
     
 
@@ -1142,20 +1142,41 @@ let videos=async()=>
 // //#region Post
 let posts=async()=>
  {
-//     async function addpost() {
-//         for (let index = 1; index < 100; index++) {
-//             let dtopost = new DTOPost();
-//             dtopost.user.iduser = index;
-//             dtopost.title = "Post" + index.toString();
-//             dtopost.description = "Description" + index.toString();
-//             let addPost = await DataPost.addPost(dtopost);
-//             if (addPost===-1) {
-//                 throw new Error("The user does not exists");
-//             }
-//              console.log("The post was added successfully");
-//         }
-//     }
-//     await addpost();
+    // async function addpost() {
+    //     for (let index = 1; index < 100; index++) {
+    //         let dtopost = new DTOPost();
+    //         dtopost.user.iduser = index;
+    //         dtopost.title = "Post" + index.toString();
+            
+    //         dtopost.description = "Description" + index.toString();
+    //         dtopost.visibility= "Public";
+    //         let addPost = await DataPost.addPost(dtopost);
+    //         if (addPost===-1) {
+    //             throw new Error("The user does not exists");
+    //         }
+    //         if (addPost===-2) {
+    //             throw new Error("Visibility should only be Public or Private");
+    //         }
+    //          console.log("The post was added successfully");
+    //     }
+    // }
+    // await addpost();
+
+    //  async function updatePost() {
+    //             let updatePost = await
+    //              DataPost.updatePost(1,"PostUpdated","Descriptionupdate","Public");
+    //             if (updatePost===-1) {
+    //                 throw new Error("The Post does not exists");
+    //             }
+    //             if (updatePost===-2) {
+    //                 throw new Error("Visibility should only be Public or Private");
+    //             }
+    //             console.log("The post was updated successfully");
+        
+    //     }
+    //         await updatePost();
+
+
 
 //     async function updateVisibilityPost() {
 
@@ -1178,14 +1199,14 @@ let posts=async()=>
 
 //     await updateTitleDescriptionPost();
    
-//      async function deletePost() {
-//         let deletePost = await DataPost.deletePost(28);
-//            if (deletePost===-1) {
-//                 throw new Error("The post does not exists");
-//             }
-//             console.log("The post was deleted successfully");
-//     }
-//     await deletePost();
+    //  async function deletePost() {
+    //     let deletePost = await DataPost.deletePost(15);
+    //        if (deletePost===-1) {
+    //             throw new Error("The post does not exists");
+    //         }
+    //         console.log("The post was deleted successfully");
+    // }
+    // await deletePost();
 
 //     //****************************************************** */
 
@@ -1210,6 +1231,47 @@ let posts=async()=>
       
 //     }
 //      await getPosts();
+
+        // async function getSearchPost() {
+        //     let array=await DataPost.getSearchPost(
+        //     );
+        //     for (const post of array) {
+        //       post.DiffDatePublishDateNow()
+        //       post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+          
+        // }
+        //  await getSearchPost();
+
+
+        
+        // async function getPostOrderByLikes() {
+        //     let array=await DataPost.getPostOrderByLikes(
+        //     );
+        //     for (const post of array) {
+        //       post.DiffDatePublishDateNow()
+        //       post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+          
+        // }
+        //  await getPostOrderByLikes();
+
+
+          
+        // async function getPostsOrderbyComments() {
+        //     let array=await DataPost.getPostsOrderbyComments(
+        //     );
+        //     for (const post of array) {
+        //       post.DiffDatePublishDateNow()
+        //       post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+          
+        // }
+        //  await getPostsOrderbyComments();
+    
 
 //      async function getPostbyIdUser() {
 //         let array=await DataPost.getPostbyIdUser(6)
@@ -1699,22 +1761,22 @@ CommentImage().then()
 // //#endregion
 // //#region CommentPost
 
-// let CommentPost=async()=>
-// {
+let CommentPost=async()=>
+{
 
-//        async function commentpost() {
+    //    async function commentpost() {
    
-//            let CommentPost = await DataCommentPost.CommentPost(4,1,"Comment");
-//            if (CommentPost===-1) {
-//                throw new Error("The post does not exists");
-//            }
-//            if (CommentPost===-2) {
-//                throw new Error("The user does not exists");
-//            }
-//             console.log("The comment post was added successfully");
+    //        let CommentPost = await DataCommentPost.CommentPost(2,4,"Comment Post");
+    //        if (CommentPost===-1) {
+    //            throw new Error("The post does not exists");
+    //        }
+    //        if (CommentPost===-2) {
+    //            throw new Error("The user does not exists");
+    //        }
+    //         console.log("The comment post was added successfully");
       
-//         }
-//         await commentpost();
+    //     }
+    //     await commentpost();
 
 
 //     async function UpdateTextCommentPost() {
@@ -1782,8 +1844,8 @@ CommentImage().then()
    
 // let NumberOfCommentPost = await DataCommentPost.NumberOfCommentPost(1);
 // console.log(NumberOfCommentPost);
-// }
-// CommentPost().then()
+}
+CommentPost().then()
 
 // //#endregion
 // //#region CommentVideo

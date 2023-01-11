@@ -267,8 +267,47 @@ delete from UserImages
  delete from Followers
 
 
+        SELECT
+              UserPost.IdPost,
+              UserPost.IdUser,
+              UserPost.Title,
+              UserPost.Likes,
+              UserPost.Visibility,
+              UserPost.DatePublish,
+              UserPost.Active,
+              UserPost.Descriptionn,
+              Userr.Name,
+              Userr.Nick,
+              Userr.Email,
+              Userr.Imagee,
+              COUNT(UserrCommentsPost.IdUserCommentPost) AS NumComments
+          FROM UserPost
+          LEFT JOIN UserrCommentsPost
+          ON UserPost.IdPost = UserrCommentPost.IdPost
+          INNER JOIN Userr
+          ON UserPost.IdUser = Userr.IdUser
+  
+          WHERE
+          Userr.Active = 1 
+          and UserPost.Active = 1 
+  
+          GROUP BY
+            UserPost.IdPost,
+              UserPost.IdUser,
+              UserPost.Title,
+              UserPost.Likes,
+              UserPost.Visibility,
+              UserPost.DatePublish,
+              UserPost.Descriptionn,
+              UserPost.Active,
+              Userr.Name,
+              Userr.Nick,
+              Userr.Email,
+              Userr.Imagee
+             ORDER BY
+                      NumComments DESC
 
 
 
-
+  
   
