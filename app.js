@@ -1273,6 +1273,30 @@ let posts=async()=>
         //  await getPostsOrderbyComments();
     
 
+          
+        // async function getUserFollowerPost() {
+        //     let array=await DataPost.getUserFollowerPost(3);
+        //     for (const post of array) {
+        //       post.DiffDatePublishDateNow()
+        //       post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+          
+        // }
+        //  await getUserFollowerPost();
+
+         async function getPostSuggestedUser() {
+            let array=await DataPost.getPostSuggestedUser(2,3);
+            for (const post of array) {
+              post.DiffDatePublishDateNow()
+              post.showDiffDatePublishDateNow()
+                console.log(post);
+            }
+          
+        }
+         await getPostSuggestedUser();
+
+
 //      async function getPostbyIdUser() {
 //         let array=await DataPost.getPostbyIdUser(6)
 //         for (const post of array) {

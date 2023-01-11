@@ -332,6 +332,98 @@ class DataPost {
             pool.close();
             return arrayp;
       }
+      static getUserFollowerPost=async(iduser)=>
+      {
+              let arrayp=[];
+              let querysearch = `
+
+            SELECT
+             UserPost.*,
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee
+            FROM UserPost
+         
+          INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+          INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+          WHERE Followers.IdFollowerUser = @IdUser
+          AND Userr.Active = 1 
+          AND UserPost.Active = 1 
+          ORDER BY UserPost.DatePublish DESC
+          
+            
+              `  
+              let pool = await Conection.conection();
+              const result = await pool.request() 
+              .input('IdUser', Int,iduser)
+              .query(querysearch)
+              for (var p of result.recordset) {
+                let post = new DTOPost();   
+                this.getinformationList(post,p);
+                 
+                arrayp.push(post);
+              }
+           
+             pool.close();
+             return arrayp;
+       }
+       static getPostSuggestedUser=async(iduser,iduserlogin)=>
+       {
+               let arrayp=[];
+               let querysearch = `
+ 
+         
+               SELECT
+               UserPost.*,
+               Userr.Name,
+               Userr.Nick,
+               Userr.Email,
+               Userr.Imagee
+              FROM UserPost
+           
+            INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+            INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+            WHERE Followers.IdFollowerUser = @IdUser
+            AND Userr.Active = 1 
+            AND UserPost.Active = 1 
+            AND Userr.IdUser != @IdUserLogin   
+
+           UNION
+
+            SELECT
+             UserPost.*,
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee
+            FROM UserPost
+         
+          INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+          INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+          WHERE Followers.IdFollowerUser = @IdUserLogin
+          AND Userr.Active = 1 
+          AND UserPost.Active = 1 
+           AND Userr.IdUser != @IdUserLogin
+         ORDER BY UserPost.DatePublish DESC
+       
+               `  
+               let pool = await Conection.conection();
+               const result = await pool.request() 
+               .input('IdUser', Int,iduser)
+               .input('IdUserLogin', Int,iduserlogin)
+               .query(querysearch)
+               for (var p of result.recordset) {
+                let post = new DTOPost();   
+                this.getinformationList(post,p);
+                 
+                arrayp.push(post);
+               }
+            
+              pool.close();
+              return arrayp;
+        }
+
       static getPostOrderByLikes=async()=>
      {
              let arrayp=[];
@@ -409,12 +501,7 @@ class DataPost {
               Userr.Imagee
              ORDER BY
                       NumComments DESC
-
-
-
   
-  
- 
               `  
               let pool = await Conection.conection();
               const result = await pool.request()      
@@ -545,6 +632,7 @@ class DataPost {
                     and UserrRelations.Statee = 'Confirmed' 
                     and (UserPost.Visibility='Public' or UserPost.Visibility='Friend') 
                     and UserrRelations.IdUser = ${iduser}
+                    ORDER BY datepublish desc
              `  
                let pool = await Conection.conection();
                const result = await pool.request()      
@@ -558,6 +646,7 @@ class DataPost {
               pool.close();
               return arrayp;
         }
+
     static getPostVisibilityByUserRelation=async(iduserlogin,iduser)=>
         {
             /*    if the users are friends, 
