@@ -202,6 +202,7 @@ class DataSubComment {
         return array;
     }
 
+   
 
     //***************************************************************** */
     
@@ -692,6 +693,43 @@ class DataSubComment {
          pool.close();
          return array;
      }
+
+     static getSubCommentsByComment=async(idcomment)=>
+     {
+        let array=[];
+        let query=
+           `
+           SELECT
+           UserrSubComments.idsubusercomment ,
+           UserrSubComments.likes ,
+           UserrSubComments.textt ,
+           UserrSubComments.datepublish ,
+           Userr.iduser ,
+           Userr.name ,
+           Userr.nick ,
+           Userr.userrname ,
+           Userr.imagee
+           FROM 
+           UserrSubComments
+           inner join Userr on UserrSubComments.iduser=Userr.iduser
+           WHERE 
+           UserrSubComments.idusercomment=@idcomment
+           AND Userr.active = 1
+ 
+           `
+        let pool = await Conection.conection();
+       
+        const result = await pool.request()
+        .input('idcomment', Int,idcomment)
+        .query(query)
+        for (var resultsubcomments of result.recordset) {
+           let subcomments = new DTOSubComment(); 
+            this.getInformationByComment(subcomments,resultsubcomments);
+            array.push(subcomments);
+         }
+         pool.close();
+         return array;
+     }
     //#endregion
     //#region OTHERS
 
@@ -718,6 +756,22 @@ class DataSubComment {
     //#endregion
 
  //#region GetInformation
+
+
+ static getInformationByComment(subcomment, result) {
+      
+    subcomment.idsubusercomment = result.idsubusercomment; 
+    subcomment.likessubcomment = result.likes; 
+    subcomment.textsubcomment = result.textt; 
+    subcomment.datepublishsubcomment = result.datepublish; 
+
+    subcomment.idsubcommentuser = result.iduser; 
+    subcomment.namesubcommentuser = result.name; 
+    subcomment.nicksubcommentuser = result.nick; 
+    subcomment.usernamesubcommentuser = result.userrname;
+    subcomment.imagesubcommentuser = result.imagee;  
+
+}
 
     static getInformationCommentImage(subcomment, result) {
       
@@ -852,6 +906,8 @@ class DataSubComment {
 
         
     }
+
+   
   
 //#endregion
 }
