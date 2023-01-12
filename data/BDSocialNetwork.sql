@@ -249,7 +249,11 @@ select * from Logs
 select * from LoginUser
 
 
-
+select * from LikePost
+select * from LikeVideo
+select * from LikeImage
+select * from LikeSubComment
+select * from LikeComment
  
 select * from Userr
 select * from UserrCommentsImage
@@ -267,21 +271,89 @@ delete from UserImages
  delete from Followers
 
 
+ SELECT
+		 UserPost.idpost as id,
+		 0 as idalbum,
+		 '' as albumtitle,
+		 UserPost.iduser,
+		 UserPost.title,
+		 UserPost.descriptionn,
+		 UserPost.likes,
+		 '' as url,
+		 UserPost.visibility,
+		 UserPost.datepublish,
+		 UserPost.active,
+		 Userr.Name as nameuser ,
+		 Userr.Nick as nickuser ,
+		 Userr.Email as emailuser,
+		 Userr.Imagee as imageuser,
+		 Userr.Country as countryuser,
+		 'P' as typee
+		 FROM UserPost
+		 INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+		 WHERE Userr.Active = 1
+		 AND UserPost.Active = 1
+		 AND UserPost.IdUser = 1
+		
+		 
+		 UNION
+		 
+		 SELECT
+		 UserImages.iduserimages as id,
+		 UserImages.idalbumimages as idalbum,
+		 AlbumUserImages.title as albumtitle,
+		 UserImages.iduser,
+		 UserImages.title,
+		 UserImages.descriptionn,
+		 UserImages.likes,
+		 UserImages.urlimage as url,
+		 UserImages.visibility,
+		 UserImages.datepublish,
+		 UserImages.active,
+		 
+		 Userr.Name as nameuser,
+		 Userr.Nick as nickuser,
+		 Userr.Email as emailuser,
+		 Userr.Imagee as imageuser,
+		 Userr.Country as countryuser,
+		 'I' as typee
+		 
+		 FROM UserImages
+		 INNER JOIN AlbumUserImages ON AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages
+		 INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+		 WHERE Userr.Active = 1
+		 AND AlbumUserImages.Active = 1
+		 AND UserImages.Active = 1
+		 AND UserImages.IdUser = 1
+		
+		 
+		 UNION
+		 
+		 SELECT
+		 UserVideos.iduservideos as id,
+		 UserVideos.idalbumvideos as idalbum ,
+		 AlbumUserVideos.title as albumtitle,
+		 UserVideos.iduser,
+		 UserVideos.title,
+		 UserVideos.descriptionn,
+		 UserVideos.likes,
+		 UserVideos.urlvideos as url,
+		 UserVideos.visibility,
+		 UserVideos.datepublish,
+		 UserVideos.active,
+		 
+		 Userr.Name as nameuser,
+		 Userr.Nick as nickuser,
+		 Userr.Email as emailuser,
+		 Userr.Imagee as imageuser,
+		 Userr.Country as countryuser,
+		 'V' as typee
+		 FROM UserVideos
+		 INNER JOIN AlbumUserVideos ON AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos
+		 INNER JOIN Userr ON Userr.IdUser = AlbumUserVideos.IdUser
+		 WHERE Userr.Active = 1
+		 AND AlbumUserVideos.Active = 1
+		 AND UserVideos.Active = 1
+		 AND UserVideos.IdUser = 1
+		 ORDER BY datepublish desc
 
-
-     SELECT
-             UserPost.*,
-             Userr.Name,
-             Userr.Nick,
-             Userr.Email,
-             Userr.Imagee
-            FROM UserPost
-         
-          INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
-          INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
-          WHERE Followers.IdFollowerUser = 1
-          AND Userr.Active = 1 
-          AND UserPost.Active = 1 
-          ORDER BY UserPost.DatePublish DESC
-          
-  

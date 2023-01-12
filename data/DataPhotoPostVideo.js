@@ -661,8 +661,218 @@ static getPhotoPostVideoMainPage=async(iduserlogin,country)=>
         pool.close();
         return array;
  }
- 
- //-----------------------------------------------------------------------------------------
+
+ static getPhotoPostVideoByUser=async(iduser)=>
+ {
+         
+         let array=[];
+         let querysearch = 
+		 ` 
+		 SELECT
+		 UserPost.idpost as id,
+		 0 as idalbum,
+		 '' as albumtitle,
+		 UserPost.iduser,
+		 UserPost.title,
+		 UserPost.descriptionn,
+		 UserPost.likes,
+		 '' as url,
+		 UserPost.visibility,
+		 UserPost.datepublish,
+		 UserPost.active,
+		 Userr.Name as nameuser ,
+		 Userr.Nick as nickuser ,
+		 Userr.Email as emailuser,
+		 Userr.Imagee as imageuser,
+		 Userr.Country as countryuser,
+		 'P' as typee
+		 FROM UserPost
+		 INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+		 WHERE Userr.Active = 1
+		 AND UserPost.Active = 1
+		 AND UserPost.IdUser = ${iduser}
+		
+		 
+		 UNION
+		 
+		 SELECT
+		 UserImages.iduserimages as id,
+		 UserImages.idalbumimages as idalbum,
+		 AlbumUserImages.title as albumtitle,
+		 UserImages.iduser,
+		 UserImages.title,
+		 UserImages.descriptionn,
+		 UserImages.likes,
+		 UserImages.urlimage as url,
+		 UserImages.visibility,
+		 UserImages.datepublish,
+		 UserImages.active,
+		 
+		 Userr.Name as nameuser,
+		 Userr.Nick as nickuser,
+		 Userr.Email as emailuser,
+		 Userr.Imagee as imageuser,
+		 Userr.Country as countryuser,
+		 'I' as typee
+		 
+		 FROM UserImages
+		 INNER JOIN AlbumUserImages ON AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages
+		 INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+		 WHERE Userr.Active = 1
+		 AND AlbumUserImages.Active = 1
+		 AND UserImages.Active = 1
+		 AND UserImages.IdUser = ${iduser}
+		
+		 
+		 UNION
+		 
+		 SELECT
+		 UserVideos.iduservideos as id,
+		 UserVideos.idalbumvideos as idalbum ,
+		 AlbumUserVideos.title as albumtitle,
+		 UserVideos.iduser,
+		 UserVideos.title,
+		 UserVideos.descriptionn,
+		 UserVideos.likes,
+		 UserVideos.urlvideos as url,
+		 UserVideos.visibility,
+		 UserVideos.datepublish,
+		 UserVideos.active,
+		 
+		 Userr.Name as nameuser,
+		 Userr.Nick as nickuser,
+		 Userr.Email as emailuser,
+		 Userr.Imagee as imageuser,
+		 Userr.Country as countryuser,
+		 'V' as typee
+		 FROM UserVideos
+		 INNER JOIN AlbumUserVideos ON AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos
+		 INNER JOIN Userr ON Userr.IdUser = AlbumUserVideos.IdUser
+		 WHERE Userr.Active = 1
+		 AND AlbumUserVideos.Active = 1
+		 AND UserVideos.Active = 1
+		 AND UserVideos.IdUser = ${iduser}
+		 ORDER BY datepublish desc
+
+         `  
+         let pool = await Conection.conection();
+         const result = await pool.request()     
+         .query(querysearch)
+         for (var resu of result.recordset) {
+            let photopostvideo = new DTOPhotoPostVideo();   
+            this.getinformationList(photopostvideo,resu);
+            array.push(photopostvideo);
+           }
+       
+        pool.close();
+        return array;
+ }
+
+ static getPhotoPostVideoUserLikes=async(iduser)=>
+ {
+         
+         let array=[];
+         let querysearch = 
+		 ` 
+		 SELECT 
+		 UserPost.idpost as id, 
+		 0 as idalbum,
+		 '' as albumtitle,
+		 UserPost.iduser, 
+		 UserPost.title, 
+		 UserPost.descriptionn, 
+		 UserPost.likes,
+		 '' as url,
+		 UserPost.visibility,
+		 UserPost.datepublish, 
+		 UserPost.active, 
+		 Userr.Name as nameuser , 
+		 Userr.Nick as nickuser , 
+		 Userr.Email as emailuser, 
+		 Userr.Imagee as imageuser,
+		 Userr.Country as countryuser, 
+		 'P' as typee  
+		 FROM LikePost 
+		 INNER JOIN UserPost ON UserPost.IdPost = LikePost.IdPost 
+		 INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+		 WHERE Userr.Active = 1 
+		 AND UserPost.Active = 1 
+		 AND LikePost.IdUser = ${iduser}
+		 
+		 UNION
+
+		 SELECT 
+		 UserImages.iduserimages as id, 
+		 UserImages.idalbumimages as idalbum,
+		 AlbumUserImages.title as albumtitle, 
+		 UserImages.iduser, 
+		 UserImages.title, 
+		 UserImages.descriptionn, 
+		 UserImages.likes,
+		 UserImages.urlimage as url,
+		 UserImages.visibility,
+		 UserImages.datepublish, 
+		 UserImages.active, 
+	
+		 Userr.Name as nameuser, 
+		 Userr.Nick as nickuser, 
+		 Userr.Email as emailuser, 
+		 Userr.Imagee as imageuser, 
+		 Userr.Country as countryuser,
+		 'I' as typee 
+
+		 FROM LikeImage
+		 INNER JOIN UserImages ON UserImages.IdUserImages = LikeImage.IdUserImages
+		 INNER JOIN AlbumUserImages ON AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages  
+		 INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+		 WHERE Userr.Active = 1 
+		 AND AlbumUserImages.Active = 1 
+		 AND UserImages.Active = 1 
+		 AND LikeImage.IdUser = ${iduser}
+   
+		 UNION
+   					SELECT 
+					UserVideos.iduservideos as id, 
+					UserVideos.idalbumvideos as idalbum ,
+					AlbumUserVideos.title as albumtitle, 
+					UserVideos.iduser, 
+					UserVideos.title, 
+					UserVideos.descriptionn, 
+					UserVideos.likes,
+					UserVideos.urlvideos as url,
+					UserVideos.visibility,
+					UserVideos.datepublish, 
+				    UserVideos.active, 
+					
+					Userr.Name as nameuser, 
+					Userr.Nick as nickuser, 
+					Userr.Email as emailuser, 
+					Userr.Imagee as imageuser, 
+					Userr.Country as countryuser,
+					'V' as typee 
+					FROM LikeVideo
+					INNER JOIN UserVideos ON UserVideos.IdUserVideos = LikeVideo.IdUserVideos
+					INNER JOIN AlbumUserVideos ON AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos  
+					INNER JOIN Userr ON Userr.IdUser = AlbumUserVideos.IdUser
+					WHERE Userr.Active = 1 
+					AND AlbumUserVideos.Active = 1 
+					AND UserVideos.Active = 1 
+					AND LikeVideo.IdUser = ${iduser}
+					order by datepublish desc
+
+         `  
+         let pool = await Conection.conection();
+         const result = await pool.request()     
+         .query(querysearch)
+         for (var resu of result.recordset) {
+            let photopostvideo = new DTOPhotoPostVideo();   
+            this.getinformationList(photopostvideo,resu);
+            array.push(photopostvideo);
+           }
+       
+        pool.close();
+        return array;
+ }//Get all  that the user gave like
 
  static getPhotoPostVideoFriendUser=async(iduserlogin)=>
  {

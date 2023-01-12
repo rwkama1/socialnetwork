@@ -52,7 +52,7 @@ class DataLikeVideo {
             .input('iduser', Int,iduser)
             .input('iduservideo', Int, idvideo)  
             .query(queryinsert)
-            resultquery = result.recordset[0].notexistimage;
+            resultquery = result.recordset[0].notexistvideo;
             if(resultquery===undefined)
             {
               resultquery = result.recordset[0].notexistuser;

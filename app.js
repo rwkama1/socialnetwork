@@ -1285,16 +1285,16 @@ let posts=async()=>
         // }
         //  await getUserFollowerPost();
 
-         async function getPostSuggestedUser() {
-            let array=await DataPost.getPostSuggestedUser(2,3);
-            for (const post of array) {
-              post.DiffDatePublishDateNow()
-              post.showDiffDatePublishDateNow()
-                console.log(post);
-            }
+        //  async function getPostSuggestedUser() {
+        //     let array=await DataPost.getPostSuggestedUser(2,3);
+        //     for (const post of array) {
+        //       post.DiffDatePublishDateNow()
+        //       post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
           
-        }
-         await getPostSuggestedUser();
+        // }
+        //  await getPostSuggestedUser();
 
 
 //      async function getPostbyIdUser() {
@@ -1382,21 +1382,21 @@ let posts=async()=>
 // //#endregion
 // //#region  PostVideoImages
 
-// let postvideoimage=async()=>
-//  {
-//         async function getPhotoPostVideoMainPage() {
-//             let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(3,'')
-//             const sortdatearray = array.sort((a, b) => b.datepublish - a.datepublish)
-//             //Order by Dates descending
-//             for (const post of sortdatearray) {
-//                 post.DiffDatePublishDateNow()
-//                 post.showDiffDatePublishDateNow()
-//                 console.log(post);
-//             }
+let postvideoimage=async()=>
+ {
+        // async function getPhotoPostVideoMainPage() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(3,'')
+        //     const sortdatearray = array.sort((a, b) => b.datepublish - a.datepublish)
+        //     //Order by Dates descending
+        //     for (const post of sortdatearray) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
          
-//         }
+        // }
       
-//         await getPhotoPostVideoMainPage();
+        // await getPhotoPostVideoMainPage();
 
 //         async function getPhotoPostVideoCountryUser() {
 //             let array=await DataPhotoPostVideo.getPhotoPostVideoCountryUser('USA')
@@ -1409,17 +1409,29 @@ let posts=async()=>
 //         }
 //         await getPhotoPostVideoCountryUser();
 
-//          async function getPhotoPostVideoPublic() {
-//             let array=await DataPhotoPostVideo.getPhotoPostVideoPublic()
-//             for (const post of array) {
-//                 post.DiffDatePublishDateNow()
-//                 post.showDiffDatePublishDateNow()
-//                 console.log(post);
-//             }
+        //  async function getPhotoPostVideoUserLikes() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoUserLikes(1)
+        //     for (const post of array) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
             
-//         }
+        // }
         
-//         await getPhotoPostVideoPublic();
+        // await getPhotoPostVideoUserLikes();
+
+        //   async function getPhotoPostVideoByUser() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoByUser(2)
+        //     for (const post of array) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
+            
+        // }
+        
+        // await getPhotoPostVideoByUser();
 
 //         async function getPhotoPostVideoByIdAndType() {
 //             let data=await DataPhotoPostVideo.getPhotoPostVideoByIdAndType(2,'V')   
@@ -1433,29 +1445,29 @@ let posts=async()=>
 //         await getPhotoPostVideoByIdAndType();
 
 
-//  }
-//  postvideoimage().then()
+ }
+ postvideoimage().then()
 
 // //#endregion
 // //#region LikeImage
-// let LikeImage=async()=>
-//  {
-//     async function likeanimage() {
+let LikeImage=async()=>
+ {
+    // async function likeanimage() {
     
-//             let likeanimage = await DataLikeImage.likeanimage(3,1);
-//             if (likeanimage===-1) {
-//                 throw new Error("The image does not exists");
-//             }
-//             if (likeanimage===-2) {
-//                 throw new Error("The user does not exists");
-//             }
-//             if (likeanimage===-3) {
-//                 throw new Error("The user already liked that image ");
-//             }
-//              console.log("The likeimage was added successfully");
+    //         let likeanimage = await DataLikeImage.likeanimage(1,45);
+    //         if (likeanimage===-1) {
+    //             throw new Error("The image does not exists");
+    //         }
+    //         if (likeanimage===-2) {
+    //             throw new Error("The user does not exists");
+    //         }
+    //         if (likeanimage===-3) {
+    //             throw new Error("The user already liked that image ");
+    //         }
+    //          console.log("The likeimage was added successfully");
        
-//     }
-//     await likeanimage();
+    // }
+    // await likeanimage();
 
 
 //     async function deletelikeanimage() {
@@ -1488,15 +1500,15 @@ let posts=async()=>
 
 
 
-//  }
-//  LikeImage().then()
+ }
+ LikeImage().then()
 // //#endregion
 // //#region LikeVideos
-// let LikeVideos=async()=>
-// {
+let LikeVideos=async()=>
+{
 //    async function likeanvideos() {
    
-//            let likeanvideos = await DataLikeVideo.likeanvideo(1,1);
+//            let likeanvideos = await DataLikeVideo.likeanvideo(1,8);
 //            if (likeanvideos===-1) {
 //                throw new Error("The video does not exists");
 //            }
@@ -1514,7 +1526,7 @@ let posts=async()=>
 
 //    async function deletelikeanvideo() {
    
-//            let deletelikeanvideo = await DataLikeVideo.deletelikeanvideo(2,1);
+//            let deletelikeanvideo = await DataLikeVideo.deletelikeanvideo(1,8);
 //            if (deletelikeanvideo===-1) {
 //                throw new Error("The video does not exists");
 //            }
@@ -1537,15 +1549,15 @@ let posts=async()=>
 
 
 
-// }
-// LikeVideos().then()
+}
+LikeVideos().then()
 // //#endregion
 // //#region LikePost
-// let LikePost=async()=>
-// {
+let LikePost=async()=>
+{
 //    async function likeanpost() {
    
-//            let likeanpost = await DataLikePost.likeanpost(4,1);
+//            let likeanpost = await DataLikePost.likeanpost(1,4);
 //            if (likeanpost===-1) {
 //                throw new Error("The post does not exists");
 //            }
@@ -1586,8 +1598,8 @@ let posts=async()=>
 
 
 
-// }
-// LikePost().then()
+}
+LikePost().then()
 
 // //#endregion
 // //#region LikeComment
@@ -1962,8 +1974,8 @@ CommentVideo().then()
 // //#endregion
 // //#region SubComment
 
-// let SubComment=async()=>
-// {
+let SubComment=async()=>
+{
 
 //        async function addSubComment() {
    
@@ -2107,8 +2119,8 @@ CommentVideo().then()
 //    let NumberOfSubComments = await DataSubComment.NumberOfSubComments(14);
 //    console.log(NumberOfSubComments);
 
-// }
-// SubComment().then()
+}
+SubComment().then()
 // //#endregion
 // //#region Messages
 

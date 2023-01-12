@@ -833,8 +833,6 @@ static getLikesVideoUsers=async(idvideo)=>// get all users who liked the video
        return array;
 }
 
-
-
 static getLikesPostUsers=async(idpost)=>// get all users who liked the post
 {
    let array=[];
@@ -864,6 +862,7 @@ static getLikesPostUsers=async(idpost)=>// get all users who liked the post
        pool.close();
        return array;
 }
+
 
 static getLikesCommentUsers=async(idcomment)=>// get all users who liked the comment
 {
