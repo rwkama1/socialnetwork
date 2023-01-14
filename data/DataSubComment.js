@@ -148,6 +148,9 @@ class DataSubComment {
     }
 
     //#endregion
+
+
+
     //#region GETS 
  
     static getSubCommentsByUserComment=async(idcomment,iduser)=>//get subcomments according to user comment
@@ -731,6 +734,42 @@ class DataSubComment {
          return array;
      }
     //#endregion
+
+    //#region Exists
+
+    static existSubComment=async(iduser,idsubcomment)=>
+    {
+       
+         let querysearch=`
+   
+         IF NOT EXISTS ( 
+            SELECT IdUser FROM UserrSubComments 
+            WHERE IdUser = @IdUser AND IdSubUserComment = @IdSubUserComment
+            )
+         BEGIN
+             select CAST(0 AS BIT) as Exist
+         END
+         ELSE
+         BEGIN
+             select CAST(1 AS BIT) as Exist
+         END
+     
+
+         `;
+            let pool = await Conection.conection();   
+           const result = await pool.request()
+           .input('IdUser', Int, iduser)
+           .input('IdSubUserComment', Int, idsubcomment)
+           .query(querysearch)
+           let exist = result.recordset[0].Exist;
+           pool.close();
+           return exist;
+        
+    
+     }
+
+    //#endregion
+
     //#region OTHERS
 
     static  NumberOfSubComments=async(idcomment)=>

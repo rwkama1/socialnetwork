@@ -137,6 +137,39 @@ class DataLikePost {
 
     //#endregion
 
+    //#region EXISTS
+    static existLikePost=async(iduser,idpost)=>
+    {
+       
+         let querysearch=`
+   
+         IF NOT EXISTS ( 
+            SELECT IdUser FROM LikePost 
+            WHERE IdUser = @IdUser AND idpost = @idpost
+            )
+         BEGIN
+             select CAST(0 AS BIT) as Exist
+         END
+         ELSE
+         BEGIN
+             select CAST(1 AS BIT) as Exist
+         END
+     
+
+         `;
+            let pool = await Conection.conection();   
+           const result = await pool.request()
+           .input('IdUser', Int, iduser)
+           .input('idpost', Int, idpost)
+           .query(querysearch)
+           let exist = result.recordset[0].Exist;
+           pool.close();
+           return exist;
+        
+    
+     }
+    //#endregion
+
     //#region OTHERS
 
     static  NumberOfLikesPost=async(idpost)=>

@@ -213,6 +213,42 @@ class DataCommentPost {
     }
 
     //#endregion
+
+    //#region Exists
+
+    static existCommentPost=async(iduser,idpost)=>
+        {
+           
+             let querysearch=`
+       
+             IF NOT EXISTS ( 
+                SELECT IdUserComment FROM UserrCommentsPost 
+                WHERE IdUserComment = @IdUser AND IdPost = @IdPost
+                )
+             BEGIN
+                 select CAST(0 AS BIT) as Exist
+             END
+             ELSE
+             BEGIN
+                 select CAST(1 AS BIT) as Exist
+             END
+         
+    
+             `;
+                let pool = await Conection.conection();   
+               const result = await pool.request()
+               .input('IdUser', Int, iduser)
+               .input('IdPost', Int, idpost)
+               .query(querysearch)
+               let exist = result.recordset[0].Exist;
+               pool.close();
+               return exist;
+            
+        
+         }
+
+    //#endregion
+
     //#region  GETS
       
     static getsCommentsPost=async(idpost)=>
@@ -261,6 +297,7 @@ class DataCommentPost {
      }
      
     //#endregion
+
     //#region OTHERS
 
     static  NumberOfCommentPost=async(idpost)=>

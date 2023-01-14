@@ -135,7 +135,40 @@ class DataLikeImage {
     }
 
     //#endregion
+    //#region EXISTS
+    
+    static existLikeImage=async(iduser,IdUserImages)=>
+    {
+       
+         let querysearch=`
+   
+         IF NOT EXISTS ( 
+            SELECT IdUser FROM LikeImage 
+            WHERE IdUser = @IdUser AND IdUserImages = @IdUserImages
+            )
+         BEGIN
+             select CAST(0 AS BIT) as Exist
+         END
+         ELSE
+         BEGIN
+             select CAST(1 AS BIT) as Exist
+         END
+     
 
+         `;
+            let pool = await Conection.conection();   
+           const result = await pool.request()
+           .input('IdUser', Int, iduser)
+           .input('IdUserImages', Int, IdUserImages)
+           .query(querysearch)
+           let exist = result.recordset[0].Exist;
+           pool.close();
+           return exist;
+        
+    
+     }
+
+    //#endregion
     //#region OTHERS
 
     static  NumberOfLikesImage=async(idimage)=>

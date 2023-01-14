@@ -213,6 +213,43 @@ class DataCommentImage {
     }
 
     //#endregion
+
+    //#region Exists
+
+    static existCommentImage=async(iduser,idimage)=>
+    {
+        
+        let querysearch=`
+    
+        IF NOT EXISTS ( 
+            SELECT IdUserComment FROM UserrCommentsImage 
+            WHERE IdUserComment = @IdUser AND IdUserImages = @idimage
+            )
+        BEGIN
+            select CAST(0 AS BIT) as Exist
+        END
+        ELSE
+        BEGIN
+            select CAST(1 AS BIT) as Exist
+        END
+    
+
+        `;
+            let pool = await Conection.conection();   
+            const result = await pool.request()
+            .input('IdUser', Int, iduser)
+            .input('idimage', Int, idimage)
+            .query(querysearch)
+            let exist = result.recordset[0].Exist;
+            pool.close();
+            return exist;
+        
+    
+    }
+
+    //#endregion
+
+
     //#region  GETS
       
     static getsCommentsImage=async(idimage)=>

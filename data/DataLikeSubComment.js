@@ -137,6 +137,39 @@ class DataLikeSubComment {
 
     //#endregion
 
+        //#region EXISTS
+        static existLikeSubComment=async(iduser,idsubcomment)=>
+        {
+           
+             let querysearch=`
+       
+             IF NOT EXISTS ( 
+                SELECT IdUser FROM LikeSubComment 
+                WHERE IdUser = @IdUser AND idsubusercomment = @idsubcomment
+                )
+             BEGIN
+                 select CAST(0 AS BIT) as Exist
+             END
+             ELSE
+             BEGIN
+                 select CAST(1 AS BIT) as Exist
+             END
+         
+    
+             `;
+                let pool = await Conection.conection();   
+               const result = await pool.request()
+               .input('IdUser', Int, iduser)
+               .input('idsubcomment', Int, idsubcomment)
+               .query(querysearch)
+               let exist = result.recordset[0].Exist;
+               pool.close();
+               return exist;
+            
+        
+         }
+        //#endregion
+
   
 }
 module.exports = { DataLikeSubComment };

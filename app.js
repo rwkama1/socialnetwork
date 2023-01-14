@@ -282,12 +282,14 @@ let loginuser=async()=>
 // let getuserlogin = await LoginUser.getuserlogin()
 // console.log(getuserlogin);
 
+
+
 // let logout = await LoginUser.logoutUser()
 // console.log(logout);
 
-
-// let existLoginUser = await DataLoginUser.existLoginUser(1)
+// let existLoginUser = await DataLoginUser.existLoginUser(11)
 // console.log(existLoginUser);
+
 
 }
 loginuser().then()
@@ -1498,6 +1500,10 @@ let LikeImage=async()=>
 //     let NumberOfLikesImage = await DataLikeImage.NumberOfLikesImage(1);
 //     console.log(NumberOfLikesImage);
 
+    // let existLikeImage = await DataLikeImage.existLikeImage(2,41);
+    // console.log(existLikeImage);
+
+
 
 
  }
@@ -1546,6 +1552,10 @@ let LikeVideos=async()=>
 
 //    let NumberOfLikesVideos = await DataLikeVideo.NumberOfLikesVideos(1);
 //    console.log(NumberOfLikesVideos);
+
+
+// let existLikeVideo = await DataLikeVideo.existLikeVideo(2,5);
+// console.log(existLikeVideo);
 
 
 
@@ -1597,17 +1607,19 @@ let LikePost=async()=>
 //    console.log(NumberOfLikesPost);
 
 
+// let existLikePost = await DataLikePost.existLikePost(1,1);
+// console.log(existLikePost);
 
 }
 LikePost().then()
 
 // //#endregion
 // //#region LikeComment
-// let LikeComment=async()=>
-// {
+let LikeComment=async()=>
+{
 //    async function likeancomment() {
    
-//            let likeancomment = await DataLikeComment.likeancomment(4,7);
+//            let likeancomment = await DataLikeComment.likeancomment(3,3);
 //            if (likeancomment===-1) {
 //                throw new Error("The comment does not exists");
 //            }
@@ -1647,18 +1659,22 @@ LikePost().then()
 //    let getLikesCommentUsers = await DataUser.getLikesCommentUsers(7);
 //    console.log(getLikesCommentUsers);
 
+// let existLikeComment = await DataLikeComment.existLikeComment(2,10);
+// console.log(existLikeComment);
 
-// }
-// LikeComment().then()
+
+}
+LikeComment().then()
 
 // //#endregion
 // //#region LikeSubComment
 
-// let LikeSubComment=async()=>
-// {
+let LikeSubComment=async()=>
+{
 //    async function likeansubcomment() {
    
-//            let likeansubcomment = await DataLikeSubComment.likeansubcomment(5,21);
+//            let likeansubcomment = 
+//            await DataLikeSubComment.likeansubcomment(12,6);
 //            if (likeansubcomment===-1) {
 //                throw new Error("The sub comment does not exists");
 //            }
@@ -1698,9 +1714,12 @@ LikePost().then()
 //    let getLikesCommentUsers = await DataUser.getLikesCommentUsers(7);
 //    console.log(getLikesCommentUsers);
 
+// let existLikeSubComment = await DataLikeSubComment.existLikeSubComment(1,1);
+// console.log(existLikeSubComment);
 
-// }
-// LikeSubComment().then()
+
+}
+LikeSubComment().then()
 
 
 // //#endregion    
@@ -1790,6 +1809,9 @@ let CommentImage=async()=>
 //    let NumberOfCommentImage = await DataCommentImage.NumberOfCommentImage(1);
 //    console.log(NumberOfCommentImage);
 
+//    let existCommentImage = await DataCommentImage.existCommentImage(8,41);
+//    console.log(existCommentImage);
+
 }
 CommentImage().then()
 
@@ -1868,7 +1890,7 @@ let CommentPost=async()=>
 
 
 //  async function getsCommentsPost() {
-//         let array=await DataCommentPost.getsCommentsPost(1);
+//         let array=await DataCommentPost.getsCommentsPost(4);
 //         for (const commentpost of array) {
 //             commentpost.DiffDatePublishDateNow()
 //             commentpost.showDiffDatePublishDateNow()
@@ -1879,6 +1901,11 @@ let CommentPost=async()=>
    
 // let NumberOfCommentPost = await DataCommentPost.NumberOfCommentPost(1);
 // console.log(NumberOfCommentPost);
+
+
+//    let existCommentPost = await DataCommentPost.existCommentPost(15,2);
+//    console.log(existCommentPost);
+
 }
 CommentPost().then()
 
@@ -1956,7 +1983,7 @@ let CommentVideo=async()=>
 //    await deleteCommentVideo();
 
 //  async function getsCommentsVideo() {
-//         let array=await DataCommentVideo.getsCommentsVideo(1);
+//         let array=await DataCommentVideo.getsCommentsVideo(6);
 //         for (const commentvideo of array) {
 //             commentvideo.DiffDatePublishDateNow()
 //             commentvideo.showDiffDatePublishDateNow()
@@ -1967,6 +1994,10 @@ let CommentVideo=async()=>
 
 // let NumberOfCommentVideo = await DataCommentVideo.NumberOfCommentVideo(1);
 // console.log(NumberOfCommentVideo);
+
+
+//    let existCommentVideo = await DataCommentVideo.existCommentVideo(7,5);
+//    console.log(existCommentVideo);
 }
 CommentVideo().then()
 
@@ -2010,39 +2041,39 @@ let SubComment=async()=>
     //  await updateSubCommentText();
 
     
-//      async function deleteSubComment() {
-//             let loginuserid=1
-//             if (loginuserid!=1) {
-//               throw new Error("Only the logged in user can deleted his subcomment");
-//             }
-//            let deleteSubComment = await DataSubComment.deleteSubComment(1,24);
-//            if (deleteSubComment===-1) {
-//             throw new Error("The user does not exists");
-//            }
-//            if (deleteSubComment===-2) {
-//             throw new Error("The sub comment does not exists");
-//            }
+    //  async function deleteSubComment() {
+    //         let loginuserid=1
+    //         if (loginuserid!=1) {
+    //           throw new Error("Only the logged in user can deleted his subcomment");
+    //         }
+    //        let deleteSubComment = await DataSubComment.deleteSubComment(2,7);
+    //        if (deleteSubComment===-1) {
+    //         throw new Error("The user does not exists");
+    //        }
+    //        if (deleteSubComment===-2) {
+    //         throw new Error("The sub comment does not exists");
+    //        }
           
-//             console.log("The sub comment was deleted successfully");
+    //         console.log("The sub comment was deleted successfully");
       
-//     }
-//      await deleteSubComment();
+    // }
+    //  await deleteSubComment();
 
 
-async function getSubCommentsByComment() {
-    let array=await DataSubComment.getSubCommentsByComment(15);
-    for (const subcommentv of array) {
+// async function getSubCommentsByComment() {
+//     let array=await DataSubComment.getSubCommentsByComment(15);
+//     for (const subcommentv of array) {
        
             
-            subcommentv.DiffDatePublishDateNowSubComment()
-            subcommentv.showDiffDatePublishDateNowSubComment()
+//             subcommentv.DiffDatePublishDateNowSubComment()
+//             subcommentv.showDiffDatePublishDateNowSubComment()
     
         
-        console.log(subcommentv);
+//         console.log(subcommentv);
        
-    }     
-}
-await getSubCommentsByComment();
+//     }     
+// }
+// await getSubCommentsByComment();
 
 //  async function getIfExistsSubComentsOfCommentsImage() {
 //         let array=await DataSubComment.getIfExistsSubComentsOfCommentsImage(1);
@@ -2130,6 +2161,9 @@ await getSubCommentsByComment();
 
 //    let NumberOfSubComments = await DataSubComment.NumberOfSubComments(14);
 //    console.log(NumberOfSubComments);
+
+//    let existSubComment = await DataSubComment.existSubComment(1,1);
+//    console.log(existSubComment);
 
 }
 SubComment().then()

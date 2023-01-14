@@ -19,7 +19,7 @@ class DataLikeComment {
         END
         ELSE
         BEGIN
-            IF NOT EXISTS ( SELECT IdUserComment FROM Userr WHERE IdUser=@iduser and Active=1)
+            IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduser and Active=1)
             BEGIN
              select -2 as notexistuser
             END
@@ -137,6 +137,41 @@ class DataLikeComment {
 
     //#endregion
 
+
+    //#region EXISTS
+    
+    static existLikeComment=async(iduser,idcomment)=>
+    {
+       
+         let querysearch=`
+   
+         IF NOT EXISTS ( 
+            SELECT IdUser FROM LikeComment 
+            WHERE IdUser = @IdUser AND IdUserComment = @IdUserComment
+            )
+         BEGIN
+             select CAST(0 AS BIT) as Exist
+         END
+         ELSE
+         BEGIN
+             select CAST(1 AS BIT) as Exist
+         END
+     
+
+         `;
+            let pool = await Conection.conection();   
+           const result = await pool.request()
+           .input('IdUser', Int, iduser)
+           .input('IdUserComment', Int, idcomment)
+           .query(querysearch)
+           let exist = result.recordset[0].Exist;
+           pool.close();
+           return exist;
+        
+    
+     }
+
+    //#endregion
   
 }
 module.exports = { DataLikeComment };

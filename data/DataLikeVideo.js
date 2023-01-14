@@ -135,6 +135,41 @@ class DataLikeVideo {
 
     //#endregion
 
+   //#region EXISTS
+   static existLikeVideo=async(iduser,idvideo)=>
+   {
+      
+        let querysearch=`
+  
+        IF NOT EXISTS ( 
+           SELECT IdUser FROM LikeVideo 
+           WHERE IdUser = @IdUser AND iduservideos = @iduservideos
+           )
+        BEGIN
+            select CAST(0 AS BIT) as Exist
+        END
+        ELSE
+        BEGIN
+            select CAST(1 AS BIT) as Exist
+        END
+    
+
+        `;
+           let pool = await Conection.conection();   
+          const result = await pool.request()
+          .input('IdUser', Int, iduser)
+          .input('iduservideos', Int, idvideo)
+          .query(querysearch)
+          let exist = result.recordset[0].Exist;
+          pool.close();
+          return exist;
+       
+   
+    }
+   //#endregion
+
+
+
     //#region OTHERS
 
     static  NumberOfLikesVideos=async(idvideo)=>
