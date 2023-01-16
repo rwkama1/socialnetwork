@@ -1400,6 +1400,19 @@ let postvideoimage=async()=>
       
         // await getPhotoPostVideoMainPage();
 
+
+            async function getPhotoPostVideoMainPage2() {
+            let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage2(2)
+            for (const post of array) {
+                post.DiffDatePublishDateNow()
+                post.showDiffDatePublishDateNow()
+                console.log(post);
+            }
+         
+        }
+      
+        await getPhotoPostVideoMainPage2();
+
 //         async function getPhotoPostVideoCountryUser() {
 //             let array=await DataPhotoPostVideo.getPhotoPostVideoCountryUser('USA')
 //             for (const post of array) {
