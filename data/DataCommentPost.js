@@ -26,6 +26,9 @@ class DataCommentPost {
                     BEGIN TRANSACTION  
                         insert into UserrComments values (@iduser,@text,0,getutcdate(),'Public')
                         insert into UserrCommentsPost values (@@identity,@IdPost)
+                        insert into NotificationCommentPost values
+                         ((select IdUser from UserPost where IdPost=@idpost),
+                         @iduser,@idpost,'',getutcdate(),0)
                         select 1 as commentpostadded
                     IF(@@ERROR > 0)  
                     BEGIN  

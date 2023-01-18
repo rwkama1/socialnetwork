@@ -29,6 +29,7 @@ const { DTOPost } = require("./entity/DTOPost");
 
  const {  DTOUserRelation } = require("./entity/DTOUserRelation");
 const { DTOVideo } = require("./entity/DTOVideo");
+const { DataChatRoom } = require("./data/DataChatRoom");
 
 
 // //#region User
@@ -1387,10 +1388,9 @@ let posts=async()=>
 let postvideoimage=async()=>
  {
         // async function getPhotoPostVideoMainPage() {
-        //     let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(3,'')
-        //     const sortdatearray = array.sort((a, b) => b.datepublish - a.datepublish)
-        //     //Order by Dates descending
-        //     for (const post of sortdatearray) {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(1)
+
+        //     for (const post of array) {
         //         post.DiffDatePublishDateNow()
         //         post.showDiffDatePublishDateNow()
         //         console.log(post);
@@ -1401,28 +1401,28 @@ let postvideoimage=async()=>
         // await getPhotoPostVideoMainPage();
 
 
-            async function getPhotoPostVideoMainPage2() {
-            let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage2(2)
-            for (const post of array) {
-                post.DiffDatePublishDateNow()
-                post.showDiffDatePublishDateNow()
-                console.log(post);
-            }
+        //     async function getPhotoPostVideoMainPage2() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage2(2)
+        //     for (const post of array) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
          
-        }
+        // }
       
-        await getPhotoPostVideoMainPage2();
+        // await getPhotoPostVideoMainPage2();
 
-//         async function getPhotoPostVideoCountryUser() {
-//             let array=await DataPhotoPostVideo.getPhotoPostVideoCountryUser('USA')
-//             for (const post of array) {
-//                 post.DiffDatePublishDateNow()
-//                 post.showDiffDatePublishDateNow()
-//                 console.log(post);
-//             }
+        // async function getPhotoPostVideoSearch() {
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoSearch('1')
+        //     for (const post of array) {
+        //         post.DiffDatePublishDateNow()
+        //         post.showDiffDatePublishDateNow()
+        //         console.log(post);
+        //     }
             
-//         }
-//         await getPhotoPostVideoCountryUser();
+        // }
+        // await getPhotoPostVideoSearch();
 
         //  async function getPhotoPostVideoUserLikes() {
         //     let array=await DataPhotoPostVideo.getPhotoPostVideoUserLikes(1)
@@ -1437,7 +1437,7 @@ let postvideoimage=async()=>
         // await getPhotoPostVideoUserLikes();
 
         //   async function getPhotoPostVideoByUser() {
-        //     let array=await DataPhotoPostVideo.getPhotoPostVideoByUser(2)
+        //     let array=await DataPhotoPostVideo.getPhotoPostVideoByUser(9)
         //     for (const post of array) {
         //         post.DiffDatePublishDateNow()
         //         post.showDiffDatePublishDateNow()
@@ -1744,7 +1744,7 @@ let CommentImage=async()=>
     //    async function commentimage() {
    
     //        let commentimage = await
-    //         DataCommentImage.CommentImage(9,42,"Image Comment");
+    //         DataCommentImage.CommentImage(12,42,"Image Comment");
     //        if (commentimage===-1) {
     //            throw new Error("The image does not exists");
     //        }
@@ -1836,7 +1836,7 @@ let CommentPost=async()=>
 
     //    async function commentpost() {
    
-    //        let CommentPost = await DataCommentPost.CommentPost(2,4,"Comment Post");
+    //        let CommentPost = await DataCommentPost.CommentPost(2,1,"Comment Post");
     //        if (CommentPost===-1) {
     //            throw new Error("The post does not exists");
     //        }
@@ -1931,7 +1931,7 @@ let CommentVideo=async()=>
     //    async function CommentVideo() {
    
     //        let CommentVideo = await DataCommentVideo.CommentVideo(
-    //          11,6,"VideoComment");
+    //          8,7,"VideoComment");
     //        if (CommentVideo===-1) {
     //            throw new Error("The video does not exists");
     //        }
@@ -2183,27 +2183,38 @@ SubComment().then()
 // //#endregion
 // //#region Messages
 
-// let Messages=async()=>
-// {
-//     async function addMessage() {
+let Messages=async()=>
+{
    
-//         let userreceived=1;
-//         let usersender=2;
-//         if (userreceived===usersender) {
-//             throw new Error("The sending user cannot be the same as the receiving user");
-//            }
-//            let addMessage = await DataMessage.addMessage(userreceived,usersender,"TitleMessage","TextMessage");
+
+
+    //  async function addMessage() {
+   
+    //     let userreceived=3;
+    //     let usersender=2;
+    //     if (userreceived===usersender) {
+    //         throw new Error("The sending user cannot be the same as the receiving user");
+    //        }
+    //        let addMessage = await DataMessage.addMessage
+    //        (userreceived,usersender,"TextMessage");
           
-//            if (addMessage===-1) {
-//                throw new Error("The user received does not exists");
-//            }
-//            if (addMessage===-2) {
-//                throw new Error("The user sender does not exists");
-//            }
-//             console.log("The message was added successfully");
+    //        if (addMessage===-1) {
+    //            throw new Error("The user received does not exists");
+    //        }
+    //        if (addMessage===-2) {
+    //            throw new Error("The user sender does not exists");
+    //        }
+    //        if (addMessage===-3) {
+    //         throw new Error("The chat room does not exists");
+    //     }
+       
+        
+    //         console.log("The message was added successfully");
       
-//     }
-//      await addMessage();
+    // }
+    //  await addMessage();
+
+
 
 
 //     async function deleteMessage() {
@@ -2229,68 +2240,8 @@ SubComment().then()
 //         }
 //         await deleteMessage();
     
-//  async function markallMessagesasreadbyUser() {
-   
-      
-      
-//            let addMessage = await DataMessage.markallMessagesasreadbyUser(1);
-          
-//            if (addMessage===-1) {
-//                throw new Error("The user  does not exists");
-//            }
-          
-//             console.log("The messages were  updated");
-      
-//     }
-//      await markallMessagesasreadbyUser();
 
 
-
-
-
-
-//  async function getMessagesByUserReceived() {
-//     let array=await DataMessage.getMessagesByUserReceived(1);
-//     for (const message of array) {
-//         message.DiffDatePublishDateNow()
-//         message.showDiffDatePublishDateNow()
-//          console.log(message);
-//          }     
-     
-       
-//     }  
-    
-
-// await getMessagesByUserReceived();
-
-
-
-// async function getSearchNameMessagesByUserReceived() {
-//     let array=await DataMessage.getSearchNameMessagesByUserReceived(1);
-//     for (const message of array) {
-//         message.DiffDatePublishDateNow()
-//         message.showDiffDatePublishDateNow()
-//         console.log(message);
-        
-       
-//     }     
-// }
-// await getSearchNameMessagesByUserReceived();
-
-
-
-
-
-// async function getMessagesByUserSender() {
-//     let array=await DataMessage.getMessagesByUserSender(2);
-//     for (const message of array) {
-//         message.DiffDatePublishDateNow()
-//         message.showDiffDatePublishDateNow()
-//         console.log(message);
-       
-//     }     
-// }
-// await getMessagesByUserSender();
 
 // async function getMessage() {
 //     let message=await DataMessage.getMessage(1);
@@ -2307,33 +2258,100 @@ SubComment().then()
 // await getMessage();
 
 
-// async function getMessageMarkRead() {
-//     let getMessageMarkRead=await DataMessage.getMessageMarkRead(4);
-//     if (getMessageMarkRead===-1) 
-//     {
-//         throw new Error("The message does not exists ");    
-//     }
-//     getMessageMarkRead.DiffDatePublishDateNow()
-//       getMessageMarkRead.showDiffDatePublishDateNow()
-
-       
-//      console.log(getMessageMarkRead);
-       
-        
-// }
-// await getMessageMarkRead();
-
-
-
-
-
-
-
-
-// }
-// Messages().then()
+}
+Messages().then()
 
 // //#endregion 
+
+// //#region Messages
+
+let ChatRoom=async()=>
+{
+   
+//  async function addChatRoom() {
+   
+//         let userreceived=1;
+//         let usersender=4;
+//         if (userreceived===usersender) {
+//             throw new Error("The sending user cannot be the same as the receiving user");
+//            }
+//            let addMessagewithchatroom = await DataChatRoom.addChatRoom(userreceived,usersender,"TitleMessage","TextMessage");
+          
+//            if (addMessagewithchatroom===-1) {
+//                throw new Error("The user received does not exists");
+//            }
+//            if (addMessagewithchatroom===-2) {
+//                throw new Error("The user sender does not exists");
+//            }
+//            if (addMessagewithchatroom===-3) {
+//             throw new Error("The chat room already exists");
+//         }
+//             console.log("The chat room was added successfully");
+      
+//     }
+//      await addChatRoom();
+
+    // async function deleteChatRoom() {
+   
+    //         let userreceived=2;
+    //         let usersender=3;
+    //         if (userreceived===usersender) {
+    //             throw new Error("The sending user cannot be the same as the receiving user");
+    //            }
+    //            let deleteChatRoom = await DataChatRoom.deleteChatRoom(userreceived,usersender,2);
+              
+    //            if (deleteChatRoom===-1) {
+    //                throw new Error("The chatroom does not exists");
+    //            }
+              
+            
+    //             console.log("The chatroom was deleted successfully");
+          
+    //     }
+    //     await deleteChatRoom();
+    
+
+
+}
+ChatRoom().then()
+
+// //#endregion 
+
+//#region NOTIFICATIONS
+
+let UserPendingNotifications=async()=>
+{
+//       async function addUserRelation() {
+
+//             let dtour = new DTOUserRelation();
+//             dtour.user.iduser = 1;
+//             dtour.friend.iduser = 15;
+
+//             let addUserRelation1 = await DataUserRelation.addUserRelation(dtour);
+//             if (addUserRelation1===-1) {
+//                 throw new Error("The user does not exists");
+//             }
+//             if (addUserRelation1===-2) {
+//                 throw new Error("The friend does not exists");
+//             }
+//             if (addUserRelation1===-3) {
+//                 throw new Error("The users relation already exists");
+//             }
+//              console.log("Friend request has been sent");
+//    }
+//    await addUserRelation();
+       
+
+    // setInterval(async () => {
+    //     let getSentPendingUsersbyUser =
+    //      await DataUserRelation.getSentPendingUsersbyUser(15);
+    //     console.log(getSentPendingUsersbyUser);
+    // }, 3000);
+}  
+UserPendingNotifications().then()
+
+
+//#endregion
 
 
 

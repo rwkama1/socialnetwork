@@ -3,7 +3,6 @@
   "version": "1.0.1",
   "description": "This package contains a backend of what would be the logic of a social network software, the architecture used is made in 2 layers",
   "main": "app.js",
-
   "scripts": {
     "start": "node app"
   },
@@ -14,11 +13,13 @@
   "dependencies": {
     "mssql": "8.1.1"
   },
-  "keywords": ["backend",
+  "keywords": [
+    "backend",
     "js",
     "javascript",
     "user",
-    "socialnetwork"],
+    "socialnetwork"
+  ],
   "author": "Carlos Rodriguez <rwkamandriw@gmail.com>",
   "license": "MIT"
 }

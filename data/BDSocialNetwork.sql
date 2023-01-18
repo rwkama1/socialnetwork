@@ -41,17 +41,6 @@ CREATE TABLE UserrRelations(
 )
 go
 
-CREATE TABLE UserrMessage(
-	IdUserMessages int NOT NULL PRIMARY KEY Identity(1,1) ,
-	IdUser int not null Foreign Key References Userr(IdUser),
-	IdSender int not null Foreign Key References Userr(IdUser),
-	Title varchar(50) NOT NULL,
-	Textt varchar(200) NOT NULL,
-	DateeTime DateTime NOT NULL,
-	Seen bit not null,
-	Answered bit not null
-)
-go
 
 CREATE TABLE AlbumUserImages(
 	IdAlbumImages int NOT NULL PRIMARY KEY Identity(1,1) ,
@@ -201,13 +190,89 @@ CREATE TABLE Followers(
 	IdFollowedUser int not null Foreign Key References Userr(IdUser),
 )
 go
+CREATE TABLE ChatRoom(
+	IdRoom int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserReceived int not null Foreign Key References Userr(IdUser),
+	IdUserSender int not null Foreign Key References Userr(IdUser),
+)
+go
+CREATE TABLE UserrMessage(
+	IdUserMessages int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserReceived int not null Foreign Key References Userr(IdUser),
+	IdSender int not null Foreign Key References Userr(IdUser),
+	IdRoom int not null Foreign Key References ChatRoom(IdRoom),
+	Title varchar(50) NOT NULL,
+	Textt varchar(200) NOT NULL,
+	DateeTime DateTime NOT NULL,
+	Seen bit not null,
+	Answered bit not null
+)
+go
 
 
 
+-- NOTIFICATIONS
 
 
+CREATE TABLE NotificationCommentImage(
+	IdNotiCoImage int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserReceived int not null Foreign Key References Userr(IdUser),
+	IdUserSender int not null Foreign Key References Userr(IdUser),
+	IdUserImages int not null Foreign Key References UserImages(IdUserImages),
+	Messagee varchar(50) NOT NULL,
+	DateeTime DateTime NOT NULL,
+	Seen bit not null,
+)
+go
+CREATE TABLE NotificationCommentPost(
+	IdNotiCoPost int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserReceived int not null Foreign Key References Userr(IdUser),
+	IdUserSender int not null Foreign Key References Userr(IdUser),
+	IdPost int not null Foreign Key References UserPost(IdPost),
+	Messagee varchar(50) NOT NULL,
+	DateeTime DateTime NOT NULL,
+	Seen bit not null,
+)
+go
+CREATE TABLE NotificationCommentVideo(
+	IdNotiCoVideo int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserReceived int not null Foreign Key References Userr(IdUser),
+	IdUserSender int not null Foreign Key References Userr(IdUser),
+	IdUserVideos int not null Foreign Key References UserVideos(IdUserVideos),
+	Messagee varchar(50) NOT NULL,
+	DateeTime DateTime NOT NULL,
+	Seen bit not null
+)
+go
+CREATE TABLE NotificationSubComment(
+	IdNotiSubComment int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserReceived int not null Foreign Key References Userr(IdUser),
+	IdUserSender int not null Foreign Key References Userr(IdUser),
+	IdUserComment int not null Foreign Key References UserrComments(IdUserComment),
+	Messagee varchar(50) NOT NULL,
+	DateeTime DateTime NOT NULL,
+	Seen bit not null
+)
+go
+CREATE TABLE NotificationMessage(
+	IdNotiUser int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserReceived int not null Foreign Key References Userr(IdUser),
+	IdUserSender int not null Foreign Key References Userr(IdUser),
+	IdUserMessages int not null Foreign Key References UserrMessage(IdUserMessages),
+	Messagee varchar(50) NOT NULL,
+	DateeTime DateTime NOT NULL,
+	Seen bit not null
+)
+go
 
+--drop table NotificationCommentImage
+--drop table NotificationCommentPost
+--drop table NotificationCommentVideo
+--drop table NotificationSubComment
+--drop table NotificationMessage
 
+--drop table UserrMessage
+--drop table ChatRoom
 
 --drop table Followers
 --drop table Log
@@ -228,7 +293,7 @@ go
 
 --drop table UserPost
 
---drop table UserrMessage
+
 
 
 --drop table UserVideos
@@ -238,6 +303,16 @@ go
 
 --drop table UserrRelations
 --drop table Userr
+
+
+select * from UserrMessage
+select * from ChatRoom
+
+select * from NotificationCommentImage
+select * from NotificationCommentPost
+select * from NotificationCommentVideo
+select * from NotificationSubComment
+select * from NotificationMessage
 
 
 select * from AlbumUserImages
@@ -272,7 +347,8 @@ delete from LoginUser
 delete from Logs
 delete from UserImages
  delete from Followers
-
+ 
+delete from ChatRoom
 
 
 

@@ -26,6 +26,9 @@ class DataCommentImage {
                     BEGIN TRANSACTION  
                         insert into UserrComments values (@iduser,@text,0,getutcdate(),'Public')
                         insert into UserrCommentsImage values (@@identity,@iduserimages)
+                        insert into NotificationCommentImage values
+                        ((select IdUser from UserImages where IdUserImages=@iduserimages),
+                        @iduser,@iduserimages,'',getutcdate(),0)
                         select 1 as commentimageadded
                     IF(@@ERROR > 0)  
                     BEGIN  

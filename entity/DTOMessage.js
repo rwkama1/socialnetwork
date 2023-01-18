@@ -5,6 +5,7 @@ class DTOMessage
 {
   
 	idusermessages=0;
+  idroom=0;
 	title="";
 	textt="";
 	dateetime=new Date();

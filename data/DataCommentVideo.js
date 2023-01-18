@@ -25,6 +25,9 @@ class DataCommentVideo {
                     BEGIN TRANSACTION  
                         insert into UserrComments values (@iduser,@text,0,getutcdate(),'Public')
                         insert into UserrCommentsVideo values (@@identity,@idvideo)
+                        insert into NotificationCommentVideo values
+                        ((select IdUser from UserVideos where IdUserVideos=@idvideo),
+                        @iduser,@idvideo,'',getutcdate(),0)
                         select 1 as commentvideoadded
                     IF(@@ERROR > 0)  
                     BEGIN  

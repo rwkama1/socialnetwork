@@ -23,8 +23,24 @@ class DataSubComment {
             END
             ELSE
             BEGIN
+                 BEGIN TRANSACTION  
+
                  insert into UserrSubComments values (@iduser,@idusercomment,0,@text,getutcdate())
+                 
+                 insert into NotificationSubComment values
+                 ((select IdUser from UserrComments where IdUserComment=@idusercomment),
+                 @iduser,@idusercomment,'',getutcdate(),0)
+
                  select 1 as subcommentadded
+
+                 IF(@@ERROR > 0)  
+                 BEGIN  
+                     ROLLBACK TRANSACTION  
+                 END  
+                 ELSE  
+                 BEGIN  
+                 COMMIT TRANSACTION  
+                 END
             END
          END
      

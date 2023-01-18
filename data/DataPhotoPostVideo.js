@@ -633,293 +633,82 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
         pool.close();
         return array;
  }
- static getPhotoPostVideoMainPage2=async(iduserlogin)=>
+
+ static getPhotoPostVideoSearch=async(searchtext="")=>
  {
          
          let array=[];
-	
          let querysearch = 
-		 `  
-		 -- Primero, se listan las post,imï¿½genes y videos de los amigos del usuario actual
-		 WITH friends_posts AS (
-		 
-				 	SELECT DISTINCT 
-					 p.idpost as id,
-					 0 as idalbum,
-					 '' as albumtitle,
-					 p.iduser,
-					 p.title,
-					 p.descriptionn,
-					 p.likes,
-					 '' as url,
-					 p.visibility,
-					 p.datepublish,
-					 p.active,
-					 u.Name as nameuser ,
-					 u.Nick as nickuser ,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'P' as typee
-					 FROM UserPost p
-					 JOIN UserrRelations r ON p.IdUser = r.IdFriend
-					 JOIN Userr u on p.IdUser = u.IdUser
-					 WHERE r.IdUser = @iduserlogin AND r.Statee = 'Confirmed'
-		 
-					 UNION
-		 
-					 SELECT DISTINCT
-					 i.iduserimages as id,
-					 i.idalbumimages as idalbum,
-					 ai.title as albumtitle,
-					 i.iduser,
-					 i.title,
-					 i.descriptionn,
-					 i.likes,
-					 i.urlimage as url,
-					 i.visibility,
-					 i.datepublish,
-					 i.active,
+		 	` 
 					 
-					 u.Name as nameuser,
-					 u.Nick as nickuser,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'I' as typee	
-					 FROM UserImages i
-					 JOIN UserrRelations r ON i.IdUser = r.IdFriend
-					 JOIN Userr u on i.IdUser = u.IdUser
-					 JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
-					 WHERE r.IdUser = @iduserlogin AND r.Statee = 'Confirmed'
-		 
-					 UNION
-		 
-					 SELECT DISTINCT 
-					 v.iduservideos as id,
-					 v.idalbumvideos as idalbum ,
-					 av.title as albumtitle,
-					 v.iduser,
-					 v.title,
-					 v.descriptionn,
-					 v.likes,
-					 v.urlvideos as url,
-					 v.visibility,
-					 v.datepublish,
-					 v.active,
-					 
-					 u.Name as nameuser,
-					 u.Nick as nickuser,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'V' as typee
-					 FROM UserVideos v
-					 JOIN UserrRelations r ON v.IdUser = r.IdFriend
-					 JOIN Userr u on v.IdUser = u.IdUser
-					 JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
-					 WHERE r.IdUser = @iduserlogin AND r.Statee = 'Confirmed'
-		 )
-		 
-		 -- Segundo, se listan las post,imï¿½genes y videos de los usuarios a los que el usuario actual sigue
-		 
-		 , friends_posts_and_followings AS (
-		 
-					 SELECT *
-					 FROM friends_posts
-		 
-					 UNION
-		 
-					 SELECT DISTINCT 
-					 p.idpost as id,
-					 0 as idalbum,
-					 '' as albumtitle,
-					 p.iduser,
-					 p.title,
-					 p.descriptionn,
-					 p.likes,
-					 '' as url,
-					 p.visibility,
-					 p.datepublish,
-					 p.active,
-					 u.Name as nameuser ,
-					 u.Nick as nickuser ,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'P' as typee
-					 FROM UserPost p
-					 JOIN Followers f ON p.IdUser = f.IdFollowedUser
-					 JOIN Userr u on p.IdUser = u.IdUser
-					 WHERE f.IdFollowerUser = @iduserlogin 
-		 
-					 UNION
-		 
-					 SELECT DISTINCT
-					 i.iduserimages as id,
-					 i.idalbumimages as idalbum,
-					 ai.title as albumtitle,
-					 i.iduser,
-					 i.title,
-					 i.descriptionn,
-					 i.likes,
-					 i.urlimage as url,
-					 i.visibility,
-					 i.datepublish,
-					 i.active,
-					 
-					 u.Name as nameuser,
-					 u.Nick as nickuser,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'I' as typee	
-					 FROM UserImages i
-					 JOIN Followers f ON i.IdUser = f.IdFollowedUser
-					 JOIN Userr u on i.IdUser = u.IdUser
-					 JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
-					 WHERE f.IdFollowerUser = @iduserlogin
-					 
-					 UNION
-		 
-					 SELECT DISTINCT
-					 v.iduservideos as id,
-					 v.idalbumvideos as idalbum ,
-					 av.title as albumtitle,
-					 v.iduser,
-					 v.title,
-					 v.descriptionn,
-					 v.likes,
-					 v.urlvideos as url,
-					 v.visibility,
-					 v.datepublish,
-					 v.active,
-				 
-					 u.Name as nameuser,
-					 u.Nick as nickuser,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'V' as typee
-					 FROM UserVideos v
-					 JOIN Followers f ON v.IdUser = f.IdFollowedUser
-					 JOIN Userr u on v.IdUser = u.IdUser
-					 JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
-					 WHERE f.IdFollowerUser = @iduserlogin 
-		 
-		 )
-		 
-		 
-		 
-		 
-		 -- Tercero, se listan las post,imï¿½genes y videos de los usuarios que pertenecen al mismo paï¿½s que el usuario actual
-		 
-		 , friends_posts_followings_and_country AS (
-			 SELECT *
-			 FROM friends_posts_and_followings
-			 WHERE countryuser = (SELECT Country FROM Userr WHERE IdUser = @iduserlogin
-			 )
-		 )
-		 
-		 -- Por ultimo, se listan los demas post (imagenes y videos, post)
-		 , all_posts AS (
-		 
-				 
-		 
-					 SELECT DISTINCT
-					 p.idpost as id,
-					 0 as idalbum,
-					 '' as albumtitle,
-					 p.iduser,
-					 p.title,
-					 p.descriptionn,
-					 p.likes,
-					 '' as url,
-					 p.visibility,
-					 p.datepublish,
-					 p.active,
-					 u.Name as nameuser ,
-					 u.Nick as nickuser ,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'P' as typee
-					 FROM UserPost p
-					 JOIN Userr u on p.IdUser = u.IdUser
-		 
-					 UNION
-		 
-					 SELECT DISTINCT 
-					 i.iduserimages as id,
-					 i.idalbumimages as idalbum,
-					 ai.title as albumtitle,
-					 i.iduser,
-					 i.title,
-					 i.descriptionn,
-					 i.likes,
-					 i.urlimage as url,
-					 i.visibility,
-					 i.datepublish,
-					 i.active,
-					 
-					 u.Name as nameuser,
-					 u.Nick as nickuser,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'I' as typee	
-					 FROM UserImages i
-					 JOIN Userr u on i.IdUser = u.IdUser
-					 JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
-		 
-					 UNION
-		 
-					 SELECT DISTINCT
-					 
-					 v.iduservideos as id,
-					 v.idalbumvideos as idalbum ,
-					 av.title as albumtitle,
-					 v.iduser,
-					 v.title,
-					 v.descriptionn,
-					 v.likes,
-					 v.urlvideos as url,
-					 v.visibility,
-					 v.datepublish,
-					 v.active,
-				 
-					 u.Name as nameuser,
-					 u.Nick as nickuser,
-					 u.Email as emailuser,
-					 u.Imagee as imageuser,
-					 u.Country as countryuser,
-					 'V' as typee
-					 FROM UserVideos v
-					 JOIN Userr u on v.IdUser = u.IdUser
-					 JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
-		 )
-		 
-		 
-		 SELECT *
-		 FROM all_posts
-		 WHERE NOT EXISTS (SELECT all_posts.id  FROM friends_posts_followings_and_country WHERE all_posts.id = friends_posts_followings_and_country.id)
-		 ORDER BY datepublish DESC
-		
+			 SELECT 
+			 u.IdUser as id, 
+			 u.Name as nameortitle, 
+			 u.Imagee as url,
+			 'U' as typee
+			 FROM Userr u
+			 WHERE
+			 u.Active=1	
+			 AND
+			 u.Name LIKE '%${searchtext}%'  
+			 
+			 UNION
+			 
+			 SELECT
+			 p.idpost as id, 
+			 p.title as nameortitle,
+			 '' as url,
+			 'P' as typee
+			 FROM UserPost p
+			 WHERE
+			 p.Active=1	
+			 AND
+			 (p.title LIKE '%${searchtext}%'  
+			 OR p.descriptionn LIKE '%${searchtext}%')  
+			 
+			 UNION
+			 
+			 SELECT
+			 v.iduservideos as id,
+			 v.title as nameortitle,
+			 v.urlvideos as url,	
+			 'V' as typee
+			 FROM UserVideos v
+			 WHERE
+			 v.Active=1	
+			 AND
+			 v.title LIKE '%${searchtext}%'  
+			 OR v.descriptionn LIKE '%${searchtext}%' 
+			 
+			 UNION
+			 
+			 SELECT 
+			 i.iduserimages as id, 
+			 i.title as nameortitle, 
+			 i.urlimage as url, 
+			 'I' as typee
+			 FROM UserImages i
+			 WHERE
+			 i.Active=1	
+			 AND
+			 i.title  LIKE '%${searchtext}%'
+			 OR i.descriptionn LIKE '%${searchtext}%'
 
          `  
          let pool = await Conection.conection();
          const result = await pool.request()
-		 .input('iduserlogin', Int, iduserlogin)
+	
          .query(querysearch)
          for (var resu of result.recordset) {
             let photopostvideo = new DTOPhotoPostVideo();   
-            this.getinformationList(photopostvideo,resu);
+            this.getinformationSearch(photopostvideo,resu);
             array.push(photopostvideo);
            }
        
         pool.close();
         return array;
  }
+
 
  static getPhotoPostVideoByUser=async(iduser)=>
  {
@@ -1491,7 +1280,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
         pool.close();
         return array;
  }
-
+ 
 //#endregion
 
  //#region  GetInformation
@@ -1539,8 +1328,19 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
     photopostvideo.user.country = result.countryuser;
    
   
+  }
+  static  getinformationSearch(photopostvideo,result) {
+    
+    photopostvideo.id = result.id; 
+  
+    photopostvideo.nameortitle = result.nameortitle;
+   
+    photopostvideo.url = result.url;
+  
+    photopostvideo.type = result.typee;
   
    
+  
   }
   //#endregion
 }
