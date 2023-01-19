@@ -2190,13 +2190,13 @@ let Messages=async()=>
 
     //  async function addMessage() {
    
-    //     let userreceived=3;
-    //     let usersender=2;
+    //     let userreceived=1;
+    //     let usersender=3;
     //     if (userreceived===usersender) {
     //         throw new Error("The sending user cannot be the same as the receiving user");
     //        }
     //        let addMessage = await DataMessage.addMessage
-    //        (userreceived,usersender,"TextMessage");
+    //        (userreceived,usersender,"LastMessage");
           
     //        if (addMessage===-1) {
     //            throw new Error("The user received does not exists");
@@ -2310,6 +2310,12 @@ let ChatRoom=async()=>
     //     }
     //     await deleteChatRoom();
     
+
+    
+    let getChatRoomsByUser=await DataChatRoom.getChatRoomsByUser(1);
+     console.log(getChatRoomsByUser);
+       
+        
 
 
 }

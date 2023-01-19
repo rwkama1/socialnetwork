@@ -1,5 +1,6 @@
 
 const { VarChar,Int ,Date} = require("mssql");
+const { DTOChatRoom } = require("../entity/DTOChatRoom");
 
 const { Conection } = require("./Connection");
 
@@ -129,6 +130,69 @@ class DataChatRoom
     }
 
     //#region GETS
+
+    static getChatRoomsByUser=async(iduser)=>
+    {
+        
+        let array=[];
+       
+        let querysearch=
+        `
+        SELECT 
+        c.IdRoom, 
+        u1.IdUser,
+        u1.Name , 
+        u1.Imagee , 
+        um.IdUserMessages,
+        MAX(um.Textt) AS LastMessage, 
+        MAX(um.DateeTime) AS LastMessageDate
+        
+        FROM ChatRoom c
+        JOIN Userr u1 ON (c.IdUserReceived = u1.IdUser OR c.IdUserSender = u1.IdUser)
+        JOIN UserrMessage um ON c.IdRoom = um.IdRoom
+        
+        WHERE (c.IdUserReceived = @iduser OR c.IdUserSender = @iduser) 
+        AND u1.IdUser!= @iduser
+    
+        GROUP BY c.IdRoom,
+        u1.IdUser,
+        u1.Name, 
+        u1.Imagee,
+        um.IdUserMessages
+    
+        ORDER BY MAX(um.DateeTime) DESC
+        `;
+ 
+      let pool = await Conection.conection();
+      const result = await pool.request()
+      .input('iduser', Int,iduser)
+      .query(querysearch)
+      for (var r of result.recordset) {
+        let chatroom = new DTOChatRoom(); 
+       this.getinformationList(chatroom,r);
+         array.push(chatroom);
+      }
+         
+     pool.close();
+     return array;
+    }
+
+
+    //#endregion
+    //#region GETINFORMATION
+
+    static  getinformationList(chatroom, result) {
+  
+        chatroom.idchatroom = result.IdRoom;
+        chatroom.iduser1=result.IdUser;
+        chatroom.nameuser1=result.Name;
+        chatroom.profileimage1=result.Imagee;
+        chatroom.idmessage=result.IdUserMessages;
+        chatroom.textmessage=result.LastMessage;
+        chatroom.datetimemessage=result.LastMessageDate;
+
+    
+    }
 
     //#endregion
 }
