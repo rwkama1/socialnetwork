@@ -2196,7 +2196,7 @@ let Messages=async()=>
     //         throw new Error("The sending user cannot be the same as the receiving user");
     //        }
     //        let addMessage = await DataMessage.addMessage
-    //        (userreceived,usersender,"LastMessage");
+    //        (userreceived,usersender,"New Message");
           
     //        if (addMessage===-1) {
     //            throw new Error("The user received does not exists");
@@ -2312,8 +2312,8 @@ let ChatRoom=async()=>
     
 
     
-    let getChatRoomsByUser=await DataChatRoom.getChatRoomsByUser(1);
-     console.log(getChatRoomsByUser);
+    // let getChatRoomsByUser=await DataChatRoom.getChatRoomsByUser(1);
+    //  console.log(getChatRoomsByUser);
        
         
 

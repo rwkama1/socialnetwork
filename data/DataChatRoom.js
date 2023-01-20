@@ -135,38 +135,44 @@ class DataChatRoom
     {
         
         let array=[];
-       
-        let querysearch=
-        `
-        SELECT 
-        c.IdRoom, 
-        u1.IdUser,
-        u1.Name , 
-        u1.Imagee , 
-        um.IdUserMessages,
-        MAX(um.Textt) AS LastMessage, 
-        MAX(um.DateeTime) AS LastMessageDate
-        
-        FROM ChatRoom c
-        JOIN Userr u1 ON (c.IdUserReceived = u1.IdUser OR c.IdUserSender = u1.IdUser)
-        JOIN UserrMessage um ON c.IdRoom = um.IdRoom
-        
-        WHERE (c.IdUserReceived = @iduser OR c.IdUserSender = @iduser) 
-        AND u1.IdUser!= @iduser
-    
-        GROUP BY c.IdRoom,
-        u1.IdUser,
-        u1.Name, 
-        u1.Imagee,
-        um.IdUserMessages
-    
-        ORDER BY MAX(um.DateeTime) DESC
-        `;
- 
+       let querysearch2=`
+
+       SELECT 
+       CR.IdRoom, 
+       U2.IdUser,
+       U2.Name , 
+       U2.Imagee , 
+       M.IdUserMessages,
+       M.Textt AS LastMessage, 
+       M.DateeTime AS LastMessageDate
+      FROM 
+       userr U1 
+       JOIN chatroom CR ON CR.idusersender = U1.iduser 
+       OR CR.iduserreceived = U1.iduser 
+       JOIN userr U2 ON U2.iduser = CR.idusersender 
+       OR U2.iduser = CR.iduserreceived 
+       AND U2.iduser != U1.iduser 
+       JOIN (
+         SELECT 
+           idroom, 
+           Max(dateetime) AS max_date 
+         FROM 
+           userrmessage 
+         GROUP BY 
+           idroom
+       ) T ON T.idroom = CR.idroom 
+       JOIN userrmessage M ON M.idroom = T.idroom 
+       AND M.dateetime = T.max_date 
+     WHERE 
+       U1.iduser = @iduser
+    ORDER BY M.DateeTime desc
+     
+       `
+     
       let pool = await Conection.conection();
       const result = await pool.request()
       .input('iduser', Int,iduser)
-      .query(querysearch)
+      .query(querysearch2)
       for (var r of result.recordset) {
         let chatroom = new DTOChatRoom(); 
        this.getinformationList(chatroom,r);
@@ -177,6 +183,9 @@ class DataChatRoom
      return array;
     }
 
+    
+
+
 
     //#endregion
     //#region GETINFORMATION
@@ -184,9 +193,9 @@ class DataChatRoom
     static  getinformationList(chatroom, result) {
   
         chatroom.idchatroom = result.IdRoom;
-        chatroom.iduser1=result.IdUser;
-        chatroom.nameuser1=result.Name;
-        chatroom.profileimage1=result.Imagee;
+        chatroom.iduser2=result.IdUser;
+        chatroom.nameuser2=result.Name;
+        chatroom.profileimage2=result.Imagee;
         chatroom.idmessage=result.IdUserMessages;
         chatroom.textmessage=result.LastMessage;
         chatroom.datetimemessage=result.LastMessageDate;

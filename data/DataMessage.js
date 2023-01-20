@@ -144,81 +144,40 @@ class DataMessage {
     //#endregion
     //#region  GETS
 
-    static getMessage=async(idmessage)=>
+    static getMessagesChatRoom=async(IdUserLogin,IdUserConversation)=>
     {
         
         let resultquery;
         let querysearch=
         `
-        IF NOT EXISTS 
-		(
-				SELECT 
-				Userreceived.iduser as iduserreceived,
-				Userreceived.name as namereceived,
-				Userreceived.nick as nickreceived,
-				Userreceived.userrname as userrnamereceived,
-				Userreceived.imagee as imageereceived,
-  
-				Usersender.iduser as idusersender,
-				Usersender.name as namesender,
-				Usersender.nick as nicksender,
-				Usersender.userrname as userrnamesender,
-				Usersender.imagee as imageesender,
-  
-				UserrMessage.idusermessages,
-				UserrMessage.title,
-				UserrMessage.textt,
-				UserrMessage.dateetime,
-				UserrMessage.seen,
-				UserrMessage.answered
-  
-				FROM 
-				Userr as Userreceived
-				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
-				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
-				WHERE 
-				Usersender.Active=1 and
-				Userreceived.Active=1 and 
-				UserrMessage.idusermessages=${idmessage}
-		)
-        BEGIN
-             select -1 as notexistmessage  
-        END
-        ELSE
-        BEGIN
-				 SELECT 
-				Userreceived.iduser as iduserreceived,
-				Userreceived.name as namereceived,
-				Userreceived.nick as nickreceived,
-				Userreceived.userrname as userrnamereceived,
-				Userreceived.imagee as imageereceived,
-  
-				Usersender.iduser as idusersender,
-				Usersender.name as namesender,
-				Usersender.nick as nicksender,
-				Usersender.userrname as userrnamesender,
-				Usersender.imagee as imageesender,
-  
-				UserrMessage.idusermessages,
-				UserrMessage.title,
-				UserrMessage.textt,
-				UserrMessage.dateetime,
-				UserrMessage.seen,
-				UserrMessage.answered
-  
-				FROM 
-				Userr as Userreceived
-				inner join UserrMessage on Userreceived.iduser = UserrMessage.iduser
-				inner join Userr  as Usersender on UserrMessage.idsender = Usersender.iduser
-				WHERE 
-				Usersender.Active=1 and
-				Userreceived.Active=1 and 
-				UserrMessage.idusermessages=${idmessage}
-        END   
+        SELECT 
+        Userr.IdUser, 
+        Userr.Name, 
+        UserrMessage.Textt, 
+        UserrMessage.DateeTime 
+      FROM 
+        UserrMessage 
+        JOIN Userr ON UserrMessage.IdSender = Userr.IdUser 
+      WHERE 
+        (
+          UserrMessage.IdSender = @IdUserLogin 
+          AND UserrMessage.IdUserReceived = @IdUserConversation
+        ) 
+        OR (
+          UserrMessage.IdSender = @IdUserConversation 
+          AND UserrMessage.IdUserReceived = @IdUserLogin
+        ) 
+      ORDER BY 
+        UserrMessage.DateeTime ASC
+      
+      
+      
         `;
  
       let pool = await Conection.conection();
       const result = await pool.request()
+      .input('IdUserLogin', Int,IdUserLogin)
+       .input('IdUserConversation', Int,IdUserConversation)
       .query(querysearch)
       resultquery = result.recordset[0].notexistmessage; 
         if (resultquery===undefined) {
@@ -238,24 +197,7 @@ class DataMessage {
 
     static getInformation(message, result) {
 
-        message.iduserreceived = result.iduserreceived; 
-        message.namereceived = result.namereceived; 
-        message.nickreceived = result.nickreceived; 
-        message.userrnamereceived = result.userrnamereceived; 
-        message.imageereceived = result.imageereceived;
-
-        message.idusersender = result.idusersender; 
-        message.namesender = result.namesender; 
-        message.nicksender = result.nicksender; 
-        message.userrnamesender = result.userrnamesender; 
-        message.imageesender = result.imageesender; 
-
-        message.idusermessages = result.idusermessages; 
-        message.title = result.title; 
-        message.textt = result.textt; 
-        message.dateetime = result.dateetime; 
-        message.seen = result.seen; 
-        message.answered = result.answered; 
+      
     }
 
     //#endregion
