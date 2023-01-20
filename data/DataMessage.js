@@ -147,17 +147,20 @@ class DataMessage {
     static getMessagesChatRoom=async(IdUserLogin,IdUserConversation)=>
     {
         
-        let resultquery;
+        let arraym=[];
         let querysearch=
         `
         SELECT 
-        Userr.IdUser, 
-        Userr.Name, 
+        UserrSender.IdUser as IdSender, 
+        UserrSender.Name as SenderName, 
+        UserrSender.Imagee as SenderImage, 
+        UserrMessage.IdUserMessages, 
         UserrMessage.Textt, 
         UserrMessage.DateeTime 
       FROM 
         UserrMessage 
-        JOIN Userr ON UserrMessage.IdSender = Userr.IdUser 
+        JOIN Userr UserrSender ON UserrMessage.IdSender = UserrSender.IdUser 
+        JOIN Userr UserrReceiver ON UserrMessage.IdUserReceived = UserrReceiver.IdUser 
       WHERE 
         (
           UserrMessage.IdSender = @IdUserLogin 
@@ -169,24 +172,21 @@ class DataMessage {
         ) 
       ORDER BY 
         UserrMessage.DateeTime ASC
-      
-      
-      
+    
         `;
  
       let pool = await Conection.conection();
       const result = await pool.request()
-      .input('IdUserLogin', Int,IdUserLogin)
-       .input('IdUserConversation', Int,IdUserConversation)
+        .input('IdUserLogin', Int,IdUserLogin)
+        .input('IdUserConversation', Int,IdUserConversation)
       .query(querysearch)
-      resultquery = result.recordset[0].notexistmessage; 
-        if (resultquery===undefined) {
-             let message = new DTOMessage(); 
-            this.getInformation(message, result.recordset[0]);
-            resultquery=message
-           }
+      for (var re of result.recordset) {
+        let message = new DTOMessage();   
+        this.getInformation(message,re);
+        arraym.push(message);
+     }
      pool.close();
-     return resultquery;
+     return arraym;
     }
 
 
@@ -197,6 +197,13 @@ class DataMessage {
 
     static getInformation(message, result) {
 
+
+      message.idusersender = result.IdSender;
+      message.nameusersender = result.SenderName;
+      message.imageusersender = result.SenderImage;
+      message.idusermessages = result.IdUserMessages;
+      message.textt = result.Textt;
+      message.dateetime = result.DateeTime;
       
     }
 

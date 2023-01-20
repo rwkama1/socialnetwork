@@ -2241,22 +2241,14 @@ let Messages=async()=>
 //         await deleteMessage();
     
 
-
-
-// async function getMessage() {
-//     let message=await DataMessage.getMessage(1);
-//     if (message===-1) 
-//     {
-//         throw new Error("The message does not exists ");    
+//  async function getMessagesChatRoom() {
+//         let array=await DataMessage.getMessagesChatRoom(3,2);
+//         for (const message of array) {
+//             console.log(message);
+//         }     
 //     }
-//     message.DiffDatePublishDateNow()
-//       message.showDiffDatePublishDateNow()
-//      console.log(message);
-       
-        
-// }
-// await getMessage();
-
+//    await getMessagesChatRoom();
+   
 
 }
 Messages().then()
@@ -2313,7 +2305,13 @@ let ChatRoom=async()=>
 
     
     // let getChatRoomsByUser=await DataChatRoom.getChatRoomsByUser(1);
-    //  console.log(getChatRoomsByUser);
+    //         for (const message of getChatRoomsByUser) {
+    //             message.DiffDateMessageDateNow()
+    //             message.showDiffDateMessageDateNow()
+            
+    //             console.log(message);
+    //         } 
+    
        
         
 

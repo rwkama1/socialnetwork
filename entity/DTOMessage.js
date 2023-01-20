@@ -12,18 +12,17 @@ class DTOMessage
 	seen=false;
 	answered=false;
 
-	 //User Login
+	 //USER SENDER
 
-     iduserlogin=0;
-     nameuserlogin="";
-    
-     imageuserlogin="";
+     idusersender=0;
+     nameusersender="";
+     imageusersender="";
 
-     //User2
+  //USER RECEIVER
 
-     iduser2=0;
-     nameuser2="";
-     imageuser2="";
+     iduserreceiver=0;
+     nameuserreceiver="";
+     imageuserreceiver="";
 
 
    

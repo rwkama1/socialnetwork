@@ -32,12 +32,12 @@
      diffdays=0;
      diffmonth=0;
      diffyear=0;
-     stringpostedago="";
+     stringmessagedago="";
  
 
 
 
-     DiffDatePublishDateNow()
+     DiffDateMessageDateNow()
      {
            let localdate=this.datetimemessage;
            let dateutcpublish=new Date(localdate.getUTCFullYear(),
@@ -60,7 +60,33 @@
       
      }
      
-
+     showDiffDateMessageDateNow()
+     {
+       if(this.diffsecond<60)
+       {
+         this.stringpostedago= `Posted ${this.diffsecond} seconds ago`
+       }
+       else if(this.diffsecond>=60&&this.diffminutes<60)
+       {
+         this.stringpostedago= `Posted ${this.diffminutes} minutes ago`
+       }
+       else if(this.diffminutes>=60&&this.diffhour<24)
+       {
+         this.stringpostedago= `Posted ${this.diffhour} hours ago`
+       }
+       else if(this.diffhour>=24&&this.diffdays<31)
+       {
+         this.stringpostedago= `Posted ${this.diffdays} days ago`
+       }
+       else if(this.diffdays>=31&&this.diffmonth<12)
+       {
+         this.stringpostedago= `Posted ${this.diffmonth} month ago`
+       }
+       else if(this.diffmonth>=12)
+       {
+         this.stringpostedago= `Posted ${this.diffyear} years ago`
+       }
+     }
 
 
     constructor()
