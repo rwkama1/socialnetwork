@@ -139,9 +139,12 @@ class DataChatRoom
 
        SELECT 
        CR.IdRoom, 
-       U2.IdUser,
-       U2.Name , 
-       U2.Imagee , 
+       U1.IdUser as iduser1,
+       U1.Name as nameuser1 , 
+       U1.Imagee as imageuser1 , 
+       U2.IdUser as iduser2,
+       U2.Name as nameuser2 , 
+       U2.Imagee as imageuser2 , 
        M.IdUserMessages,
        M.Textt AS LastMessage, 
        M.DateeTime AS LastMessageDate
@@ -193,9 +196,15 @@ class DataChatRoom
     static  getinformationList(chatroom, result) {
   
         chatroom.idchatroom = result.IdRoom;
-        chatroom.iduser2=result.IdUser;
-        chatroom.nameuser2=result.Name;
-        chatroom.profileimage2=result.Imagee;
+
+        chatroom.iduser1=result.iduser1;
+        chatroom.nameuser1=result.nameuser1;
+        chatroom.profileimage1=result.imageuser1;
+
+        chatroom.iduser2=result.iduser2;
+        chatroom.nameuser2=result.nameuser2;
+        chatroom.profileimage2=result.imageuser2;
+
         chatroom.idmessage=result.IdUserMessages;
         chatroom.textmessage=result.LastMessage;
         chatroom.datetimemessage=result.LastMessageDate;

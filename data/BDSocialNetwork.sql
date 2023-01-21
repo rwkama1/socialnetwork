@@ -353,490 +353,90 @@ delete from ChatRoom
 
 
 
+declare @IdUser Int;
+set @IdUser=1;
 
+   SELECT 
+         nsc.IdNotiSubComment as IdNotification, 
+         u.IdUser as IdUserSender, 
+         u.Name as NameSender, 
+         u.Imagee as ImageSender,  
+         COALESCE(up.IdPost, ui.IdUserImages, uv.IdUserVideos) as IdImagePostVideo, 
+         COALESCE(up.Title, ui.Title, uv.Title) as TitleImagePostVideo, 
+         CASE 
+             WHEN up.IdPost IS NOT NULL THEN 'P' 
+             WHEN ui.IdUserImages IS NOT NULL THEN 'I' 
+             WHEN uv.IdUserVideos IS NOT NULL THEN 'V' 
+             ELSE 'Not Found'
+         END as Typee,
+         nsc.DateeTime
+      
+        FROM 
+         NotificationSubComment nsc 
+        JOIN Userr u ON nsc.IdUserSender = u.IdUser 
+        JOIN UserrComments uc ON nsc.IdUserComment = uc.IdUserComment 
+        LEFT JOIN UserrCommentsPost ucp ON uc.IdUserComment = ucp.IdUserComment
+        LEFT JOIN UserPost up ON ucp.IdPost = up.IdPost
+        LEFT JOIN UserrCommentsImage uci ON uc.IdUserComment = uci.IdUserComment
+        LEFT JOIN UserImages ui ON uci.IdUserImages = ui.IdUserImages
+        LEFT JOIN UserrCommentsVideo ucv ON uc.IdUserComment = ucv.IdUserComment
+        LEFT JOIN UserVideos uv ON ucv.IdUserVideos = uv.IdUserVideos
+        WHERE 
+        nsc.IdUserReceived = @IdUser 
+     
 
+        UNION 
 
+        SELECT 
+        nci.IdNotiCoImage as IdNotification, 
+        u.IdUser as IdUserSender, 
+        u.Name as NameSender, 
+        u.Imagee as ImageSender,  
+        ui.IdUserImages as IdImagePostVideo, 
+        ui.title as TitleImagePostVideo, 
+        'I' as Typee,
+        nci.DateeTime 
+        FROM 
+        NotificationCommentImage nci 
+        JOIN Userr u ON nci.IdUserSender = u.IdUser 
+        JOIN UserImages ui ON nci.IdUserImages = ui.IdUserImages 
+        WHERE 
+        nci.IdUserReceived = @IdUser
 
-DECLARE @iduserlogin INT;
-SET @iduserlogin = 2;
-	
+        UNION 
 
- IF EXISTS (
-			
-				SELECT 
-				Userr.IdUser
-				FROM 
-				UserrRelations 
-				INNER JOIN Userr on Userr.IdUser = UserrRelations.IdFriend 
-				WHERE 
-				Userr.Active = 1 
-				and UserrRelations.IdUser = @iduserlogin
-				and UserrRelations.Statee = 'Confirmed'
+        SELECT 
+        ncp.IdNotiCoPost as IdNotification, 
+        u.IdUser as IdUserSender, 
+        u.Name as NameSender, 
+        u.Imagee as ImageSender,
+        up.IdPost as IdImagePostVideo, 
+        up.title as TitleImagePostVideo, 
+        'P' as Typee, 
+        ncp.DateeTime
+        FROM 
+        NotificationCommentPost ncp 
+        JOIN Userr u ON ncp.IdUserSender = u.IdUser 
+        JOIN UserPost up ON ncp.IdPost = up.IdPost 
+        WHERE 
+        ncp.IdUserReceived = @IdUser 
 
-				UNION
+      UNION 
 
-				SELECT 
-                Userr.IdUser
-                FROM 
-                Followers 
-                INNER JOIN Userr on Userr.IdUser = Followers.IdFollowedUser 
-                WHERE 
-                Userr.Active = 1 
-                and Followers.IdFollowerUser = @iduserlogin
-              )
-
-
-         	BEGIN
-           
-        	 WITH
-
-			friendsquery AS
-				( 
-
-			SELECT DISTINCT 
-			p.idpost as id,
-			0 as idalbum,
-			'' as albumtitle,
-			p.iduser,
-			p.title,
-			p.descriptionn,
-			p.likes,
-			'' as url,
-			p.visibility,
-			p.datepublish,
-			p.active,
-			u.Name as nameuser ,
-			u.Nick as nickuser ,
-			u.Email as emailuser,
-			u.Imagee as imageuser,
-			u.Country as countryuser,
-			'P' as typee
-			FROM UserPost p
-			JOIN UserrRelations r ON p.IdUser = r.IdFriend
-			JOIN Userr u on p.IdUser = u.IdUser
-			WHERE 
-			u.Active = 1
-			AND p.Active = 1
-			AND r.IdUser = @iduserlogin
-			AND r.Statee = 'Confirmed'
-
-			GROUP BY 
-			p.idpost ,	
-			p.iduser,
-			p.title,
-			p.descriptionn,
-			p.likes,
-			p.visibility,
-			p.datepublish,
-			p.active,
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee,
-			u.Country 
-
-			UNION
-
-			SELECT DISTINCT
-			i.iduserimages as id,
-			i.idalbumimages as idalbum,
-			ai.title as albumtitle,
-			i.iduser,
-			i.title,
-			i.descriptionn,
-			i.likes,
-			i.urlimage as url,
-			i.visibility,
-			i.datepublish,
-			i.active,
-			u.Name as nameuser,
-			u.Nick as nickuser,
-			u.Email as emailuser,
-			u.Imagee as imageuser,
-			u.Country as countryuser,
-			'I' as typee	
-			FROM UserImages i
-			JOIN UserrRelations r ON i.IdUser = r.IdFriend
-			JOIN Userr u on i.IdUser = u.IdUser
-			JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
-			WHERE
-			 u.Active = 1
-			 AND ai.Active=1
-			 AND i.Active = 1
-			 AND r.IdUser = @iduserlogin
-			 AND r.Statee = 'Confirmed'
-
-			 GROUP BY
-
-			i.iduserimages,
-			i.idalbumimages,
-			ai.title ,
-			i.iduser,
-			i.title,
-			i.descriptionn,
-			i.likes,
-			i.urlimage,
-			i.visibility,
-			i.datepublish,
-			i.active,
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee ,
-			u.Country 
-
-			UNION
-
-			SELECT DISTINCT 
-			v.iduservideos as id,
-			v.idalbumvideos as idalbum ,
-			av.title as albumtitle,
-			v.iduser,
-			v.title,
-			v.descriptionn,
-			v.likes,
-			v.urlvideos as url,
-			v.visibility,
-			v.datepublish,
-			v.active,
-			
-			u.Name as nameuser,
-			u.Nick as nickuser,
-			u.Email as emailuser,
-			u.Imagee as imageuser,
-			u.Country as countryuser,
-			'V' as typee
-			FROM UserVideos v
-			JOIN UserrRelations r ON v.IdUser = r.IdFriend
-			JOIN Userr u on v.IdUser = u.IdUser
-			JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
-			WHERE 
-			u.Active = 1
-			AND av.Active=1
-			AND v.Active = 1	
-			AND r.IdUser = @iduserlogin 
-			AND r.Statee = 'Confirmed'
-				
-			 GROUP BY
-			v.iduservideos ,
-			v.idalbumvideos  ,
-			av.title ,
-			v.iduser,
-			v.title,
-			v.descriptionn,
-			v.likes,
-			v.urlvideos ,
-			v.visibility,
-			v.datepublish,
-			v.active,
-			
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee ,
-			u.Country 
-			  ),
-
-
-
-		followerquery as
-			(
-
-			SELECT distinct *
-			FROM friendsquery
-
-			UNION
-
-			SELECT DISTINCT 
-			p.idpost as id,
-			0 as idalbum,
-			'' as albumtitle,
-			p.iduser,
-			p.title,
-			p.descriptionn,
-			p.likes,
-			'' as url,
-			p.visibility,
-			p.datepublish,
-			p.active,
-			u.Name as nameuser ,
-			u.Nick as nickuser ,
-			u.Email as emailuser,
-			u.Imagee as imageuser,
-			u.Country as countryuser,
-			'P' as typee
-			FROM UserPost p
-			JOIN Followers f ON p.IdUser = f.IdFollowedUser
-			JOIN Userr u on p.IdUser = u.IdUser
-			WHERE
-			u.Active = 1
-			AND p.Active = 1
-			AND f.IdFollowerUser = @iduserlogin 
-			GROUP BY 
-			p.idpost ,	
-			p.iduser,
-			p.title,
-			p.descriptionn,
-			p.likes,
-			p.visibility,
-			p.datepublish,
-			p.active,
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee,
-			u.Country 
-
-			UNION
-
-			SELECT DISTINCT
-			i.iduserimages as id,
-			i.idalbumimages as idalbum,
-			ai.title as albumtitle,
-			i.iduser,
-			i.title,
-			i.descriptionn,
-			i.likes,
-			i.urlimage as url,
-			i.visibility,
-			i.datepublish,
-			i.active,
-			
-			u.Name as nameuser,
-			u.Nick as nickuser,
-			u.Email as emailuser,
-			u.Imagee as imageuser,
-			u.Country as countryuser,
-			'I' as typee	
-			FROM UserImages i
-			JOIN Followers f ON i.IdUser = f.IdFollowedUser
-			JOIN Userr u on i.IdUser = u.IdUser
-			JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
-			WHERE 
-			u.Active = 1
-			AND i.Active = 1
-			AND ai.Active = 1
-			AND f.IdFollowerUser = @iduserlogin
-			
-			 GROUP BY
-
-			i.iduserimages,
-			i.idalbumimages,
-			ai.title ,
-			i.iduser,
-			i.title,
-			i.descriptionn,
-			i.likes,
-			i.urlimage,
-			i.visibility,
-			i.datepublish,
-			i.active,
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee ,
-			u.Country 
-
-			UNION
-
-			SELECT DISTINCT
-			v.iduservideos as id,
-			v.idalbumvideos as idalbum ,
-			av.title as albumtitle,
-			v.iduser,
-			v.title,
-			v.descriptionn,
-			v.likes,
-			v.urlvideos as url,
-			v.visibility,
-			v.datepublish,
-			v.active,
-		
-			u.Name as nameuser,
-			u.Nick as nickuser,
-			u.Email as emailuser,
-			u.Imagee as imageuser,
-			u.Country as countryuser,
-			'V' as typee
-			FROM UserVideos v
-			JOIN Followers f ON v.IdUser = f.IdFollowedUser
-			JOIN Userr u on v.IdUser = u.IdUser
-			JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
-			WHERE
-			u.Active = 1
-			AND v.Active = 1
-			AND av.Active = 1
-			AND f.IdFollowerUser = @iduserlogin 
-				
-			 GROUP BY
-			v.iduservideos ,
-			v.idalbumvideos  ,
-			av.title ,
-			v.iduser,
-			v.title,
-			v.descriptionn,
-			v.likes,
-			v.urlvideos ,
-			v.visibility,
-			v.datepublish,
-			v.active,
-			
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee ,
-			u.Country 
-
-			)
-
-		
-			
-        select distinct * from followerquery 
-       
-		order by datepublish desc
-        
-      	END
-  
-
-        ELSE
-
-	    BEGIN				
-			
-	
-	  WITH allquery as
-	   (
-
-		SELECT DISTINCT
-		p.idpost as id,
-		0 as idalbum,
-		'' as albumtitle,
-		p.iduser,
-		p.title,
-		p.descriptionn,
-		p.likes,
-		'' as url,
-		p.visibility,
-		p.datepublish,
-		p.active,
-		u.Name as nameuser ,
-		u.Nick as nickuser ,
-		u.Email as emailuser,
-		u.Imagee as imageuser,
-		u.Country as countryuser,
-		'P' as typee
-		FROM UserPost p
-		JOIN Userr u on p.IdUser = u.IdUser
-		WHERE p.iduser <> @iduserlogin
-
-			GROUP BY 
-			p.idpost ,	
-			p.iduser,
-			p.title,
-			p.descriptionn,
-			p.likes,
-			p.visibility,
-			p.datepublish,
-			p.active,
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee,
-			u.Country 
-
-
-		UNION
-
-		SELECT DISTINCT 
-		i.iduserimages as id,
-		i.idalbumimages as idalbum,
-		ai.title as albumtitle,
-		i.iduser,
-		i.title,
-		i.descriptionn,
-		i.likes,
-		i.urlimage as url,
-		i.visibility,
-		i.datepublish,
-		i.active,
-		
-		u.Name as nameuser,
-		u.Nick as nickuser,
-		u.Email as emailuser,
-		u.Imagee as imageuser,
-		u.Country as countryuser,
-		'I' as typee	
-		FROM UserImages i
-		JOIN Userr u on i.IdUser = u.IdUser
-		JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
-		WHERE i.iduser <> @iduserlogin
-
-		 GROUP BY
-			i.iduserimages,
-			i.idalbumimages,
-			ai.title ,
-			i.iduser,
-			i.title,
-			i.descriptionn,
-			i.likes,
-			i.urlimage,
-			i.visibility,
-			i.datepublish,
-			i.active,
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee ,
-			u.Country 
-
-
-		UNION
-
-		SELECT DISTINCT
-		
-		v.iduservideos as id,
-		v.idalbumvideos as idalbum ,
-		av.title as albumtitle,
-		v.iduser,
-		v.title,
-		v.descriptionn,
-		v.likes,
-		v.urlvideos as url,
-		v.visibility,
-		v.datepublish,
-		v.active,
-	
-		u.Name as nameuser,
-		u.Nick as nickuser,
-		u.Email as emailuser,
-		u.Imagee as imageuser,
-		u.Country as countryuser,
-		'V' as typee
-		FROM UserVideos v
-		JOIN Userr u on v.IdUser = u.IdUser
-		JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
-		WHERE v.iduser <> @iduserlogin
-
-			 GROUP BY
-			v.iduservideos ,
-			v.idalbumvideos  ,
-			av.title ,
-			v.iduser,
-			v.title,
-			v.descriptionn,
-			v.likes,
-			v.urlvideos ,
-			v.visibility,
-			v.datepublish,
-			v.active,		
-			u.Name ,
-			u.Nick ,
-			u.Email ,
-			u.Imagee ,
-			u.Country 
-	   )
-   
-		select distinct   * from allquery
-		order by datepublish desc
-
-        END      
-
+      SELECT 
+        ncv.IdNotiCoVideo as IdNotification, 
+        u.IdUser as IdUserSender, 
+        u.Name as NameSender, 
+        u.Imagee as ImageSender, 
+        uv.IdUserVideos as IdImagePostVideo, 
+        uv.title as TitleImagePostVideo, 
+        'V' as Typee, 
+        ncv.DateeTime
+      FROM 
+        NotificationCommentVideo ncv 
+        JOIN Userr u ON ncv.IdUserSender = u.IdUser 
+        JOIN UserVideos uv ON ncv.IdUserVideos = uv.IdUserVideos 
+      WHERE 
+        ncv.IdUserReceived = @IdUser 
+      ORDER BY 
+        DateeTime DESC

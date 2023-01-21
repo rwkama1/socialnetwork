@@ -30,6 +30,7 @@ const { DTOPost } = require("./entity/DTOPost");
  const {  DTOUserRelation } = require("./entity/DTOUserRelation");
 const { DTOVideo } = require("./entity/DTOVideo");
 const { DataChatRoom } = require("./data/DataChatRoom");
+const { DataNotification } = require("./data/DataNotification");
 
 
 // //#region User
@@ -2312,10 +2313,6 @@ let ChatRoom=async()=>
     //             console.log(message);
     //         } 
     
-       
-        
-
-
 }
 ChatRoom().then()
 
@@ -2346,13 +2343,29 @@ let UserPendingNotifications=async()=>
 //    await addUserRelation();
        
 
-    // setInterval(async () => {
+    
     //     let getSentPendingUsersbyUser =
     //      await DataUserRelation.getSentPendingUsersbyUser(15);
     //     console.log(getSentPendingUsersbyUser);
-    // }, 3000);
+    
 }  
 UserPendingNotifications().then()
+
+let NotificationComents=async()=>
+{
+
+  
+        let getNotificationCommentsByUser = 
+        await DataNotification.getNotificationCommentsByUser(1);
+        for (const notification of getNotificationCommentsByUser) {
+             notification.DiffDateNotificationDateNow();
+             notification.showDiffDateNotificationDateNow();
+             console.log(notification);
+        }
+      
+  
+}  
+NotificationComents().then()
 
 
 //#endregion

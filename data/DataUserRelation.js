@@ -437,6 +437,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
                return arrayuser;
           
          }
+         //NOTIFICATIONS
       static getSentPendingUsersbyUser=async(iduser)=>
       {
           let arrayuser=[];
@@ -465,6 +466,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
              return arrayuser;
         
        }
+       //
        static getSearchNickFriendsbyUser=async(iduser,nick)=>
        {
            let arrayuser=[];
