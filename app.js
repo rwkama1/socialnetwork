@@ -2354,18 +2354,100 @@ UserPendingNotifications().then()
 let NotificationComents=async()=>
 {
 
-  
-        let getNotificationCommentsByUser = 
-        await DataNotification.getNotificationCommentsByUser(1);
-        for (const notification of getNotificationCommentsByUser) {
-             notification.DiffDateNotificationDateNow();
-             notification.showDiffDateNotificationDateNow();
-             console.log(notification);
-        }
+    //    async function CommentVideo() {
+   
+    //        let CommentVideo = await DataCommentVideo.CommentVideo(
+    //          8,7,"VideoComment");
+    //        if (CommentVideo===-1) {
+    //            throw new Error("The video does not exists");
+    //        }
+    //        if (CommentVideo===-2) {
+    //            throw new Error("The user does not exists");
+    //        }
+    //         console.log("The comment video was added successfully");
+      
+    //     }
+    //     await CommentVideo();
+
+//    async function deleteNotiCommentsByUser() {
+//         let deleteNotiCommentsByUser =
+//         await DataNotification.deleteNotiCommentsByUser(1);
+//             if (deleteNotiCommentsByUser===-1) {
+//                 throw new Error("The user does not exists");
+//             }
+         
+//              console.log("Notifications Deleted");
+//    }
+//    await deleteNotiCommentsByUser();
+
+
+        // let getNotificationCommentsByUser = 
+        // await DataNotification.getNotificationCommentsByUser(1);
+        // for (const notification of getNotificationCommentsByUser) {
+        //      notification.DiffDateNotificationDateNow();
+        //      notification.showDiffDateNotificationDateNow();
+        //      console.log(notification);
+        // }
       
   
 }  
 NotificationComents().then()
+
+let NotificationsMessages=async()=>
+{
+
+  
+
+//    async function addMessage() {
+   
+//         let userreceived=1;
+//         let usersender=3;
+//         if (userreceived===usersender) {
+//             throw new Error("The sending user cannot be the same as the receiving user");
+//            }
+//            let addMessage = await DataMessage.addMessage
+//            (userreceived,usersender,"New Message");
+          
+//            if (addMessage===-1) {
+//                throw new Error("The user received does not exists");
+//            }
+//            if (addMessage===-2) {
+//                throw new Error("The user sender does not exists");
+//            }
+//            if (addMessage===-3) {
+//             throw new Error("The chat room does not exists");
+//         }
+       
+        
+//             console.log("The message was added successfully");
+      
+//     }
+  //   await addMessage();
+
+
+     async function deleteNotiMessagesByUser() {
+        let deleteNotiMessagesByUser =
+        await DataNotification.deleteNotiMessagesByUser(1);
+            if (deleteNotiMessagesByUser===-1) {
+                throw new Error("The user does not exists");
+            }
+         
+             console.log("Notifications Deleted");
+   }
+   await deleteNotiMessagesByUser();
+
+
+        // let getNotificationMessagesByUser = 
+        // await DataNotification.getNotificationMessagesByUser(1);
+        // for (const notification of getNotificationMessagesByUser) {
+        //      notification.DiffDateNotificationDateNow();
+        //      notification.showDiffDateNotificationDateNow();
+        //      console.log(notification);
+        // }
+      
+  
+}  
+NotificationsMessages().then()
 
 
 //#endregion

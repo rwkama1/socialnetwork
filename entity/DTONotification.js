@@ -16,6 +16,10 @@ class DTONotification
      TitleImagePostVideo="";
      Typee="";
 
+    //MESSAGE
+     
+      Message="";
+
 
   //time elapsed since NOTIFICATION date
 
@@ -58,27 +62,27 @@ class DTONotification
        {
          if(this.diffsecond<60)
          {
-           this.stringnotificationago= ` ${this.diffsecond} seconds ago`
+           this.stringnotificationago= `${this.diffsecond} seconds ago`
          }
          else if(this.diffsecond>=60&&this.diffminutes<60)
          {
-           this.stringnotificationago= ` ${this.diffminutes} minutes ago`
+           this.stringnotificationago= `${this.diffminutes} minutes ago`
          }
          else if(this.diffminutes>=60&&this.diffhour<24)
          {
-           this.stringnotificationago= ` ${this.diffhour} hours ago`
+           this.stringnotificationago= `${this.diffhour} hours ago`
          }
          else if(this.diffhour>=24&&this.diffdays<31)
          {
-           this.stringnotificationago= ` ${this.diffdays} days ago`
+           this.stringnotificationago= `${this.diffdays} days ago`
          }
          else if(this.diffdays>=31&&this.diffmonth<12)
          {
-           this.stringnotificationago= ` ${this.diffmonth} month ago`
+           this.stringnotificationago= `${this.diffmonth} month ago`
          }
          else if(this.diffmonth>=12)
          {
-           this.stringnotificationago= ` ${this.diffyear} years ago`
+           this.stringnotificationago= `${this.diffyear} years ago`
          }
        }
   

@@ -64,27 +64,27 @@
      {
        if(this.diffsecond<60)
        {
-         this.stringmessagedago= ` ${this.diffsecond} seconds ago`
+         this.stringmessagedago= `${this.diffsecond} seconds ago`
        }
        else if(this.diffsecond>=60&&this.diffminutes<60)
        {
-         this.stringmessagedagov= ` ${this.diffminutes} minutes ago`
+         this.stringmessagedagov= `${this.diffminutes} minutes ago`
        }
        else if(this.diffminutes>=60&&this.diffhour<24)
        {
-         this.stringmessagedago= ` ${this.diffhour} hours ago`
+         this.stringmessagedago= `${this.diffhour} hours ago`
        }
        else if(this.diffhour>=24&&this.diffdays<31)
        {
-         this.stringmessagedago= ` ${this.diffdays} days ago`
+         this.stringmessagedago= `${this.diffdays} days ago`
        }
        else if(this.diffdays>=31&&this.diffmonth<12)
        {
-         this.stringmessagedago= ` ${this.diffmonth} month ago`
+         this.stringmessagedago= `${this.diffmonth} month ago`
        }
        else if(this.diffmonth>=12)
        {
-         this.stringmessagedago= ` ${this.diffyear} years ago`
+         this.stringmessagedago= `${this.diffyear} years ago`
        }
      }
 

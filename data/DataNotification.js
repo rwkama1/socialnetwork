@@ -6,6 +6,95 @@ const { DTONotification } = require("../entity/DTONotification");
 class DataNotification {
 
 
+  static deleteNotiCommentsByUser=async(iduser)=>
+    {
+        let resultquery;
+        let querydelete = 
+        `
+        IF NOT EXISTS (SELECT IdUser FROM Userr
+           WHERE IdUser=@iduser and Active=1)
+        BEGIN
+             select -1 as notexistuser  
+        END
+        ELSE
+        BEGIN
+            BEGIN TRANSACTION  
+
+
+            DELETE FROM NotificationCommentImage
+            WHERE IdUserReceived=@iduser
+
+            DELETE FROM NotificationCommentPost
+             WHERE IdUserReceived=@iduser
+
+            DELETE FROM NotificationCommentVideo 
+            WHERE IdUserReceived=@iduser
+
+            DELETE FROM NotificationSubComment WHERE
+            IdUserReceived=@iduser       
+
+            select 1 deletenotifications
+
+            IF(@@ERROR > 0)  
+            BEGIN  
+                ROLLBACK TRANSACTION  
+              END  
+              ELSE  
+            BEGIN  
+            COMMIT TRANSACTION  
+            END 
+         END   
+    
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+       .input('iduser', Int,iduser)
+       .query(querydelete)
+       resultquery = result.recordset[0].notexistuser;
+       if(resultquery===undefined)
+       {
+         resultquery = result.recordset[0].deletenotifications;
+       }
+        pool.close();
+        return resultquery;
+        
+    }
+
+    static deleteNotiMessagesByUser=async(iduser)=>
+    {
+        let resultquery;
+        let querydelete = 
+        `
+        IF NOT EXISTS (SELECT IdUser FROM Userr
+           WHERE IdUser=@iduser and Active=1)
+        BEGIN
+             select -1 as notexistuser  
+        END
+        ELSE
+        BEGIN
+            DELETE FROM NotificationMessage
+            WHERE IdUserReceived=@iduser
+
+            select 1 deletenotifications
+         END   
+    
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+       .input('iduser', Int,iduser)
+       .query(querydelete)
+       resultquery = result.recordset[0].notexistuser;
+       if(resultquery===undefined)
+       {
+         resultquery = result.recordset[0].deletenotifications;
+       }
+        pool.close();
+        return resultquery;
+        
+    }
+
+
+
      //#region  GETS
 
      static getNotificationCommentsByUser=async(IdUser)=>
@@ -15,7 +104,6 @@ class DataNotification {
          let querysearch=
          `        
        
-      
         SELECT 
         nsc.IdNotiSubComment as IdNotification, 
         u.IdUser as IdUserSender, 
@@ -110,7 +198,7 @@ class DataNotification {
          .query(querysearch)
        for (var re of result.recordset) {
          let notification = new DTONotification();   
-         this.getInformation(notification,re);
+         this.getInformationNotiComments(notification,re);
          arrayn.push(notification);
       }
       pool.close();
@@ -118,10 +206,60 @@ class DataNotification {
      }
  
  
+     static getNotificationMessagesByUser=async(IdUser)=>
+    {
+        
+        let arrayn=[];
+        let querysearch=
+        `
+        SELECT 
+        NM.IdNotiUser as IdNotification, 
+        U1.IdUser as IdUserSender,
+        U1.Name as NameSender , 
+        U1.Imagee as ImageSender , 
+        UM.Textt AS LastMessage,
+        UM.DateeTime AS LastMessageDate
+        
+       FROM 
+       userr U1 
+       JOIN (
+         SELECT 
+           IdUserReceived, 
+           IdUserSender,
+           MAX(DateeTime) as max_date
+         FROM 
+           NotificationMessage 
+         GROUP BY 
+           IdUserReceived,
+           IdUserSender
+       ) T ON T.IdUserSender = U1.iduser
+       JOIN NotificationMessage NM ON NM.IdUserReceived = T.IdUserReceived 
+       AND NM.IdUserSender = T.IdUserSender
+       AND NM.DateeTime = T.max_date
+       JOIN UserrMessage UM ON UM.IdUserMessages = NM.IdUserMessages
+     WHERE 
+       NM.IdUserReceived = @iduser
+     ORDER BY NM.DateeTime desc
+ 
+ 
+        `;
+ 
+      let pool = await Conection.conection();
+      const result = await pool.request()
+        .input('IdUser', Int,IdUser)
+      .query(querysearch)
+      for (var re of result.recordset) {
+        let notification = new DTONotification();   
+        this.getInformationNotiMessage(notification,re);
+        arrayn.push(notification);
+     }
+     pool.close();
+     return arrayn;
+    }
      //#endregion
 //#endregion GETINFORMATON
 
-     static getInformation(notification,result)
+     static getInformationNotiComments(notification,result)
      {
       notification.IdNotification = result.IdNotification;
       notification.IdUserSender = result.IdUserSender;
@@ -131,6 +269,18 @@ class DataNotification {
       notification.TitleImagePostVideo = result.TitleImagePostVideo;
       notification.Typee = result.Typee;
       notification.DateeTime = result.DateeTime;
+      
+     }
+   
+     static getInformationNotiMessage(notification,result)
+     {
+      notification.IdNotification = result.IdNotification;
+      notification.IdUserSender = result.IdUserSender;
+      notification.NameSender = result.NameSender;
+      notification.ImageSender = result.ImageSender;
+      notification.Message = result.LastMessage;
+      notification.DateeTime = result.LastMessageDate;
+    
       
      }
    
