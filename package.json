@@ -1,7 +1,7 @@
 {
   "name": "socialnetworkk",
   "version": "1.0.1",
-  "description": "This package contains a backend of what would be the logic of a social network software, the architecture used is made in 2 layers",
+  "description": "This package contains a backend of what would be the logic of a social network software",
   "main": "app.js",
   "scripts": {
     "start": "node app"
@@ -18,7 +18,21 @@
     "js",
     "javascript",
     "user",
-    "socialnetwork"
+    "socialnetwork",
+    "social-network",
+    "social-netowrking",
+    "create-social-network",
+    "social-links",
+    "social media",
+    "social-media",
+    "socialmedia",
+    "social-post-api",
+    "Social-network",
+    "social-shares",
+    "social",
+    "social-networks",
+    "social-network-analysis"
+    
   ],
   "author": "Carlos Rodriguez <rwkamandriw@gmail.com>",
   "license": "MIT"

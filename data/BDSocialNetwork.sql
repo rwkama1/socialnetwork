@@ -265,6 +265,15 @@ CREATE TABLE NotificationMessage(
 )
 go
 
+CREATE TABLE BlockedUser(
+	IdBlocked int NOT NULL PRIMARY KEY Identity(1,1) ,
+	IdUserBlocker int not null Foreign Key References Userr(IdUser),
+	IdUserBlocked int not null Foreign Key References Userr(IdUser),
+	Messagee varchar(50) NOT NULL
+)
+go
+
+--drop table BlockedUser
 --drop table NotificationCommentImage
 --drop table NotificationCommentPost
 --drop table NotificationCommentVideo
@@ -305,6 +314,7 @@ go
 --drop table Userr
 
 
+select * from BlockedUser
 select * from UserrMessage
 select * from ChatRoom
 
@@ -313,7 +323,6 @@ select * from NotificationCommentPost
 select * from NotificationCommentVideo
 select * from NotificationSubComment
 select * from NotificationMessage
-
 
 select * from AlbumUserImages
 select * from AlbumUserVideos
@@ -346,30 +355,10 @@ select * from UserrMessage
 delete from LoginUser
 delete from Logs
 delete from UserImages
- delete from Followers
- 
+delete from BlockedUser
 delete from ChatRoom
 
 
 
 
-declare @IdUser Int;
-set @IdUser=1;
-  SELECT 
-        NM.IdNotiUser as IdNotification, 
-        U1.IdUser as IdUserSender,
-        U1.Name as NameSender , 
-        U1.Imagee as ImageSender , 
-        (SELECT TOP 1 Textt FROM UserrMessage 
-          WHERE IdRoom = NM.IdRoom ORDER BY DateeTime DESC )
- AS LastMessage,
-        (SELECT TOP 1 DateeTime FROM UserrMessage
-           WHERE IdRoom = NM.IdRoom ORDER BY DateeTime DESC )
-            AS LastMessageDate
-       FROM 
-        userr U1 
-        JOIN NotificationMessage NM ON NM.IdUserSender = U1.iduser
-        AND NM.IdUserReceived = @iduser
-      WHERE 
-        NM.IdUserReceived = @iduser
-     ORDER BY NM.DateeTime desc
+

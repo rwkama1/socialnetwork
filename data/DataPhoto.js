@@ -311,6 +311,7 @@ END
          Userr.Active = 1 
          and AlbumUserImages.Active = 1 
          and UserImages.Active = 1
+         ORDER BY datepublish desc
        
          `  
          let pool = await Conection.conection();
@@ -433,7 +434,8 @@ END
    static getImagesbyIdUser=async(iduser)=>
   {
      let arrayphoto=[];
-          let querysearch = `   
+          let querysearch = `
+             
             SELECT 
             UserImages.*, 
             AlbumUserImages.Title as AlbumTitle, 
@@ -497,10 +499,24 @@ END
           pool.close();
           return arrayphoto;
     }   
-   static getImagesVisibilityPublicUser=async(iduser)=>
+    //PROFILE USER
+   static getImagesVisibilityPublicUser=async(iduserlogin,iduser)=>
     {
        let arrayphoto=[];
-            let querysearch = `   
+       let resultquery;
+            let querysearch = `  
+
+            DECLARE @iduserlogin int= ${iduserlogin};
+            DECLARE @iduser int= ${iduser};
+              IF  EXISTS ( 
+             SELECT IdUserBlocker FROM BlockedUser WHERE
+             IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
+              )
+            BEGIN
+              select -1 as userblocked
+            END
+            ELSE
+            BEGIN
               SELECT 
               UserImages.*, 
               AlbumUserImages.Title as AlbumTitle, 
@@ -517,19 +533,24 @@ END
               and AlbumUserImages.Active = 1 
               and UserImages.Active = 1 
               and  UserImages.Visibility='Public'
-              and UserImages.IdUser = ${iduser}
+              and UserImages.IdUser = @iduser
+              ORDER BY datepublish desc
+            END
          `  
             let pool = await Conection.conection();
             const result = await pool.request()      
             .query(querysearch)
-            for (var p of result.recordset) {
-               let photo = new DTOPhoto();   
-                this.getinformationList(photo,p);
-             arrayphoto.push(photo);
+            resultquery = result.recordset[0].userblocked; 
+            if (resultquery===undefined) {
+               for (var p of result.recordset) {
+                  let photo = new DTOPhoto();   
+                  this.getinformationList(photo,p);
+                  arrayphoto.push(photo);
+               }
+               resultquery=arrayphoto;
             }
-         
            pool.close();
-           return arrayphoto;
+           return resultquery;
      }
      static getImagesOrderByLikes=async()=>
      {

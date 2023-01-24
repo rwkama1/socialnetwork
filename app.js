@@ -22,11 +22,9 @@ const { LoginUser } = require("./security/LoginUser");
  const { DataUserRelation } = require("./data/DataUserRelation");
 const { DataVideo } = require("./data/DataVideo");
 const { DTOAlbumPhoto } = require("./entity/DTOAlbumPhoto");
-
 const { DTOAlbumVideo } = require("./entity/DTOAlbumVideos");
 const { DTOPhoto } = require("./entity/DTOPhoto");
 const { DTOPost } = require("./entity/DTOPost");
-
  const {  DTOUserRelation } = require("./entity/DTOUserRelation");
 const { DTOVideo } = require("./entity/DTOVideo");
 const { DataChatRoom } = require("./data/DataChatRoom");
@@ -236,8 +234,35 @@ let usermaintenance=async()=>
 
 //     await deleteCoverPicture();
 
+    //   async function blockUser() {
 
-// let getuser = await DataUser.getUser(1);
+    //     let blockuser = await DataUser.blockuser(2,3,"Blocked");
+    //      if (blockuser===-1)
+    //         {
+    //         throw new Error("The user login does not exists");
+    //       }
+    //       if (blockuser===-2)
+    //       {
+    //       throw new Error("The user blocked does not exist");
+    //      }
+    //         console.log("User Blocked");
+
+    //  }
+
+    // await blockUser();
+
+
+    
+
+
+// let getuser = await DataUser.getUser(1,3);
+// if(getuser===-1){
+//     throw new Error("The user is blocked");
+// }
+//  if(getuser===-2)
+//  {
+//     throw new Error("The user does not exists");
+//  }
 // console.log(getuser);
 
 // let getUserbyUserName = await DataUser.getUserbyUserName("UserName70");
@@ -320,7 +345,6 @@ loginuser().then()
 
 //       }
 
-//    }
 //    await addUserRelation();
 
 //     async function confirmFriend() {
@@ -364,25 +388,7 @@ loginuser().then()
 //     }
 //      await deleteUserRelation();
 
-//       async function blockUserRelation() {
 
-//         let blockFriend1 = await DataUserRelation.blockFriend(3, 4);
-
-//          if (blockFriend1===-1) {
-//                 throw new Error("The user does not exists");
-//         }
-//          if (blockFriend1===-2) {
-//                 throw new Error("The friend does not exists");
-//          }
-//         if (blockFriend1===-3) {
-//             throw new Error("The users relation does not exists");
-//          }
-
-//          console.log("Friend request has been blocked");
-
-
-//     }
-//     await blockUserRelation();
 
     
 //  let getUserRelation = await DataUserRelation.getUserRelation(25,1);
@@ -399,7 +405,12 @@ loginuser().then()
 
 
 
-// let getConfirmedFriendsbyUserLoginUser = await DataUserRelation.getConfirmedFriendsbyUserLoginUser(2);
+// let getConfirmedFriendsbyUserLoginUser =
+//  await DataUserRelation.getConfirmedFriendsbyUserLoginUser(1,1);
+// if(getConfirmedFriendsbyUserLoginUser===-1)
+// {
+//     throw new Error("The user is blocked");
+// }
 // console.log(getConfirmedFriendsbyUserLoginUser);
 
 // let getPendingFriendsbyUserLoginUser = await DataUserRelation.getPendingFriendsbyUserLoginUser(2);
@@ -758,16 +769,20 @@ let images=async()=>
 
     
 
-//      async function getImagesVisibilityFriendUser() {
-//         let array=await DataPhoto.getImagesVisibilityFriendUser(25);
-//         for (const image of array) {
-//           image.DiffDatePublishDateNow()
-//           image.showDiffDatePublishDateNow()
-//             console.log(image);
-//         }
+     async function getImagesVisibilityPublicUser() {
+        let array=await DataPhoto.getImagesVisibilityPublicUser(1,3);
+        if(array===-1)
+        {
+            throw new Error("The user is blocked")
+        }
+        for (const image of array) {
+          image.DiffDatePublishDateNow()
+          image.showDiffDatePublishDateNow()
+            console.log(image);
+        }
 
-//     }
-//     await getImagesVisibilityFriendUser();
+    }
+    await getImagesVisibilityPublicUser();
 
 //      async function getImagesMainPage() {
 //         let array=await DataPhoto.getImagesMainPage(1,'United Kingdom');
@@ -1389,7 +1404,8 @@ let posts=async()=>
 let postvideoimage=async()=>
  {
         // async function getPhotoPostVideoMainPage() {
-        //     let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage(1)
+        //     let array=
+        //     await DataPhotoPostVideo.getPhotoPostVideoMainPage(1)
 
         //     for (const post of array) {
         //         post.DiffDatePublishDateNow()
@@ -1402,17 +1418,7 @@ let postvideoimage=async()=>
         // await getPhotoPostVideoMainPage();
 
 
-        //     async function getPhotoPostVideoMainPage2() {
-        //     let array=await DataPhotoPostVideo.getPhotoPostVideoMainPage2(2)
-        //     for (const post of array) {
-        //         post.DiffDatePublishDateNow()
-        //         post.showDiffDatePublishDateNow()
-        //         console.log(post);
-        //     }
-         
-        // }
-      
-        // await getPhotoPostVideoMainPage2();
+       
 
         // async function getPhotoPostVideoSearch() {
         //     let array=await DataPhotoPostVideo.getPhotoPostVideoSearch('1')
@@ -1438,8 +1444,12 @@ let postvideoimage=async()=>
         // await getPhotoPostVideoUserLikes();
 
         //   async function getPhotoPostVideoByUser() {
-        //     let array=await DataPhotoPostVideo.getPhotoPostVideoByUser(9)
-        //     for (const post of array) {
+        //     let getPhotoPostVideoByUser=await DataPhotoPostVideo.getPhotoPostVideoByUser(2,1)
+        //     if(getPhotoPostVideoByUser===-1)
+        //     {
+        //         throw new Error("The user is blocked");
+        //     }
+        //     for (const post of getPhotoPostVideoByUser) {
         //         post.DiffDatePublishDateNow()
         //         post.showDiffDatePublishDateNow()
         //         console.log(post);
@@ -1464,6 +1474,7 @@ let postvideoimage=async()=>
  }
  postvideoimage().then()
 
+ 
 // //#endregion
 // //#region LikeImage
 let LikeImage=async()=>
@@ -2424,17 +2435,6 @@ let NotificationsMessages=async()=>
 //     }
   //   await addMessage();
 
-
-     async function deleteNotiMessagesByUser() {
-        let deleteNotiMessagesByUser =
-        await DataNotification.deleteNotiMessagesByUser(1);
-            if (deleteNotiMessagesByUser===-1) {
-                throw new Error("The user does not exists");
-            }
-         
-             console.log("Notifications Deleted");
-   }
-   await deleteNotiMessagesByUser();
 
 
         // let getNotificationMessagesByUser = 

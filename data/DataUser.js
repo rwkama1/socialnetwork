@@ -522,7 +522,93 @@ class DataUser {
             return resultquery;    
             
     }
-  
+
+    static  blockuser=async(iduserlogin,iduser,message)=>
+    {
+      let resultquery;
+        let query = `
+        IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduserlogin
+             and Active=1)
+        BEGIN
+         select -1 as notexistuserlogin
+        END
+        ELSE 
+        BEGIN 
+            IF  NOT EXISTS ( SELECT IdUser FROM
+              Userr WHERE IdUser=@iduser and Active=1 )
+            BEGIN
+              select -2 as noexistuser
+            END
+            ELSE
+            BEGIN
+                IF  EXISTS ( SELECT IdUserBlocker FROM
+                    BlockedUser WHERE IdUserBlocker=@iduserlogin and 
+                    IdUserBlocked=@iduser
+                     )
+                BEGIN
+                    select -3 as existblocked
+                END
+                ELSE
+                BEGIN
+                    BEGIN TRANSACTION 
+            
+                    DELETE from Followers where idfolloweruser=@iduserlogin and 
+                    idfolloweduser=@iduser
+
+                    DELETE from Followers where idfolloweruser=@iduser and 
+                    idfolloweduser=@iduserlogin
+
+                    DELETE from UserrRelations where
+                    iduser=@iduserlogin and idfriend=@iduser
+
+                    DELETE from UserrRelations where
+                    iduser=@iduser and idfriend=@iduserlogin
+
+                    INSERT INTO BlockedUser 
+                    VALUES (@iduserlogin, @iduser, @message)
+
+                    INSERT INTO BlockedUser 
+                    VALUES (@iduser, @iduserlogin, @message)
+
+
+                    select 1 as blockedsuccess
+                    
+                    IF(@@ERROR > 0)  
+                    BEGIN  
+                        ROLLBACK TRANSACTION  
+                    END  
+                    ELSE  
+                    BEGIN  
+                        COMMIT TRANSACTION  
+                    END 
+                 END 
+            END 
+        
+        END
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+        .input('iduserlogin', Int, iduserlogin)
+        .input('iduser', Int,iduser)
+        .input('message', VarChar,message)
+        .query(query)
+           resultquery = result.recordset[0].notexistuserlogin;
+            if(resultquery===undefined)
+            {
+             resultquery = result.recordset[0].noexistuser;
+              if (resultquery===undefined) {
+                  resultquery = result.recordset[0].existblocked;
+                  if (resultquery===undefined) {
+                    resultquery = result.recordset[0].blockedsuccess;
+                       
+                }
+                     
+              }
+           }   
+        pool.close();
+        return resultquery;
+        
+    }
       //#region Exists
 
     static existUserById=async(iduser)=>
@@ -570,30 +656,48 @@ class DataUser {
 
 //#endregion
 //#region GETS
- static getUser=async(iduser)=>
+ static getUser=async(iduserlogin,iduser)=>
 {
     let resultquery=0;
         let querysearch = `
-        IF NOT EXISTS (SELECT IdUser FROM Userr WHERE IdUser = @IdUser and Active=1 )
+
+        DECLARE @iduserlogin int= ${iduserlogin};
+
+        DECLARE @iduser int= ${iduser};
+
+          IF  EXISTS ( 
+         SELECT IdUserBlocker FROM BlockedUser WHERE
+         IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
+          )
         BEGIN
-        select -1 as notexistuser  
+          select -1 as userblocked
         END
         ELSE
         BEGIN
-        select * from Userr where IdUser=@iduser and Active=1
-        END
+            IF NOT EXISTS (SELECT IdUser FROM
+                 Userr WHERE IdUser = @iduser and Active=1 )
+            BEGIN
+             select -2 as notexistuser  
+            END
+            ELSE
+            BEGIN
+             select * from Userr where IdUser=@iduser and Active=1
+            END
+         END
         `
 
         let pool = await Conection.conection();
    
-            const result = await pool.request()
-            .input('IdUser', Int, iduser)
-            .query(querysearch)
-        resultquery = result.recordset[0].notexistuser; 
+        const result = await pool.request()
+        .query(querysearch)
+        resultquery = result.recordset[0].userblocked; 
         if (resultquery===undefined) {
-       let userr = new DTOUser();
-       DataUser.getinformation(userr, result);
-       resultquery=userr
+            resultquery = result.recordset[0].notexistuser; 
+            if (resultquery===undefined) {
+                let userr = new DTOUser();
+                DataUser.getinformation(userr, result);
+                resultquery=userr
+            }
         }
        pool.close();
        return resultquery;

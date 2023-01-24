@@ -195,87 +195,31 @@ let resultquery;
     
 }
 
-static  blockFriend=async(iduser,idfriend)=>
-{
-  let resultquery;
-    let query = `
-    IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=${iduser} and Active=1)
-    BEGIN
-    select -1 as notexistuser
-    END
-    ELSE 
-    BEGIN 
-      IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=${idfriend} and Active=1)
-      BEGIN
-      select -2 as notexistfriend
-      END
-      ELSE
-      BEGIN        
-        IF  NOT EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=${iduser} and IdFriend=${idfriend})
-        BEGIN
-        select -3 as notexistduplicate
-        END
-        ELSE
-        BEGIN
-          BEGIN TRANSACTION 
-          update UserrRelations set Statee='Blocked' where IdUser=${iduser} and IdFriend=${idfriend}
-          update UserrRelations set Statee='Blocked' where IdUser=${idfriend} and IdFriend=${iduser}
-          select 1 as blockedsuccess
-          IF(@@ERROR > 0)  
-          BEGIN  
-              ROLLBACK TRANSACTION  
-          END  
-          ELSE  
-          BEGIN  
-            COMMIT TRANSACTION  
-          END 
-        END 
-      END 
-    END
-    `
-    let pool = await Conection.conection();
-    const result = await pool.request()
-        .query(query)
-       resultquery = result.recordset[0].notexistuser;
-        if(resultquery===undefined)
-        {
-         resultquery = result.recordset[0].notexistfriend;
-          if (resultquery===undefined) {
-                  resultquery = result.recordset[0].notexistduplicate;
-                  if (resultquery===undefined) {
-                    resultquery = result.recordset[0].blockedsuccess;
-                  }
-          }
-       }   
-    pool.close();
-    return resultquery;
-    
-}
 //#endregion
     //#region Exists
-static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
-{
+  static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
+  {
 
-    let query = `
-    SELECT 
-    CASE WHEN EXISTS (
+      let query = `
       SELECT 
-      IdUser
-      FROM 
-        UserrRelations 
-      WHERE 
-        IdUser = ${iduser} 
-        and IdFriend = ${idfriend}
-    ) THEN CAST(1 as bit) ELSE CAST(0 AS BIT) END as Exist  
-    `;
-    let pool = await Conection.conection();
-    const result = await pool.request()
-   .query(query)
-   let exist = result.recordset[0].Exist;
-    pool.close();
-    return exist;
-    
-}
+      CASE WHEN EXISTS (
+        SELECT 
+        IdUser
+        FROM 
+          UserrRelations 
+        WHERE 
+          IdUser = ${iduser} 
+          and IdFriend = ${idfriend}
+      ) THEN CAST(1 as bit) ELSE CAST(0 AS BIT) END as Exist  
+      `;
+      let pool = await Conection.conection();
+      const result = await pool.request()
+    .query(query)
+    let exist = result.recordset[0].Exist;
+      pool.close();
+      return exist;
+      
+  }
     //#endregion
     //#region GETS
     static getUserRelation=async(iduser,idfriend)=>
@@ -319,7 +263,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
                 return resultquery;
       
      }
-    //*****************************************************************
+    
     static getAllFriendsbyUser=async(iduser)=>
     {
         let arrayuser=[];
@@ -347,7 +291,8 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
            return arrayuser;
       
      }
-     
+
+    
       static getConfirmedFriendsbyUser=async(iduser)=>
       {
           let arrayuser=[];
@@ -378,34 +323,52 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
              return arrayuser;
         
        }
-       
-       static getConfirmedFriendsbyUserLoginUser=async(iduser)=>
+        //PROFILE USER
+       static getConfirmedFriendsbyUserLoginUser=async(iduserlogin,iduser)=>
        {
            let arrayuser=[];
-               let querysearch=`
+           let resultquery;
+           let querysearch=`
 
-               SELECT u.*
-               FROM Userr u
-               INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
-               LEFT JOIN LoginUser lu ON u.IdUser = lu.IdUser
-               WHERE ur.IdUser = @IdUser
-               AND ur.Statee = 'Confirmed'
-               ORDER BY lu.IdLoginUser DESC
+               DECLARE @iduserlogin int= ${iduserlogin};
 
+               DECLARE @iduser int= ${iduser};
+
+            	 IF  EXISTS ( 
+                SELECT IdUserBlocker FROM BlockedUser WHERE
+                IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
+                 )
+               BEGIN
+                 select -1 as userblocked
+               END
+          
+               ELSE
+               BEGIN
+                  SELECT u.*
+                  FROM Userr u
+                  INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
+                  LEFT JOIN LoginUser lu ON u.IdUser = lu.IdUser
+                  WHERE ur.IdUser = @iduser
+                  AND ur.Statee = 'Confirmed'
+                  ORDER BY lu.IdLoginUser DESC
+               END
              
                  `;
-               let pool = await Conection.conection();
-          
-                   const result = await pool.request()
-                   .input('IdUser', Int, iduser)
-                   .query(querysearch)
+              let pool = await Conection.conection();
+              const result = await pool.request()
+              .query(querysearch)
+               resultquery = result.recordset[0].userblocked;
+               if(resultquery===undefined)
+               {
                    for (var recorduser of result.recordset) {
                        let user = new DTOUser();   
                      DataUser.getinformationList(user, recorduser);
                      arrayuser.push(user);
                     }
+                    resultquery=arrayuser;
+                }
               pool.close();
-              return arrayuser;
+              return resultquery;
          
         }
         static getPendingFriendsbyUserLoginUser=async(iduser)=>
@@ -442,6 +405,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
       {
           let arrayuser=[];
               let querysearch=`
+
               select 
               Userr.* 
             from 
@@ -466,6 +430,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
              return arrayuser;
         
        }
+      
        //
        static getSearchNickFriendsbyUser=async(iduser,nick)=>
        {
@@ -631,7 +596,7 @@ static  ExistDuplicateUserFriend=async(iduser,idfriend)=>
     //#endregion
     //#region  Others
 
-    static  NumberOfFriends=async(iduser)=>
+ static  NumberOfFriends=async(iduser)=>
 {
 
         let query = `
