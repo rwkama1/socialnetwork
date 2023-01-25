@@ -254,12 +254,15 @@ class DataCommentPost {
 
     //#region  GETS
       
-    static getsCommentsPost=async(idpost)=>
+    static getsCommentsPost=async(iduserlogin,idpost)=>
     {
       
             let arraycomment=[];
             let querysearch=
-              `                   
+              `        
+            DECLARE @iduserlogin int = ${iduserlogin}
+            DECLARE @idpost int = ${idpost}
+ 
             SELECT 
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
@@ -282,7 +285,10 @@ class DataCommentPost {
             WHERE 
 			UserPost.Active = 1
 			AND Userr.Active=1
-            AND UserrCommentsPost.idpost=${idpost} 
+            AND UserrCommentsPost.idpost=@idpost 
+            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+                WHERE IdUserBlocker = @iduserlogin 
+                AND IdUserBlocked = Userr.IdUser)
 
               `;
        

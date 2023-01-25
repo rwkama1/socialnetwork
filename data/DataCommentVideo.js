@@ -255,13 +255,15 @@ class DataCommentVideo {
     //#region  GETS
       
     
-    static getsCommentsVideo=async(idvideo)=>
+    static getsCommentsVideo=async(iduserlogin,idvideo)=>
     {
       
             let arraycomment=[];
               let querysearch=
               `        
-                   
+             DECLARE @iduserlogin int = ${iduserlogin}
+             DECLARE @idvideo int = ${idvideo}  
+              
             SELECT 
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
@@ -286,8 +288,10 @@ class DataCommentVideo {
             WHERE 
 			UserVideos.Active = 1
 			AND Userr.Active=1
-            AND UserrCommentsVideo.iduservideos=${idvideo} 
-
+            AND UserrCommentsVideo.iduservideos=@idvideo
+            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin 
+            AND IdUserBlocked = Userr.IdUser)
               `;
        
             let pool = await Conection.conection();

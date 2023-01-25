@@ -22,12 +22,12 @@ CREATE TABLE Userr(
 	Descriptionn varchar(100)  NULL,
 	Country varchar(40)  NULL,
 	Statee varchar(200)  NULL,
-	Imagee varchar(200)  NULL,
+	Imagee varchar(500)  NULL,
 	UrlFacebook varchar(200)  NULL,
 	UrlTwitter varchar(200)  NULL,
 	UrlInstagram varchar(200)  NULL,
 	UrlLinkedin varchar(200)  NULL,
-	Coverphoto varchar(200)  NULL,
+	Coverphoto varchar(500)  NULL,
 	Visibility varchar(20) NULL
 ) 
 go
@@ -57,7 +57,7 @@ CREATE TABLE UserImages(
 	Title varchar(50) NOT NULL,
 	Descriptionn varchar(700) NOT NULL,
 	Likes int NOT NULL,
-	Urlimage varchar(100) NOT NULL,
+	Urlimage varchar(500) NOT NULL,
 	Visibility varchar(20) not null,
 	DatePublish DateTime  not null,
 	
@@ -91,7 +91,7 @@ CREATE TABLE UserVideos(
 	Title varchar(50) NOT NULL,
 	Likes int NOT NULL,
 	Descriptionn varchar(100) NOT NULL,
-	Urlvideos varchar(100) NOT NULL,
+	Urlvideos varchar(500) NOT NULL,
 	Visibility varchar(20) not null,
     DatePublish DateTime  not null,
 	Active bit not null,
@@ -273,6 +273,9 @@ CREATE TABLE BlockedUser(
 )
 go
 
+
+
+
 --drop table BlockedUser
 --drop table NotificationCommentImage
 --drop table NotificationCommentPost
@@ -302,9 +305,6 @@ go
 
 --drop table UserPost
 
-
-
-
 --drop table UserVideos
 --drop table UserImages
 --drop table AlbumUserVideos
@@ -326,7 +326,7 @@ select * from NotificationMessage
 
 select * from AlbumUserImages
 select * from AlbumUserVideos
-select * from UserImages
+select * from UserImages order by datepublish asc
 select * from UserVideos
 select * from UserPost
 select * from UserrRelations
@@ -357,8 +357,6 @@ delete from Logs
 delete from UserImages
 delete from BlockedUser
 delete from ChatRoom
-
-
 
 
 

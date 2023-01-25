@@ -255,12 +255,15 @@ class DataCommentImage {
 
     //#region  GETS
       
-    static getsCommentsImage=async(idimage)=>
+    static getsCommentsImage=async(iduserlogin,idimage)=>
     {
       
             let arraycomment=[];
               let querysearch=
               `             
+            DECLARE @iduserlogin int = ${iduserlogin}
+            DECLARE @idimage int = ${idimage}
+
             SELECT 
 			UserrComments.idusercomment,
 			UserrComments.textt as textcomment,
@@ -288,7 +291,10 @@ class DataCommentImage {
 
 			UserImages.Active = 1
 			AND Userr.Active=1
-            AND UserrCommentsImage.iduserimages=${idimage} 
+            AND UserrCommentsImage.iduserimages=@idimage
+            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+                WHERE IdUserBlocker = @iduserlogin 
+                AND IdUserBlocked = Userr.IdUser)
               `;
        
             let pool = await Conection.conection();

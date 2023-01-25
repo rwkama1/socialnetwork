@@ -292,6 +292,15 @@ let usermaintenance=async()=>
 //  );
 // console.log(getUsersbyDateEntry);
 
+//   let getLikesImageUsers = await DataUser.getLikesImageUsers(2,41);
+// console.log(getLikesImageUsers);
+
+//   let getLikesVideoUsers = await DataUser.getLikesVideoUsers(2,5);
+// console.log(getLikesVideoUsers);
+
+//   let getLikesPostUsers = await DataUser.getLikesPostUsers(2,8);
+// console.log(getLikesPostUsers);
+
 }
 usermaintenance().then()
 // //#endregion
@@ -655,16 +664,16 @@ let images=async()=>
     // getImage.showDiffDatePublishDateNow();
     // console.log(getImage);
 
-//     async function getImages() {
-//         let array=await DataPhoto.getImages();
-//         for (const image of array) {
-//           image.DiffDatePublishDateNow()
-//           image.showDiffDatePublishDateNow()
-//             console.log(image);
-//         }
+    // async function getImages() {
+    //     let array=await DataPhoto.getImages(2);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
 
-//     }
-//     await getImages();
+    // }
+    // await getImages();
 
 //        async function getImagesByAlbum() {
 //         let array=await DataPhoto.getImagesbyAlbum(26);
@@ -701,16 +710,16 @@ let images=async()=>
 //     }
 //     await getImagesbyIdUser();
 
-    //    async function getImagesOrderByLikes() {
-    //     let array=await DataPhoto.getImagesOrderByLikes();
-    //     for (const image of array) {
-    //       image.DiffDatePublishDateNow()
-    //       image.showDiffDatePublishDateNow()
-    //         console.log(image);
-    //     }
+       async function getImagesOrderByLikes() {
+        let array=await DataPhoto.getImagesOrderByLikes(2);
+        for (const image of array) {
+          image.DiffDatePublishDateNow()
+          image.showDiffDatePublishDateNow()
+            console.log(image);
+        }
 
-    // }
-    // await getImagesOrderByLikes();
+    }
+    await getImagesOrderByLikes();
     
 
     //    async function getImagessOrderbyComments() {
@@ -773,20 +782,20 @@ let images=async()=>
 
     
 
-     async function getImagesVisibilityPublicUser() {
-        let listimages=await DataPhoto.getImagesVisibilityPublicUser(1,4);
-        if(listimages===-1)
-        {
-            throw new Error("The user is blocked");
-        }
-        for (const image of listimages) {
-          image.DiffDatePublishDateNow()
-          image.showDiffDatePublishDateNow()
-            console.log(image);
-        }
+    //  async function getImagesVisibilityPublicUser() {
+    //     let listimages=await DataPhoto.getImagesVisibilityPublicUser(1,4);
+    //     if(listimages===-1)
+    //     {
+    //         throw new Error("The user is blocked");
+    //     }
+    //     for (const image of listimages) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
 
-    }
-     await getImagesVisibilityPublicUser();
+    // }
+    //  await getImagesVisibilityPublicUser();
 
 //      async function getImagesMainPage() {
 //         let array=await DataPhoto.getImagesMainPage(1,'United Kingdom');
@@ -1409,7 +1418,7 @@ let postvideoimage=async()=>
  {
         // async function getPhotoPostVideoMainPage() {
         //     let array=
-        //     await DataPhotoPostVideo.getPhotoPostVideoMainPage(1)
+        //     await DataPhotoPostVideo.getPhotoPostVideoMainPage(2)
 
         //     for (const post of array) {
         //         post.DiffDatePublishDateNow()
@@ -1436,7 +1445,8 @@ let postvideoimage=async()=>
         // await getPhotoPostVideoSearch();
 
         //  async function getPhotoPostVideoUserLikes() {
-        //     let array=await DataPhotoPostVideo.getPhotoPostVideoUserLikes(1)
+        //     let array=await DataPhotoPostVideo.
+        //     getPhotoPostVideoUserLikes(1)
         //     for (const post of array) {
         //         post.DiffDatePublishDateNow()
         //         post.showDiffDatePublishDateNow()
@@ -1825,7 +1835,7 @@ let CommentImage=async()=>
 
 
 //  async function getsCommentsImage() {
-//         let array=await DataCommentImage.getsCommentsImage(41);
+//         let array=await DataCommentImage.getsCommentsImage(2,42);
 //         for (const commentimg of array) {
 //             commentimg.DiffDatePublishDateNow()
 //             commentimg.showDiffDatePublishDateNow()
@@ -1919,7 +1929,7 @@ let CommentPost=async()=>
 
 
 //  async function getsCommentsPost() {
-//         let array=await DataCommentPost.getsCommentsPost(4);
+//         let array=await DataCommentPost.getsCommentsPost(2,4);
 //         for (const commentpost of array) {
 //             commentpost.DiffDatePublishDateNow()
 //             commentpost.showDiffDatePublishDateNow()

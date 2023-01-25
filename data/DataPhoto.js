@@ -311,25 +311,31 @@ END
 
 //*********************************** */
 
-  static getImages=async()=>
+  static getImages=async(iduserlogin)=>
  {
     let arrayphoto=[];
          let querysearch = `     
-         select 
+
+         declare @iduserlogin int = ${iduserlogin};
+
+         SELECT 
          UserImages.*, 
          AlbumUserImages.Title as AlbumTitle, 
          Userr.Name, 
          Userr.Nick, 
          Userr.Email, 
          Userr.Imagee 
-       from 
+       FROM 
          UserImages 
          inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
          inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-       where 
+       WHERE 
          Userr.Active = 1 
          and AlbumUserImages.Active = 1 
          and UserImages.Active = 1
+         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+         WHERE IdUserBlocker = @iduserlogin 
+         AND IdUserBlocked = Userr.IdUser)
          ORDER BY datepublish desc
        
          `  
@@ -581,11 +587,14 @@ END
            pool.close();
            return resultquery;
      }
-     static getImagesOrderByLikes=async()=>
+     //
+     static getImagesOrderByLikes=async(iduserlogin)=>
      {
              let arrav=[];
              let querysearch = `
   
+            DECLARE @iduserlogin int= ${iduserlogin}
+
              select 
              UserImages.*, 
              AlbumUserImages.Title as AlbumTitle, 
@@ -601,6 +610,9 @@ END
              Userr.Active = 1 
              and AlbumUserImages.Active = 1 
              and UserImages.Active = 1
+              AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+         WHERE IdUserBlocker = @iduserlogin 
+         AND IdUserBlocked = Userr.IdUser)
              order by Likes desc
            
              `  

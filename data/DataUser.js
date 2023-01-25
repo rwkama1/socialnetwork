@@ -877,11 +877,13 @@ ocupation="",city="",country="")=>
          }
 /*************************** */ 
 
-static getLikesImageUsers=async(idimage)=>// get all users who liked the image
+static getLikesImageUsers=async(iduserlogin,idimage)=>// get all users who liked the image
 {
    let array=[];
         let querysearch =
          `     
+        declare @idimage int = ${idimage};
+        declare @iduserlogin int = ${iduserlogin};
        SELECT 
         Userr.*
         FROM 
@@ -891,7 +893,10 @@ static getLikesImageUsers=async(idimage)=>// get all users who liked the image
        WHERE 
         Userr.Active = 1 
         and UserImages.Active = 1
-        and LikeImage.iduserimages=${idimage}
+        and LikeImage.iduserimages=@idimage
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+        WHERE IdUserBlocker = @iduserlogin 
+        AND IdUserBlocked = Userr.IdUser)
 
         `  
         let pool = await Conection.conection();
@@ -907,11 +912,13 @@ static getLikesImageUsers=async(idimage)=>// get all users who liked the image
        return array;
 }
 
-static getLikesVideoUsers=async(idvideo)=>// get all users who liked the video
+static getLikesVideoUsers=async(iduserlogin,idvideo)=>// get all users who liked the video
 {
    let array=[];
         let querysearch =
          `     
+        declare @idvideo int = ${idvideo};
+        declare @iduserlogin int = ${iduserlogin};
        SELECT 
         Userr.*
         FROM 
@@ -921,8 +928,10 @@ static getLikesVideoUsers=async(idvideo)=>// get all users who liked the video
        WHERE 
         Userr.Active = 1 
         and uservideos.Active = 1
-        and LikeVideo.iduservideos=${idvideo}
-
+        and LikeVideo.iduservideos=@idvideo
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+        WHERE IdUserBlocker = @iduserlogin 
+         AND IdUserBlocked = Userr.IdUser)
         `  
         let pool = await Conection.conection();
         const result = await pool.request()      
@@ -937,11 +946,15 @@ static getLikesVideoUsers=async(idvideo)=>// get all users who liked the video
        return array;
 }
 
-static getLikesPostUsers=async(idpost)=>// get all users who liked the post
+static getLikesPostUsers=async(iduserlogin,idpost)=>// get all users who liked the post
 {
    let array=[];
         let querysearch =
-         `     
+         `    
+         
+     declare @idpost int = ${idpost};
+     declare @iduserlogin int = ${iduserlogin};
+
        SELECT 
         Userr.*
         FROM 
@@ -951,8 +964,10 @@ static getLikesPostUsers=async(idpost)=>// get all users who liked the post
        WHERE 
         Userr.Active = 1 
         and userpost.Active = 1
-        and LikePost.idpost=${idpost}
-
+        and LikePost.idpost=@idpost
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+         WHERE IdUserBlocker = @iduserlogin 
+         AND IdUserBlocked = Userr.IdUser)
         `  
         let pool = await Conection.conection();
         const result = await pool.request()      

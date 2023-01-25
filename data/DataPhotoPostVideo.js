@@ -506,6 +506,9 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 	FROM UserPost p
 	JOIN Userr u on p.IdUser = u.IdUser
 	WHERE p.iduser <> @iduserlogin
+	AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+	WHERE IdUserBlocker = @iduserlogin 
+	AND IdUserBlocked = u.IdUser)
 
 		GROUP BY 
 		p.idpost ,	
@@ -548,6 +551,9 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 	JOIN Userr u on i.IdUser = u.IdUser
 	JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
 	WHERE i.iduser <> @iduserlogin
+	AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+	WHERE IdUserBlocker = @iduserlogin 
+	AND IdUserBlocked = u.IdUser)
 
 	 GROUP BY
 		i.iduserimages,
@@ -594,7 +600,10 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 	JOIN Userr u on v.IdUser = u.IdUser
 	JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
 	WHERE v.iduser <> @iduserlogin
-
+	AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+	WHERE IdUserBlocker = @iduserlogin 
+	AND IdUserBlocked = u.IdUser)
+	
 		 GROUP BY
 		v.iduservideos ,
 		v.idalbumvideos  ,
@@ -842,6 +851,8 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
          let array=[];
          let querysearch = 
 		 ` 
+		declare @iduser int= ${iduser};
+
 		 SELECT 
 		 UserPost.idpost as id, 
 		 0 as idalbum,
@@ -865,7 +876,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		 INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
 		 WHERE Userr.Active = 1 
 		 AND UserPost.Active = 1 
-		 AND LikePost.IdUser = ${iduser}
+		 AND LikePost.IdUser = @iduser
 		 
 		 UNION
 
@@ -896,8 +907,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		 WHERE Userr.Active = 1 
 		 AND AlbumUserImages.Active = 1 
 		 AND UserImages.Active = 1 
-		 AND LikeImage.IdUser = ${iduser}
-   
+		 AND LikeImage.IdUser = @iduser
 		 UNION
    					SELECT 
 					UserVideos.iduservideos as id, 
@@ -925,7 +935,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 					WHERE Userr.Active = 1 
 					AND AlbumUserVideos.Active = 1 
 					AND UserVideos.Active = 1 
-					AND LikeVideo.IdUser = ${iduser}
+					AND LikeVideo.IdUser = @iduser
 					order by datepublish desc
 
          `  
