@@ -591,6 +591,7 @@ let images=async()=>
 
     //     }
     // }
+
     // await addImage();
 
     // async function updatePhoto() {
@@ -643,13 +644,16 @@ let images=async()=>
 //     }
 //     await deletePhoto();
 
-//     let getImage = await DataPhoto.getImage(25);
-//     if (getImage===-1) {
-//          throw new Error("The image does not exists");
-//       }
-//     getImage.DiffDatePublishDateNow();
-//     getImage.showDiffDatePublishDateNow();
-//     console.log(getImage);
+    // let getImage = await DataPhoto.getImage(1,63);
+    // if (getImage===-1) {
+    //      throw new Error("The user is blocked");
+    //   }
+    //   if (getImage===-2) {
+    //     throw new Error("The image does not exists");
+    //  }
+    // getImage.DiffDatePublishDateNow();
+    // getImage.showDiffDatePublishDateNow();
+    // console.log(getImage);
 
 //     async function getImages() {
 //         let array=await DataPhoto.getImages();
@@ -733,7 +737,7 @@ let images=async()=>
 
 
     //  async function getSearchImages() {
-    //     let array=await DataPhoto.getSearchImages("","","Im");
+    //     let array=await DataPhoto.getSearchImages(1,"","","");
     //     for (const image of array) {
     //       image.DiffDatePublishDateNow()
     //       image.showDiffDatePublishDateNow()
@@ -770,19 +774,19 @@ let images=async()=>
     
 
      async function getImagesVisibilityPublicUser() {
-        let array=await DataPhoto.getImagesVisibilityPublicUser(1,3);
-        if(array===-1)
+        let listimages=await DataPhoto.getImagesVisibilityPublicUser(1,4);
+        if(listimages===-1)
         {
-            throw new Error("The user is blocked")
+            throw new Error("The user is blocked");
         }
-        for (const image of array) {
+        for (const image of listimages) {
           image.DiffDatePublishDateNow()
           image.showDiffDatePublishDateNow()
             console.log(image);
         }
 
     }
-    await getImagesVisibilityPublicUser();
+     await getImagesVisibilityPublicUser();
 
 //      async function getImagesMainPage() {
 //         let array=await DataPhoto.getImagesMainPage(1,'United Kingdom');

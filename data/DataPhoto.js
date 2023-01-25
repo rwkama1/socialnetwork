@@ -248,17 +248,31 @@ END
 //#endregion
 //#region GETS
 
- static getImage=async(idimage)=>
+ static getImage=async(iduserlogin,idimage)=>
 {
         let resultquery;
         let querysearch = `  
+        DECLARE @iduserlogin int= ${iduserlogin};
+
+        DECLARE @idimage int= ${idimage};
+
+          IF  EXISTS ( 
+         SELECT IdUserBlocker FROM BlockedUser WHERE
+         IdUserBlocker = @iduserlogin AND IdUserBlocked = 
+         (SELECT iduser FROM UserImages where IdUserImages=@idimage)
+          )
+        BEGIN
+          select -1 as userblocked
+        END
+        ELSE
+        BEGIN
         IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE IdUserImages=${idimage} and Active=1)
          BEGIN
-         select -1 as notexistimage
+          select -2 as notexistimage
          END
          ELSE
          BEGIN
-            select 
+            SELECT 
             UserImages.*, 
             AlbumUserImages.Title as AlbumTitle, 
             Userr.Name, 
@@ -273,18 +287,23 @@ END
             Userr.Active = 1 
             and AlbumUserImages.Active = 1 
             and UserImages.Active = 1 
-            and UserImages.IdUserImages = ${idimage}
+            and UserImages.IdUserImages = @idimage
+         END
         END
         `  
         let pool = await Conection.conection();
         const result = await pool.request()
         .query(querysearch)
-        resultquery = result.recordset[0].notexistimage;
+        resultquery = result.recordset[0].userblocked;
         if (resultquery===undefined) {
-         let image = new DTOPhoto();
-         DataPhoto.getinformation(image, result);
-         resultquery=image;
-        }     
+         resultquery = result.recordset[0].notexistimage;
+         if (resultquery===undefined) {
+            let image = new DTOPhoto();
+            DataPhoto.getinformation(image, result);
+            resultquery=image;
+           }     
+        }
+        
       
        pool.close();
        return resultquery;
@@ -326,11 +345,14 @@ END
         pool.close();
         return arrayphoto;
   }
-  static getSearchImages=async(nameuser="",description="",title="")=>
+  static getSearchImages=async(iduserlogin,nameuser="",description="",title="")=>
  {
          let arrav=[];
-         let querysearch = `     
+         let querysearch = ` 
+
+        DECLARE @iduserlogin int= ${iduserlogin};
        
+
          SELECT
             UserImages.*,
             AlbumUserImages.Title AS AlbumTitle,
@@ -346,8 +368,11 @@ END
          AND AlbumUserImages.Active = 1
          AND UserImages.Active = 1
          AND Userr.Name LIKE '%${nameuser}%'
-         AND UserImages.Title LIKE '%${title}%'
-         AND UserImages.Descriptionn LIKE '%${description}%'
+         AND UserImages.Title LIKE '%${description}%'
+         AND UserImages.Descriptionn LIKE '%${title}%'
+         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+         WHERE IdUserBlocker = @iduserlogin 
+         AND IdUserBlocked = Userr.IdUser)
   
          `  
          let pool = await Conection.conection();
@@ -507,8 +532,10 @@ END
             let querysearch = `  
 
             DECLARE @iduserlogin int= ${iduserlogin};
+
             DECLARE @iduser int= ${iduser};
-              IF  EXISTS ( 
+
+              IF EXISTS ( 
              SELECT IdUserBlocker FROM BlockedUser WHERE
              IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
               )
@@ -534,14 +561,16 @@ END
               and UserImages.Active = 1 
               and  UserImages.Visibility='Public'
               and UserImages.IdUser = @iduser
-              ORDER BY datepublish desc
+              ORDER BY UserImages.datepublish desc
             END
          `  
             let pool = await Conection.conection();
             const result = await pool.request()      
             .query(querysearch)
-            resultquery = result.recordset[0].userblocked; 
-            if (resultquery===undefined) {
+           resultquery = result.recordset[0].userblocked;
+            if (resultquery===undefined)
+             {
+             
                for (var p of result.recordset) {
                   let photo = new DTOPhoto();   
                   this.getinformationList(photo,p);
