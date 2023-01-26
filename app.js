@@ -1259,30 +1259,33 @@ let posts=async()=>
 
 //     //****************************************************** */
 
-//     async function getPost() {
-//          let getPost=await DataPost.getPost(4);
-//          if (getPost===-1) {
-//              throw new Error("The Post does not exists");
-//          }
-//          getPost.DiffDatePublishDateNow();
-//          getPost.showDiffDatePublishDateNow();
-//          console.log(getPost);
-//     }
-//     await getPost();
+    // async function getPost() {
+    //      let getPost=await DataPost.getPost(1,3);
+    //      if (getPost===-1) {
+    //         throw new Error("The user is blocked");
+    //     }
+    //      if (getPost===-2) {
+    //          throw new Error("The Post does not exists");
+    //      }
+    //      getPost.DiffDatePublishDateNow();
+    //      getPost.showDiffDatePublishDateNow();
+    //      console.log(getPost);
+    // }
+    // await getPost();
 
-//      async function getPosts() {
-//         let array=await DataPost.getPosts();
-//         for (const post of array) {
-//           post.DiffDatePublishDateNow()
-//           post.showDiffDatePublishDateNow()
-//             console.log(post);
-//         }
+    //  async function getPosts() {
+    //     let array=await DataPost.getPosts(1);
+    //     for (const post of array) {
+    //       post.DiffDatePublishDateNow()
+    //       post.showDiffDatePublishDateNow()
+    //         console.log(post);
+    //     }
 
-//     }
-//      await getPosts();
+    // }
+    //  await getPosts();
 
         // async function getSearchPost() {
-        //     let array=await DataPost.getSearchPost(
+        //     let array=await DataPost.getSearchPost(1
         //     );
         //     for (const post of array) {
         //       post.DiffDatePublishDateNow()
@@ -1297,7 +1300,7 @@ let posts=async()=>
 
         // async function getPostOrderByLikes() {
         //     let array=await DataPost.getPostOrderByLikes(
-        //     );
+        //     1);
         //     for (const post of array) {
         //       post.DiffDatePublishDateNow()
         //       post.showDiffDatePublishDateNow()
@@ -1311,7 +1314,7 @@ let posts=async()=>
 
         // async function getPostsOrderbyComments() {
         //     let array=await DataPost.getPostsOrderbyComments(
-        //     );
+        //     1);
         //     for (const post of array) {
         //       post.DiffDatePublishDateNow()
         //       post.showDiffDatePublishDateNow()
@@ -1368,16 +1371,16 @@ let posts=async()=>
 //     }
 //     await getPostVisibilityFriendUser();
 
-//      async function getPostVisibilityPublicUser() {
-//         let array=await DataPost.getPostVisibilityPublicUser(6)
-//         for (const post of array) {
-//           post.DiffDatePublishDateNow()
-//           post.showDiffDatePublishDateNow()
-//             console.log(post);
-//         }
+    //  async function getPostVisibilityPublicUser() {
+    //     let array=await DataPost.getPostVisibilityPublicUser(1,6)
+    //     for (const post of array) {
+    //       post.DiffDatePublishDateNow()
+    //       post.showDiffDatePublishDateNow()
+    //         console.log(post);
+    //     }
 
-//     }
-//     await getPostVisibilityPublicUser();
+    // }
+    // await getPostVisibilityPublicUser();
 
 
 //   async function getPostbyFriendUser() {
