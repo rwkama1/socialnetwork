@@ -234,7 +234,8 @@ class DataPost {
      {
              let resultquery;
              let querysearch = `  
-             IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE IdPost=${idpost} and Active=1)
+             IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE
+               IdPost=${idpost} and Active=1)
               BEGIN
                     select -1 as notexistpost
               END

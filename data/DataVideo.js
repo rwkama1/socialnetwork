@@ -241,16 +241,31 @@ static existVideoById=async(idvideo)=>
 
 //#region GETS
 
-static getVideo=async(idvideo)=>
+static getVideo=async(iduserlogin,idvideo)=>
 {
         let resultquery;
         let querysearch = `  
+
+        DECLARE @iduserlogin int= ${iduserlogin};
+
+        DECLARE @idvideo int= ${idvideo};
+
+          IF  EXISTS ( 
+         SELECT IdUserBlocker FROM BlockedUser WHERE
+         IdUserBlocker = @iduserlogin AND IdUserBlocked = 
+         (SELECT iduser FROM UserVideos where IdUserVideos=@idvideo)
+          )
+        BEGIN
+          select -1 as userblocked
+        END
+        ELSE
+        BEGIN
         IF NOT EXISTS ( SELECT IdUserVideos FROM UserVideos WHERE IdUserVideos=${idvideo} and Active=1)
          BEGIN
-         select -1 as noexistv
+         select -2 as noexistv
          END
          ELSE
-         BEGIN
+          BEGIN
             select 
             UserVideos.*, 
             AlbumUserVideos.Title as AlbumTitle, 
@@ -266,27 +281,35 @@ static getVideo=async(idvideo)=>
             Userr.Active = 1 
             and AlbumUserVideos.Active = 1 
             and UserVideos.Active = 1 
-            and UserVideos.IdUserVideos = ${idvideo}
+            and UserVideos.IdUserVideos = @idvideo
+         END
         END
         `  
         let pool = await Conection.conection();
         const result = await pool.request()
         .query(querysearch)
-        resultquery = result.recordset[0].noexistv;
+        resultquery = result.recordset[0].userblocked;
         if (resultquery===undefined) {
-         let vide = new DTOVideo();
-         this.getinformation(vide, result);
-         resultquery=vide;
-        }     
+          resultquery = result.recordset[0].noexistv;
+          if (resultquery===undefined) {
+            let vide = new DTOVideo();
+            this.getinformation(vide, result);
+            resultquery=vide;
+           }     
+        }
+       
       
        pool.close();
        return resultquery;
  }
 
- static getSearchVideos=async(nameuser="",description="",title="")=>
+ static getSearchVideos=async(iduserlogin,nameuser="",description="",title="")=>
  {
          let arrav=[];
          let querysearch = `     
+
+         DECLARE @iduserlogin int= ${iduserlogin};
+
          SELECT
          UserVideos.*,
          AlbumUserVideos.Title as AlbumTitle,
@@ -304,6 +327,9 @@ static getVideo=async(idvideo)=>
          AND Userr.Name LIKE '%${nameuser}%' 
          AND UserVideos.Title LIKE '%${title}%'
          AND UserVideos.Descriptionn LIKE '%${description}%'
+         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+          WHERE IdUserBlocker = @iduserlogin 
+          AND IdUserBlocked = Userr.IdUser)
        
          `  
          let pool = await Conection.conection();
@@ -319,10 +345,13 @@ static getVideo=async(idvideo)=>
         return arrav;
   }
 
- static getVideos=async()=>
+ static getVideos=async(iduserlogin)=>
  {
          let arrav=[];
-         let querysearch = `     
+         let querysearch = `  
+         
+         declare @iduserlogin int = ${iduserlogin};
+
          select 
          UserVideos.*, 
          AlbumUserVideos.Title as AlbumTitle, 
@@ -338,6 +367,10 @@ static getVideo=async(idvideo)=>
          Userr.Active = 1 
          and AlbumUserVideos.Active = 1 
          and UserVideos.Active = 1
+         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+          WHERE IdUserBlocker = @iduserlogin 
+          AND IdUserBlocked = Userr.IdUser)
+          ORDER BY datepublish desc
        
          `  
          let pool = await Conection.conection();
@@ -387,12 +420,14 @@ static getVideo=async(idvideo)=>
          pool.close();
          return arrav;
    }
-   static getVideosOrderByLikes=async()=>
+   static getVideosOrderByLikes=async(iduserlogin)=>
    {
            let arrav=[];
            let querysearch = `
 
-           select 
+           declare @iduserlogin int = ${iduserlogin};
+
+           SELECT 
            UserVideos.*, 
            AlbumUserVideos.Title as AlbumTitle, 
            Userr.Name, 
@@ -407,6 +442,9 @@ static getVideo=async(idvideo)=>
            Userr.Active = 1 
            and AlbumUserVideos.Active = 1 
            and UserVideos.Active = 1
+           AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin 
+            AND IdUserBlocked = Userr.IdUser)
            order by Likes desc
          
            `  
@@ -422,10 +460,14 @@ static getVideo=async(idvideo)=>
           pool.close();
           return arrav;
     }
-    static getVideosOrderbyComments=async()=>
+    static getVideosOrderbyComments=async(iduserlogin)=>
     {
             let arrav=[];
             let querysearch = `
+
+
+            declare @iduserlogin int = ${iduserlogin};
+
             SELECT
             UserVideos.IdUserVideos,
             UserVideos.IdUser,
@@ -443,18 +485,21 @@ static getVideo=async(idvideo)=>
             Userr.Email,
             Userr.Imagee,
             COUNT(UserrCommentsVideo.IdUserCommentVideo) AS NumComments
-        FROM UserVideos
-        LEFT JOIN UserrCommentsVideo
-        ON UserVideos.IdUserVideos = UserrCommentsVideo.IdUserVideos
-        INNER JOIN AlbumUserVideos
-        ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
-        INNER JOIN Userr
-        ON AlbumUserVideos.IdUser = Userr.IdUser
+          FROM UserVideos
+          LEFT JOIN UserrCommentsVideo
+          ON UserVideos.IdUserVideos = UserrCommentsVideo.IdUserVideos
+          INNER JOIN AlbumUserVideos
+          ON UserVideos.IdAlbumVideos = AlbumUserVideos.IdAlbumVideos
+          INNER JOIN Userr
+          ON AlbumUserVideos.IdUser = Userr.IdUser
 
         WHERE
         Userr.Active = 1 
         and AlbumUserVideos.Active = 1 
         and UserVideos.Active = 1 
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+         WHERE IdUserBlocker = @iduserlogin 
+         AND IdUserBlocked = Userr.IdUser)
 
         GROUP BY
           UserVideos.IdUserVideos,
@@ -473,7 +518,7 @@ static getVideo=async(idvideo)=>
             Userr.Email,
             Userr.Imagee
            ORDER BY
-                    NumComments DESC
+                NumComments DESC
           
             `  
             let pool = await Conection.conection();
@@ -531,7 +576,7 @@ static getVideo=async(idvideo)=>
               let arrav=[];
               let querysearch = `
 
-           
+
                SELECT 
               UserVideos.*,
               AlbumUserVideos.Title as AlbumTitle,
@@ -548,10 +593,10 @@ static getVideo=async(idvideo)=>
               AND AlbumUserVideos.Active = 1 
               AND UserVideos.Active = 1 
               AND Userr.IdUser != @IdUserLogin
-             
+              AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+                WHERE IdUserBlocker = @IdUserLogin 
+                AND IdUserBlocked = Userr.IdUser)
  
-  
-
              UNION
 
              SELECT 
@@ -570,7 +615,9 @@ static getVideo=async(idvideo)=>
              AND AlbumUserVideos.Active = 1 
              AND UserVideos.Active = 1 
              AND Userr.IdUser != @IdUserLogin
-             
+             AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+              WHERE IdUserBlocker = @IdUserLogin 
+              AND IdUserBlocked = Userr.IdUser)
 
             ORDER BY UserVideos.DatePublish DESC
               `  
@@ -727,38 +774,57 @@ static getVideo=async(idvideo)=>
           pool.close();
           return arrayv;
     }
-   
-   static getVideosVisibilityPublicUser=async(iduser)=>
+    //PROFILE USER
+   static getVideosVisibilityPublicUser=async(iduserlogin,iduser)=>
     {
        let arrayv=[];
+       let resultquery;
             let querysearch = `   
-            SELECT 
-            UserVideos.*, 
-            AlbumUserVideos.Title as AlbumTitle, 
-            Userr.Name, 
-            Userr.Nick, 
-            Userr.Email, 
-            Userr.Imagee 
-            from 
-            UserVideos 
-            inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
-            inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
-            where 
-            Userr.Active = 1 
-            and AlbumUserVideos.Active = 1 
-            and UserVideos.Active = 1 
-            and UserVideos.Visibility='Public'
-            and UserVideos.IdUser = ${iduser}
+            DECLARE @iduserlogin int= ${iduserlogin};
+
+            DECLARE @iduser int= ${iduser};
+
+              IF EXISTS ( 
+             SELECT IdUserBlocker FROM BlockedUser WHERE
+             IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
+              )
+            BEGIN
+              select -1 as userblocked
+            END
+            ELSE
+            BEGIN
+              SELECT 
+              UserVideos.*, 
+              AlbumUserVideos.Title as AlbumTitle, 
+              Userr.Name, 
+              Userr.Nick, 
+              Userr.Email, 
+              Userr.Imagee 
+              from 
+              UserVideos 
+              inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
+              inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
+              where 
+              Userr.Active = 1 
+              and AlbumUserVideos.Active = 1 
+              and UserVideos.Active = 1 
+              and UserVideos.Visibility='Public'
+              and UserVideos.IdUser = @iduser
+                ORDER BY datepublish desc
+            END 
          `  
             let pool = await Conection.conection();
             const result = await pool.request()      
             .query(querysearch)
-            for (var p of result.recordset) {
-              let vid = new DTOVideo();   
-              this.getinformationList(vid,p);
-              arrayv.push(vid);
-            }
-         
+            resultquery = result.recordset[0].userblocked;
+            if (resultquery===undefined)
+             {
+              for (var p of result.recordset) {
+                let vid = new DTOVideo();   
+                this.getinformationList(vid,p);
+                arrayv.push(vid);
+              }
+          }
            pool.close();
            return arrayv;
      }
@@ -1082,7 +1148,7 @@ static  getinformation(video, result) {
   video.user.name = result.recordset[0].Name;
   video.user.nick = result.recordset[0].Nick;
   video.user.email = result.recordset[0].Email;
-  video.user.video = result.recordset[0].Video;
+ 
   video.albumvideo.idalbumvideo=result.recordset[0].IdAlbumVideos;
   video.albumvideo.title=result.recordset[0].AlbumTitle;
   video.albumvideo.user=null;

@@ -628,11 +628,13 @@ END
             pool.close();
             return arrav;
       }
-     static getImagessOrderbyComments=async()=>
+     static getImagessOrderbyComments=async(iduserlogin)=>
      {
              let arrav=[];
              let querysearch = `
 
+             DECLARE @iduserlogin int= ${iduserlogin}
+             
              SELECT
              UserImages.IdUserImages,
              UserImages.IdUser,
@@ -662,6 +664,9 @@ END
          Userr.Active = 1 
          and AlbumUserImages.Active = 1 
          and UserImages.Active = 1 
+         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin 
+            AND IdUserBlocked = Userr.IdUser)
  
          GROUP BY
            UserImages.IdUserImages,
@@ -759,6 +764,9 @@ END
                AND AlbumUserImages.Active = 1 
                AND UserImages.Active = 1 
                AND Userr.IdUser != @IdUserLogin
+               AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+                  WHERE IdUserBlocker = @IdUserLogin
+                  AND IdUserBlocked = Userr.IdUser)
            
            UNION
            
@@ -779,6 +787,9 @@ END
            AND AlbumUserImages.Active = 1 
            AND UserImages.Active = 1 
            AND Userr.IdUser != @IdUserLogin
+           AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @IdUserLogin
+            AND IdUserBlocked = Userr.IdUser)
        ORDER BY UserImages.DatePublish DESC
        
                `  
@@ -788,6 +799,7 @@ END
                .input('IdUserLogin', Int,iduserlogin)
                .query(querysearch)
                for (var p of result.recordset) {
+
                   let img = new DTOPhoto();   
                   this.getinformationList(img,p);
                   
@@ -1079,6 +1091,9 @@ END
       let arrayphoto=[];
       let querysearch=
       `
+
+      declare @iduserlogin int= ${iduserlogin}
+
       SELECT 
       UserImages.*, 
       AlbumUserImages.Title as AlbumTitle, 
@@ -1095,7 +1110,7 @@ END
       Userr.Active = 1 
       and AlbumUserImages.Active = 1 
       and UserImages.Active = 1 
-      and LikeImage.iduser=${iduserlogin}
+      and LikeImage.iduser=@iduserlogin
 
       `
       let pool = await Conection.conection();

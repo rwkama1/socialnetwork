@@ -48,7 +48,7 @@ let usermaintenance=async()=>
 
     //         dtouser.email = "email" + index.toString() + "@gmail.com";
 
-           
+
     //         let registeruser = await DataUser.registerUser(dtouser);
     //         if (registeruser===-1) {
     //             throw new Error("The username already exists");
@@ -105,8 +105,8 @@ let usermaintenance=async()=>
     // await deleteUser();
 
     // async function updatePassword() {
-       
-        
+
+
     //         let updatepassword = await DataUser.updatePassword("Username1","Password1","Password12");
     //         if (updatepassword===-1) {
     //             throw new Error("Incorrect username and/or password");
@@ -114,7 +114,7 @@ let usermaintenance=async()=>
     //         if (updatepassword===-2) {
     //             throw new Error("New Passwordd must have more than 8 characters");
     //         }
-           
+
     //             console.log("Password updated successfully");
 
     //     }
@@ -252,7 +252,7 @@ let usermaintenance=async()=>
     // await blockUser();
 
 
-    
+
 
 
 // let getuser = await DataUser.getUser(1,3);
@@ -399,7 +399,7 @@ loginuser().then()
 
 
 
-    
+
 //  let getUserRelation = await DataUserRelation.getUserRelation(25,1);
 //  if (getUserRelation===-1) {
 //     throw new Error("The user relation does not exists");
@@ -453,7 +453,7 @@ loginuser().then()
 }
 userrelation().then()
 // //#endregion
-// //#region FOLLOWERS 
+// //#region FOLLOWERS
 let followersmaintenace=async()=>
 {
 //       async function addFollower() {
@@ -479,10 +479,10 @@ let followersmaintenace=async()=>
 //    await addFollower();
 
     //     async function unfollow() {
-          
+
     //            let iduserfollower=1;
     //            let iduserfollowed=2;
-    
+
     //             let addFollower = await DataFollowers.
     //             unFollow(iduserfollower,iduserfollowed);
     //             if (addFollower===-1) {
@@ -492,17 +492,17 @@ let followersmaintenace=async()=>
     //         }
     // await unfollow();
 
-    
+
     // let getFollowersByUser = await DataFollowers.getFollowersByUser(2);
     //  console.log(getFollowersByUser);
 
     // let existFollow = await DataFollowers.existFollow(1,3);
     //  console.log(existFollow);
-     
+
 
     // let NumberOfFollowers = await DataFollowers.NumberOfFollowers(2);
     //  console.log(NumberOfFollowers);
-     
+
 
 }
 followersmaintenace().then()
@@ -513,7 +513,7 @@ followersmaintenace().then()
  {
     // async function addAlbum() {
     //     for (let index = 1; index < 100; index++) {
-          
+
     //      let userid = index;
     //       let albumtitle = "AlbumImage" + index.toString();
     //         let arrayurlimage=["urlimage1","urlimage2","urlimage3","urlimage4"
@@ -571,6 +571,7 @@ followersmaintenace().then()
 // //#region Images
 let images=async()=>
  {
+
     // async function addImage() {
     //     for (let index = 11; index < 100; index++) {
     //         let dtophoto = new DTOPhoto();
@@ -592,8 +593,8 @@ let images=async()=>
     //         if (addImage===-3) {
     //             throw new Error("Visibility should only be Public or Private");
     //         }
-        
-        
+
+
 
     //          console.log("The image was added successfully");
 
@@ -605,7 +606,7 @@ let images=async()=>
 
     // async function updatePhoto() {
 
-    //     let updatePhoto = await 
+    //     let updatePhoto = await
     //     DataPhoto.updatePhoto(41,'ImageUpdated',"DecriptionUpdated","Public");
     //          if (updatePhoto===-1) {
     //         throw new Error("The image does not exists");
@@ -710,17 +711,17 @@ let images=async()=>
 //     }
 //     await getImagesbyIdUser();
 
-       async function getImagesOrderByLikes() {
-        let array=await DataPhoto.getImagesOrderByLikes(2);
-        for (const image of array) {
-          image.DiffDatePublishDateNow()
-          image.showDiffDatePublishDateNow()
-            console.log(image);
-        }
+    //    async function getImagesOrderByLikes() {
+    //     let array=await DataPhoto.getImagesOrderByLikes(2);
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
 
-    }
-    await getImagesOrderByLikes();
-    
+    // }
+    // await getImagesOrderByLikes();
+
 
     //    async function getImagessOrderbyComments() {
     //     let array=await DataPhoto.getImagessOrderbyComments();
@@ -770,7 +771,7 @@ let images=async()=>
 
 
     //      async function getImageSuggestedUser() {
-    //     let array=await DataPhoto.getImageSuggestedUser(2,1);
+    //     let array=await DataPhoto.getImageSuggestedUser(2,3);
     //     for (const image of array) {
     //       image.DiffDatePublishDateNow()
     //       image.showDiffDatePublishDateNow()
@@ -780,7 +781,7 @@ let images=async()=>
     // }
     //  await getImageSuggestedUser();
 
-    
+
 
     //  async function getImagesVisibilityPublicUser() {
     //     let listimages=await DataPhoto.getImagesVisibilityPublicUser(1,4);
@@ -810,18 +811,18 @@ let images=async()=>
 //      await getImagesMainPage();
 
 
-//      async function getImagesByLikeUser() {
+    //  async function getImagesByLikeUser() {
 
-//         let array=await DataPhoto.getImagesByLikeUser(3);
+    //     let array=await DataPhoto.getImagesByLikeUser(1);
 
-//         for (const image of array) {
-//           image.DiffDatePublishDateNow()
-//           image.showDiffDatePublishDateNow()
-//             console.log(image);
-//         }
+    //     for (const image of array) {
+    //       image.DiffDatePublishDateNow()
+    //       image.showDiffDatePublishDateNow()
+    //         console.log(image);
+    //     }
 
-//     }
-//      await getImagesByLikeUser();
+    // }
+    //  await getImagesByLikeUser();
 
 
 
@@ -958,7 +959,7 @@ let videos=async()=>
 
 //     }
 //     await updateTitleDescriptionVideo();
-   
+
     //   async function deleteVideo() {
 
     //     let deleteVideo = await DataVideo.deleteVideo(34);
@@ -970,21 +971,26 @@ let videos=async()=>
     // }
     // await deleteVideo();
 
-      
 
-//     async function getVideo() {
-//         let getVideo=await DataVideo.getVideo(4);
-//         if (getVideo===-1) {
-//              throw new Error("The video does not exists");
-//          }
-//          getVideo.DiffDatePublishDateNow();
-//          getVideo.showDiffDatePublishDateNow();
-//         console.log(getVideo);
-//     }
-//     await getVideo();
+
+    // async function getVideo() {
+    //     let getVideo=await DataVideo.getVideo(1,5);
+    //     if (getVideo===-1) {
+    //         throw new Error("The user is blocked");
+    //     }
+    //     if (getVideo===-2) {
+    //          throw new Error("The video does not exists");
+    //      }
+
+    //      getVideo.DiffDatePublishDateNow();
+    //      getVideo.showDiffDatePublishDateNow();
+    //     console.log(getVideo);
+    // }
+    // await getVideo();
 
     // async function getSearchVideos() {
-    //     let getSearchVideos=await DataVideo.getSearchVideos("","Descr","Update");
+    //     let getSearchVideos=await DataVideo.getSearchVideos(1,
+    //         "","Descr","Update");
     //     for (const vid of getSearchVideos) {
     //         vid.DiffDatePublishDateNow()
     //          vid.showDiffDatePublishDateNow()
@@ -992,6 +998,16 @@ let videos=async()=>
     //         }
     // }
     // await getSearchVideos();
+
+    //     async function getVideos() {
+    //     let getVideos=await DataVideo.getVideos(1);
+    //     for (const vid of getVideos) {
+    //         vid.DiffDatePublishDateNow()
+    //          vid.showDiffDatePublishDateNow()
+    //          console.log(vid);
+    //         }
+    // }
+    // await getVideos();
 
     //  async function getVideosOrderByDatePublish() {
     //     let getVideosOrderByDatePublish=await DataVideo.getVideosOrderByDatePublish();
@@ -1004,7 +1020,7 @@ let videos=async()=>
     // await getVideosOrderByDatePublish();
 
     // async function getVideosByLikeUser() {
-    //     let getVideosByLikeUser=await DataVideo.getVideosOrderByLikes();
+    //     let getVideosByLikeUser=await DataVideo.getVideosOrderByLikes(1);
     //     for (const vid of getVideosByLikeUser) {
     //         vid.DiffDatePublishDateNow()
     //          vid.showDiffDatePublishDateNow()
@@ -1013,9 +1029,10 @@ let videos=async()=>
     // }
     // await getVideosByLikeUser();
 
-    
+
     // async function getVideosOrderbyComments() {
-    //     let getVideosOrderbyComments=await DataVideo.getVideosOrderbyComments();
+    //     let getVideosOrderbyComments=
+    //     await DataVideo.getVideosOrderbyComments(1);
     //     for (const vid of getVideosOrderbyComments) {
     //         vid.DiffDatePublishDateNow()
     //          vid.showDiffDatePublishDateNow()
@@ -1024,7 +1041,7 @@ let videos=async()=>
     // }
     // await getVideosOrderbyComments();
 
-    
+
     // async function getUserFollowerVideos() {
     //     let getUserFollowerVideos=await DataVideo.getUserFollowerVideos(1);
     //     for (const vid of getUserFollowerVideos) {
@@ -1035,7 +1052,7 @@ let videos=async()=>
     // }
     // await getUserFollowerVideos();
 
-     
+
     // async function getVideosSuggestedUser() {
     //     let getVideosSuggestedUser=
     //     await DataVideo.getVideosSuggestedUser(1,2);
@@ -1059,7 +1076,7 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-      
+
 //     }
 //     await getVideosbyAlbum();
 
@@ -1070,7 +1087,7 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-      
+
 //     }
 //     await getVideosbyAlbumAndUser();
 
@@ -1082,7 +1099,7 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-      
+
 //     }
 //     await getVideosbyAlbumAndUser();
 
@@ -1094,11 +1111,11 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-   
+
 //     }
 //     await getVideosbyIdUser();
 
-    
+
 //       async function getVideosVisibilityFriendUser() {
 //         let array=await DataVideo.getVideosVisibilityFriendUser(1)
 //         for (const vid of array) {
@@ -1106,20 +1123,20 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-      
+
 //     }
 //     await getVideosVisibilityFriendUser();
 
-//         async function getVideosVisibilityPublicUser() {
-//         let array=await DataVideo.getVideosVisibilityPublicUser(4)
-//         for (const vid of array) {
-//             vid.DiffDatePublishDateNow()
-//             vid.showDiffDatePublishDateNow()
-//             console.log(vid);
-//         }
-      
-//     }
-//     await getVideosVisibilityPublicUser();
+    //     async function getVideosVisibilityPublicUser() {
+    //     let array=await DataVideo.getVideosVisibilityPublicUser(2,4)
+    //     for (const vid of array) {
+    //         vid.DiffDatePublishDateNow()
+    //         vid.showDiffDatePublishDateNow()
+    //         console.log(vid);
+    //     }
+
+    // }
+    // await getVideosVisibilityPublicUser();
 
 
     // async function getVideosbyFriendUser() {
@@ -1129,7 +1146,7 @@ let videos=async()=>
     //         vid.showDiffDatePublishDateNow()
     //         console.log(vid);
     //     }
-      
+
     // }
     // await getVideosbyFriendUser();
 
@@ -1142,7 +1159,7 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-      
+
 //     }
 //     await getVideosVisibilityByUserRelation();
 
@@ -1153,7 +1170,7 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-      
+
 //     }
 //     await getVideosMainPage();
 
@@ -1164,7 +1181,7 @@ let videos=async()=>
 //             vid.showDiffDatePublishDateNow()
 //             console.log(vid);
 //         }
-      
+
 //     }
 //     await getVideosByLikeUser();
 
@@ -1179,7 +1196,7 @@ let posts=async()=>
     //         let dtopost = new DTOPost();
     //         dtopost.user.iduser = index;
     //         dtopost.title = "Post" + index.toString();
-            
+
     //         dtopost.description = "Description" + index.toString();
     //         dtopost.visibility= "Public";
     //         let addPost = await DataPost.addPost(dtopost);
@@ -1204,7 +1221,7 @@ let posts=async()=>
     //                 throw new Error("Visibility should only be Public or Private");
     //             }
     //             console.log("The post was updated successfully");
-        
+
     //     }
     //         await updatePost();
 
@@ -1230,7 +1247,7 @@ let posts=async()=>
 //     }
 
 //     await updateTitleDescriptionPost();
-   
+
     //  async function deletePost() {
     //     let deletePost = await DataPost.deletePost(15);
     //        if (deletePost===-1) {
@@ -1260,7 +1277,7 @@ let posts=async()=>
 //           post.showDiffDatePublishDateNow()
 //             console.log(post);
 //         }
-      
+
 //     }
 //      await getPosts();
 
@@ -1272,12 +1289,12 @@ let posts=async()=>
         //       post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-          
+
         // }
         //  await getSearchPost();
 
 
-        
+
         // async function getPostOrderByLikes() {
         //     let array=await DataPost.getPostOrderByLikes(
         //     );
@@ -1286,12 +1303,12 @@ let posts=async()=>
         //       post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-          
+
         // }
         //  await getPostOrderByLikes();
 
 
-          
+
         // async function getPostsOrderbyComments() {
         //     let array=await DataPost.getPostsOrderbyComments(
         //     );
@@ -1300,12 +1317,12 @@ let posts=async()=>
         //       post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-          
+
         // }
         //  await getPostsOrderbyComments();
-    
 
-          
+
+
         // async function getUserFollowerPost() {
         //     let array=await DataPost.getUserFollowerPost(3);
         //     for (const post of array) {
@@ -1313,7 +1330,7 @@ let posts=async()=>
         //       post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-          
+
         // }
         //  await getUserFollowerPost();
 
@@ -1324,7 +1341,7 @@ let posts=async()=>
         //       post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-          
+
         // }
         //  await getPostSuggestedUser();
 
@@ -1336,7 +1353,7 @@ let posts=async()=>
 //           post.showDiffDatePublishDateNow()
 //             console.log(post);
 //         }
-      
+
 //     }
 //     await getPostbyIdUser();
 
@@ -1347,7 +1364,7 @@ let posts=async()=>
 //           post.showDiffDatePublishDateNow()
 //             console.log(post);
 //         }
-      
+
 //     }
 //     await getPostVisibilityFriendUser();
 
@@ -1358,7 +1375,7 @@ let posts=async()=>
 //           post.showDiffDatePublishDateNow()
 //             console.log(post);
 //         }
-      
+
 //     }
 //     await getPostVisibilityPublicUser();
 
@@ -1370,7 +1387,7 @@ let posts=async()=>
 //           post.showDiffDatePublishDateNow()
 //             console.log(post);
 //         }
-      
+
 //     }
 //     await getPostbyFriendUser();
 
@@ -1381,7 +1398,7 @@ let posts=async()=>
 //         post.showDiffDatePublishDateNow()
 //           console.log(post);
 //       }
-    
+
 //   }
 //   await getPostVisibilityByUserRelation();
 
@@ -1392,7 +1409,7 @@ let posts=async()=>
 //         post.showDiffDatePublishDateNow()
 //           console.log(post);
 //       }
-    
+
 //   }
 //   await getPostMainPage();
 
@@ -1403,7 +1420,7 @@ let posts=async()=>
 //         post.showDiffDatePublishDateNow()
 //           console.log(post);
 //       }
-    
+
 //   }
 //   await getPostByLikeUser();
 
@@ -1425,13 +1442,13 @@ let postvideoimage=async()=>
         //         post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-         
+
         // }
-      
+
         // await getPhotoPostVideoMainPage();
 
 
-       
+
 
         // async function getPhotoPostVideoSearch() {
         //     let array=await DataPhotoPostVideo.getPhotoPostVideoSearch('1')
@@ -1440,7 +1457,7 @@ let postvideoimage=async()=>
         //         post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-            
+
         // }
         // await getPhotoPostVideoSearch();
 
@@ -1452,9 +1469,9 @@ let postvideoimage=async()=>
         //         post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-            
+
         // }
-        
+
         // await getPhotoPostVideoUserLikes();
 
         //   async function getPhotoPostVideoByUser() {
@@ -1468,33 +1485,33 @@ let postvideoimage=async()=>
         //         post.showDiffDatePublishDateNow()
         //         console.log(post);
         //     }
-            
+
         // }
-        
+
         // await getPhotoPostVideoByUser();
 
 //         async function getPhotoPostVideoByIdAndType() {
-//             let data=await DataPhotoPostVideo.getPhotoPostVideoByIdAndType(2,'V')   
+//             let data=await DataPhotoPostVideo.getPhotoPostVideoByIdAndType(2,'V')
 //             data.DiffDatePublishDateNow()
 //             data.showDiffDatePublishDateNow()
 //              console.log(data);
-        
-            
+
+
 //         }
-        
+
 //         await getPhotoPostVideoByIdAndType();
 
 
  }
  postvideoimage().then()
 
- 
+
 // //#endregion
 // //#region LikeImage
 let LikeImage=async()=>
  {
     // async function likeanimage() {
-    
+
     //         let likeanimage = await DataLikeImage.likeanimage(1,45);
     //         if (likeanimage===-1) {
     //             throw new Error("The image does not exists");
@@ -1506,13 +1523,13 @@ let LikeImage=async()=>
     //             throw new Error("The user already liked that image ");
     //         }
     //          console.log("The likeimage was added successfully");
-       
+
     // }
     // await likeanimage();
 
 
 //     async function deletelikeanimage() {
-    
+
 //             let loginuserid=2;
 //             if (loginuserid!=2) {
 //                throw new Error("Only the logged in user can delete his comment");
@@ -1528,14 +1545,14 @@ let LikeImage=async()=>
 //                 throw new Error("The likeimage does not exists ");
 //             }
 //              console.log("The likeimage was deleted  successfully");
-       
+
 //     }
 //     await deletelikeanimage();
 
 //     let getLikesImageUsers = await DataUser.getLikesImageUsers(1);
 //     console.log(getLikesImageUsers);
 
-    
+
 //     let NumberOfLikesImage = await DataLikeImage.NumberOfLikesImage(1);
 //     console.log(NumberOfLikesImage);
 
@@ -1552,7 +1569,7 @@ let LikeImage=async()=>
 let LikeVideos=async()=>
 {
 //    async function likeanvideos() {
-   
+
 //            let likeanvideos = await DataLikeVideo.likeanvideo(1,8);
 //            if (likeanvideos===-1) {
 //                throw new Error("The video does not exists");
@@ -1564,13 +1581,13 @@ let LikeVideos=async()=>
 //                throw new Error("The user already liked that video");
 //            }
 //             console.log("The likevideo was added successfully");
-      
+
 //    }
 //    await likeanvideos();
 
 
 //    async function deletelikeanvideo() {
-   
+
 //            let deletelikeanvideo = await DataLikeVideo.deletelikeanvideo(1,8);
 //            if (deletelikeanvideo===-1) {
 //                throw new Error("The video does not exists");
@@ -1582,7 +1599,7 @@ let LikeVideos=async()=>
 //                throw new Error("The likevideo does not exists ");
 //            }
 //             console.log("The likevideo was deleted  successfully");
-      
+
 //    }
 //    await deletelikeanvideo();
 
@@ -1605,7 +1622,7 @@ LikeVideos().then()
 let LikePost=async()=>
 {
 //    async function likeanpost() {
-   
+
 //            let likeanpost = await DataLikePost.likeanpost(1,4);
 //            if (likeanpost===-1) {
 //                throw new Error("The post does not exists");
@@ -1617,13 +1634,13 @@ let LikePost=async()=>
 //                throw new Error("The user already liked that post");
 //            }
 //             console.log("The likepost was added successfully");
-      
+
 //    }
 //    await likeanpost();
 
 
 //    async function deletelikeanpost() {
-   
+
 //            let deletelikeanpost = await DataLikePost.deletelikeanpost(2,1);
 //            if (deletelikeanpost===-1) {
 //                throw new Error("The post does not exists");
@@ -1635,7 +1652,7 @@ let LikePost=async()=>
 //                throw new Error("The likepost does not exists ");
 //            }
 //             console.log("The likepost was deleted  successfully");
-      
+
 //    }
 //    await deletelikeanpost();
 
@@ -1657,7 +1674,7 @@ LikePost().then()
 let LikeComment=async()=>
 {
 //    async function likeancomment() {
-   
+
 //            let likeancomment = await DataLikeComment.likeancomment(3,3);
 //            if (likeancomment===-1) {
 //                throw new Error("The comment does not exists");
@@ -1669,12 +1686,12 @@ let LikeComment=async()=>
 //                throw new Error("The user already liked that comment");
 //            }
 //             console.log("The likeancomment was added successfully");
-      
+
 //    }
 //    await likeancomment();
 
 //    async function deletelikeancomment() {
-   
+
 //             let loginuser=4;
 //             if(loginuser!=4)
 //             {
@@ -1691,7 +1708,7 @@ let LikeComment=async()=>
 //                throw new Error("The likecomment does not exists ");
 //            }
 //             console.log("The likecomment was deleted  successfully");
-      
+
 //    }
 //    await deletelikeancomment();
 
@@ -1711,8 +1728,8 @@ LikeComment().then()
 let LikeSubComment=async()=>
 {
 //    async function likeansubcomment() {
-   
-//            let likeansubcomment = 
+
+//            let likeansubcomment =
 //            await DataLikeSubComment.likeansubcomment(12,6);
 //            if (likeansubcomment===-1) {
 //                throw new Error("The sub comment does not exists");
@@ -1724,12 +1741,12 @@ let LikeSubComment=async()=>
 //                throw new Error("The user already liked that subcomment");
 //            }
 //             console.log("The like sub comment was added successfully");
-      
+
 //    }
 //    await likeansubcomment();
 
 //    async function deletelikeansubcomment() {
-   
+
 //             let loginuser=4;
 //             if(loginuser!=4)
 //             {
@@ -1746,7 +1763,7 @@ let LikeSubComment=async()=>
 //                throw new Error("The likesubcomment does not exists ");
 //            }
 //             console.log("The likesubcomment was deleted  successfully");
-      
+
 //    }
 //    await deletelikeansubcomment();
 
@@ -1761,14 +1778,14 @@ let LikeSubComment=async()=>
 LikeSubComment().then()
 
 
-// //#endregion    
+// //#endregion
 // //#region CommentImage
 
 let CommentImage=async()=>
 {
 
     //    async function commentimage() {
-   
+
     //        let commentimage = await
     //         DataCommentImage.CommentImage(12,42,"Image Comment");
     //        if (commentimage===-1) {
@@ -1778,15 +1795,15 @@ let CommentImage=async()=>
     //            throw new Error("The user does not exists");
     //        }
     //         console.log("The comment image was added successfully");
-      
+
     //     }
     //         await commentimage();
 
 
 //     async function UpdateTextCommentImage() {
-   
-    
-//            let UpdateTextCommentImage = 
+
+
+//            let UpdateTextCommentImage =
 //            await DataCommentImage.UpdateTextCommentImage
 //            (12,9,41,"UpdateedCoommentImage");
 //            if (UpdateTextCommentImage===-1) {
@@ -1802,13 +1819,13 @@ let CommentImage=async()=>
 //             throw new Error("The comment does not exists");
 //         }
 //             console.log("The comment image was updated successfully");
-      
+
 //    }
-    
+
 //    await UpdateTextCommentImage();
 
 //     async function deleteCommentImage() {
-   
+
 //           let loginuserid=4;
 //           if (loginuserid!=4) {
 //             throw new Error("Only the logged in user can delete his comment");
@@ -1826,11 +1843,11 @@ let CommentImage=async()=>
 //             if (deleteCommentImage===-4) {
 //               throw new Error("The comment does not exists");
 //                }
-           
+
 //             console.log("The comment image was deleted successfully");
-      
+
 //    }
-    
+
 //    await deleteCommentImage();
 
 
@@ -1841,7 +1858,7 @@ let CommentImage=async()=>
 //             commentimg.showDiffDatePublishDateNow()
 //             console.log(commentimg)
 //         }
-      
+
 //     }
 //      await getsCommentsImage();
 
@@ -1861,7 +1878,7 @@ let CommentPost=async()=>
 {
 
     //    async function commentpost() {
-   
+
     //        let CommentPost = await DataCommentPost.CommentPost(2,1,"Comment Post");
     //        if (CommentPost===-1) {
     //            throw new Error("The post does not exists");
@@ -1870,13 +1887,13 @@ let CommentPost=async()=>
     //            throw new Error("The user does not exists");
     //        }
     //         console.log("The comment post was added successfully");
-      
+
     //     }
     //     await commentpost();
 
 
 //     async function UpdateTextCommentPost() {
-   
+
 //          let loginuserid=1;
 //          if (loginuserid!=1) {
 //                 throw new Error("Only the logged in user can delete his comment");
@@ -1895,13 +1912,13 @@ let CommentPost=async()=>
 //             throw new Error("The comment does not exists");
 //         }
 //             console.log("The comment post was updated successfully");
-      
+
 //    }
-    
+
 //    await UpdateTextCommentPost();
 
 //     async function deleteCommentPost() {
-   
+
 //           let loginuserid=4;
 //           if (loginuserid!=4) {
 //             throw new Error("Only the logged in user can delete his comment");
@@ -1919,11 +1936,11 @@ let CommentPost=async()=>
 //             if (deleteCommentPost===-4) {
 //               throw new Error("The comment does not exists");
 //                }
-           
+
 //             console.log("The comment post was deleted successfully");
-      
+
 //    }
-    
+
 //    await deleteCommentPost();
 
 
@@ -1934,10 +1951,10 @@ let CommentPost=async()=>
 //             commentpost.DiffDatePublishDateNow()
 //             commentpost.showDiffDatePublishDateNow()
 //             console.log(commentpost);
-//         }     
+//         }
 //     }
 //    await getsCommentsPost();
-   
+
 // let NumberOfCommentPost = await DataCommentPost.NumberOfCommentPost(1);
 // console.log(NumberOfCommentPost);
 
@@ -1955,7 +1972,7 @@ let CommentVideo=async()=>
 {
 
     //    async function CommentVideo() {
-   
+
     //        let CommentVideo = await DataCommentVideo.CommentVideo(
     //          8,7,"VideoComment");
     //        if (CommentVideo===-1) {
@@ -1965,13 +1982,13 @@ let CommentVideo=async()=>
     //            throw new Error("The user does not exists");
     //        }
     //         console.log("The comment video was added successfully");
-      
+
     //     }
     //     await CommentVideo();
 
 
 //     async function UpdateTextCommentVideo() {
-   
+
 //          let loginuserid=1;
 //          if (loginuserid!=1) {
 //                 throw new Error("Only the logged in user can delete his comment");
@@ -1990,13 +2007,13 @@ let CommentVideo=async()=>
 //             throw new Error("The comment does not exists");
 //         }
 //             console.log("The comment video was updated successfully");
-      
+
 //    }
-    
+
 //    await UpdateTextCommentVideo();
 
 //     async function deleteCommentVideo() {
-   
+
 //           let loginuserid=4;
 //           if (loginuserid!=4) {
 //             throw new Error("Only the logged in user can delete his comment");
@@ -2014,11 +2031,11 @@ let CommentVideo=async()=>
 //             if (deleteCommentVideo===-4) {
 //               throw new Error("The comment does not exists");
 //                }
-           
+
 //             console.log("The comment video was deleted successfully");
-      
+
 //    }
-    
+
 //    await deleteCommentVideo();
 
 //  async function getsCommentsVideo() {
@@ -2027,7 +2044,7 @@ let CommentVideo=async()=>
 //             commentvideo.DiffDatePublishDateNow()
 //             commentvideo.showDiffDatePublishDateNow()
 //             console.log(commentvideo);
-//         }     
+//         }
 //     }
 //    await getsCommentsVideo();
 
@@ -2047,7 +2064,7 @@ let SubComment=async()=>
 {
 
     //    async function addSubComment() {
-   
+
     //        let addSubComment =
     //         await DataSubComment.addSubComment(2,11,"SubComment");
     //        if (addSubComment===-1) {
@@ -2057,13 +2074,13 @@ let SubComment=async()=>
     //            throw new Error("The user does not exists");
     //        }
     //         console.log("The sub comment was added successfully");
-      
+
     // }
     //  await addSubComment();
 
-    
+
     //    async function updateSubCommentText() {
-           
+
     //        let updateSubCommentText = await DataSubComment.updateSubCommentText(1,1,1,"SubCommentUpdated");
     //        if (updateSubCommentText===-1) {
     //            throw new Error("The comment does not exists");
@@ -2075,11 +2092,11 @@ let SubComment=async()=>
     //         throw new Error("The sub comment does not exists");
     //         }
     //         console.log("The sub comment was updated successfully");
-      
+
     // }
     //  await updateSubCommentText();
 
-    
+
     //  async function deleteSubComment() {
     //         let loginuserid=1
     //         if (loginuserid!=1) {
@@ -2092,9 +2109,9 @@ let SubComment=async()=>
     //        if (deleteSubComment===-2) {
     //         throw new Error("The sub comment does not exists");
     //        }
-          
+
     //         console.log("The sub comment was deleted successfully");
-      
+
     // }
     //  await deleteSubComment();
 
@@ -2102,59 +2119,59 @@ let SubComment=async()=>
 // async function getSubCommentsByComment() {
 //     let array=await DataSubComment.getSubCommentsByComment(15);
 //     for (const subcommentv of array) {
-       
-            
+
+
 //             subcommentv.DiffDatePublishDateNowSubComment()
 //             subcommentv.showDiffDatePublishDateNowSubComment()
-    
-        
+
+
 //         console.log(subcommentv);
-       
-//     }     
+
+//     }
 // }
 // await getSubCommentsByComment();
 
 //  async function getIfExistsSubComentsOfCommentsImage() {
 //         let array=await DataSubComment.getIfExistsSubComentsOfCommentsImage(1);
 //         for (const subcommentimg of array) {
-//             if (subcommentimg.withsubcomments===1) {     
+//             if (subcommentimg.withsubcomments===1) {
 //                 subcommentimg.DiffDatePublishDateNowComment()
 //                 subcommentimg.showDiffDatePublishDateNowComment()
-                
+
 //                 subcommentimg.DiffDatePublishDateNowSubComment()
 //                 subcommentimg.showDiffDatePublishDateNowSubComment()
-        
-//             } else 
+
+//             } else
 //             {
 //                 subcommentimg.DiffDatePublishDateNowComment()
 //                 subcommentimg.showDiffDatePublishDateNowComment()
-               
+
 //             }
 //             console.log(subcommentimg);
-           
-//         }     
+
+//         }
 //     }
 //    await getIfExistsSubComentsOfCommentsImage();
 
 // async function getIfExistsSubComentsOfCommentsPost() {
 //     let array=await DataSubComment.getIfExistsSubComentsOfCommentsPost(1);
 //     for (const subcommentpost of array) {
-//         if (subcommentpost.withsubcomments===1) {     
+//         if (subcommentpost.withsubcomments===1) {
 //             subcommentpost.DiffDatePublishDateNowComment()
 //             subcommentpost.showDiffDatePublishDateNowComment()
-            
+
 //             subcommentpost.DiffDatePublishDateNowSubComment()
 //             subcommentpost.showDiffDatePublishDateNowSubComment()
-    
-//         } else 
+
+//         } else
 //         {
 //             subcommentpost.DiffDatePublishDateNowComment()
 //             subcommentpost.showDiffDatePublishDateNowComment()
-           
+
 //         }
 //         console.log(subcommentpost);
-       
-//     }     
+
+//     }
 // }
 // await getIfExistsSubComentsOfCommentsPost();
 
@@ -2162,39 +2179,39 @@ let SubComment=async()=>
 // async function getIfExistsSubComentsOfCommentsVideo() {
 //     let array=await DataSubComment.getIfExistsSubComentsOfCommentsVideo(1);
 //     for (const subcommentv of array) {
-//         if (subcommentv.withsubcomments===1) {     
+//         if (subcommentv.withsubcomments===1) {
 //             subcommentv.DiffDatePublishDateNowComment()
 //             subcommentv.showDiffDatePublishDateNowComment()
-            
+
 //             subcommentv.DiffDatePublishDateNowSubComment()
 //             subcommentv.showDiffDatePublishDateNowSubComment()
-    
-//         } else 
+
+//         } else
 //         {
 //             subcommentv.DiffDatePublishDateNowComment()
 //             subcommentv.showDiffDatePublishDateNowComment()
-           
+
 //         }
 //         console.log(subcommentv);
-       
-//     }     
+
+//     }
 // }
 // await getIfExistsSubComentsOfCommentsVideo();
 
 // async function getSubCommentsByUserComment() {
 //     let array=await DataSubComment.getSubCommentsByUserComment(15,1);
 //     for (const subcommentv of array) {
-       
+
 //             subcommentv.DiffDatePublishDateNowComment()
 //             subcommentv.showDiffDatePublishDateNowComment()
-            
+
 //             subcommentv.DiffDatePublishDateNowSubComment()
 //             subcommentv.showDiffDatePublishDateNowSubComment()
-    
-        
+
+
 //         console.log(subcommentv);
-       
-//     }     
+
+//     }
 // }
 // await getSubCommentsByUserComment();
 
@@ -2211,11 +2228,11 @@ SubComment().then()
 
 let Messages=async()=>
 {
-   
+
 
 
     //  async function addMessage() {
-   
+
     //     let userreceived=1;
     //     let usersender=3;
     //     if (userreceived===usersender) {
@@ -2223,7 +2240,7 @@ let Messages=async()=>
     //        }
     //        let addMessage = await DataMessage.addMessage
     //        (userreceived,usersender,"New Message");
-          
+
     //        if (addMessage===-1) {
     //            throw new Error("The user received does not exists");
     //        }
@@ -2233,10 +2250,10 @@ let Messages=async()=>
     //        if (addMessage===-3) {
     //         throw new Error("The chat room does not exists");
     //     }
-       
-        
+
+
     //         console.log("The message was added successfully");
-      
+
     // }
     //  await addMessage();
 
@@ -2244,14 +2261,14 @@ let Messages=async()=>
 
 
 //     async function deleteMessage() {
-   
+
 //             let userreceived=1;
 //             let usersender=2;
 //             if (userreceived===usersender) {
 //                 throw new Error("The sending user cannot be the same as the receiving user");
 //                }
 //                let deleteMessage = await DataMessage.deleteMessage(userreceived,usersender,2);
-              
+
 //                if (deleteMessage===-1) {
 //                    throw new Error("The user received does not exists");
 //                }
@@ -2262,39 +2279,39 @@ let Messages=async()=>
 //                 throw new Error("The message does not exists");
 //             }
 //                 console.log("The message was deleted successfully");
-          
+
 //         }
 //         await deleteMessage();
-    
+
 
 //  async function getMessagesChatRoom() {
 //         let array=await DataMessage.getMessagesChatRoom(3,2);
 //         for (const message of array) {
 //             console.log(message);
-//         }     
+//         }
 //     }
 //    await getMessagesChatRoom();
-   
+
 
 }
 Messages().then()
 
-// //#endregion 
+// //#endregion
 
 // //#region Messages
 
 let ChatRoom=async()=>
 {
-   
+
 //  async function addChatRoom() {
-   
+
 //         let userreceived=1;
 //         let usersender=4;
 //         if (userreceived===usersender) {
 //             throw new Error("The sending user cannot be the same as the receiving user");
 //            }
 //            let addMessagewithchatroom = await DataChatRoom.addChatRoom(userreceived,usersender,"TitleMessage","TextMessage");
-          
+
 //            if (addMessagewithchatroom===-1) {
 //                throw new Error("The user received does not exists");
 //            }
@@ -2305,43 +2322,43 @@ let ChatRoom=async()=>
 //             throw new Error("The chat room already exists");
 //         }
 //             console.log("The chat room was added successfully");
-      
+
 //     }
 //      await addChatRoom();
 
     // async function deleteChatRoom() {
-   
+
     //         let userreceived=2;
     //         let usersender=3;
     //         if (userreceived===usersender) {
     //             throw new Error("The sending user cannot be the same as the receiving user");
     //            }
     //            let deleteChatRoom = await DataChatRoom.deleteChatRoom(userreceived,usersender,2);
-              
+
     //            if (deleteChatRoom===-1) {
     //                throw new Error("The chatroom does not exists");
     //            }
-              
-            
+
+
     //             console.log("The chatroom was deleted successfully");
-          
+
     //     }
     //     await deleteChatRoom();
-    
 
-    
+
+
     // let getChatRoomsByUser=await DataChatRoom.getChatRoomsByUser(1);
     //         for (const message of getChatRoomsByUser) {
     //             message.DiffDateMessageDateNow()
     //             message.showDiffDateMessageDateNow()
-            
+
     //             console.log(message);
-    //         } 
-    
+    //         }
+
 }
 ChatRoom().then()
 
-// //#endregion 
+// //#endregion
 
 //#region NOTIFICATIONS
 
@@ -2366,21 +2383,21 @@ let UserPendingNotifications=async()=>
 //              console.log("Friend request has been sent");
 //    }
 //    await addUserRelation();
-       
 
-    
+
+
     //     let getSentPendingUsersbyUser =
     //      await DataUserRelation.getSentPendingUsersbyUser(15);
     //     console.log(getSentPendingUsersbyUser);
-    
-}  
+
+}
 UserPendingNotifications().then()
 
 let NotificationComents=async()=>
 {
 
     //    async function CommentVideo() {
-   
+
     //        let CommentVideo = await DataCommentVideo.CommentVideo(
     //          8,7,"VideoComment");
     //        if (CommentVideo===-1) {
@@ -2390,7 +2407,7 @@ let NotificationComents=async()=>
     //            throw new Error("The user does not exists");
     //        }
     //         console.log("The comment video was added successfully");
-      
+
     //     }
     //     await CommentVideo();
 
@@ -2400,31 +2417,31 @@ let NotificationComents=async()=>
 //             if (deleteNotiCommentsByUser===-1) {
 //                 throw new Error("The user does not exists");
 //             }
-         
+
 //              console.log("Notifications Deleted");
 //    }
 //    await deleteNotiCommentsByUser();
 
 
-        // let getNotificationCommentsByUser = 
+        // let getNotificationCommentsByUser =
         // await DataNotification.getNotificationCommentsByUser(1);
         // for (const notification of getNotificationCommentsByUser) {
         //      notification.DiffDateNotificationDateNow();
         //      notification.showDiffDateNotificationDateNow();
         //      console.log(notification);
         // }
-      
-  
-}  
+
+
+}
 NotificationComents().then()
 
 let NotificationsMessages=async()=>
 {
 
-  
+
 
 //    async function addMessage() {
-   
+
 //         let userreceived=1;
 //         let usersender=3;
 //         if (userreceived===usersender) {
@@ -2432,7 +2449,7 @@ let NotificationsMessages=async()=>
 //            }
 //            let addMessage = await DataMessage.addMessage
 //            (userreceived,usersender,"New Message");
-          
+
 //            if (addMessage===-1) {
 //                throw new Error("The user received does not exists");
 //            }
@@ -2442,25 +2459,25 @@ let NotificationsMessages=async()=>
 //            if (addMessage===-3) {
 //             throw new Error("The chat room does not exists");
 //         }
-       
-        
+
+
 //             console.log("The message was added successfully");
-      
+
 //     }
   //   await addMessage();
 
 
 
-        // let getNotificationMessagesByUser = 
+        // let getNotificationMessagesByUser =
         // await DataNotification.getNotificationMessagesByUser(1);
         // for (const notification of getNotificationMessagesByUser) {
         //      notification.DiffDateNotificationDateNow();
         //      notification.showDiffDateNotificationDateNow();
         //      console.log(notification);
         // }
-      
-  
-}  
+
+
+}
 NotificationsMessages().then()
 
 
