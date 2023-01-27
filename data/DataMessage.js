@@ -148,8 +148,19 @@ class DataMessage {
     {
         
         let arraym=[];
+        let resultquery;
         let querysearch=
         `
+        
+        IF EXISTS ( 
+          SELECT IdUserBlocker FROM BlockedUser WHERE
+          IdUserBlocker = @IdUserLogin AND IdUserBlocked = @IdUserConversation
+           )
+         BEGIN
+           select -1 as userblocked
+         END
+         ELSE
+         BEGIN
         SELECT 
         UserrSender.IdUser as IdSender, 
         UserrSender.Name as SenderName, 
@@ -159,8 +170,10 @@ class DataMessage {
         UserrMessage.DateeTime 
       FROM 
         UserrMessage 
-        JOIN Userr UserrSender ON UserrMessage.IdSender = UserrSender.IdUser 
-        JOIN Userr UserrReceiver ON UserrMessage.IdUserReceived = UserrReceiver.IdUser 
+        JOIN Userr UserrSender 
+        ON UserrMessage.IdSender = UserrSender.IdUser 
+        JOIN Userr UserrReceiver
+         ON UserrMessage.IdUserReceived = UserrReceiver.IdUser 
       WHERE 
         (
           UserrMessage.IdSender = @IdUserLogin 
@@ -170,8 +183,11 @@ class DataMessage {
           UserrMessage.IdSender = @IdUserConversation 
           AND UserrMessage.IdUserReceived = @IdUserLogin
         ) 
+        
       ORDER BY 
         UserrMessage.DateeTime ASC
+
+        END
     
         `;
  
@@ -180,13 +196,18 @@ class DataMessage {
         .input('IdUserLogin', Int,IdUserLogin)
         .input('IdUserConversation', Int,IdUserConversation)
       .query(querysearch)
-      for (var re of result.recordset) {
-        let message = new DTOMessage();   
-        this.getInformation(message,re);
-        arraym.push(message);
+      resultquery = result.recordset[0].userblocked;
+      if (resultquery===undefined)
+       {
+        for (var re of result.recordset) {
+          let message = new DTOMessage();   
+          this.getInformation(message,re);
+          arraym.push(message);
+          resultquery=arraym;
+      }
      }
      pool.close();
-     return arraym;
+     return resultquery;
     }
 
 

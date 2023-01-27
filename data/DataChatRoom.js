@@ -131,12 +131,24 @@ class DataChatRoom
 
     //#region GETS
 
-    static getChatRoomsByUser=async(iduser)=>
+    static getChatRoomsByUser=async(iduserlogin,iduser)=>
     {
         
         let array=[];
+        let resultquery;
        let querysearch2=`
 
+       declare @iduserlogin int = ${iduserlogin}
+
+        IF EXISTS ( 
+          SELECT IdUserBlocker FROM BlockedUser WHERE
+          IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
+           )
+         BEGIN
+           select -1 as userblocked
+         END
+         ELSE
+         BEGIN
        SELECT 
        CR.IdRoom, 
        U1.IdUser as iduser1,
@@ -168,22 +180,28 @@ class DataChatRoom
        AND M.dateetime = T.max_date 
      WHERE 
        U1.iduser = @iduser
+       
     ORDER BY M.DateeTime desc
-     
+     END
        `
      
       let pool = await Conection.conection();
       const result = await pool.request()
+
       .input('iduser', Int,iduser)
       .query(querysearch2)
+      resultquery = result.recordset[0].userblocked;
+      if (resultquery===undefined)
+      {
       for (var r of result.recordset) {
         let chatroom = new DTOChatRoom(); 
        this.getinformationList(chatroom,r);
          array.push(chatroom);
+         resultquery=array;
       }
-         
+    } 
      pool.close();
-     return array;
+     return resultquery;
     }
 
     //#endregion
