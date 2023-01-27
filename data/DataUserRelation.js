@@ -371,25 +371,28 @@ let resultquery;
               return resultquery;
          
         }
-        static getPendingFriendsbyUserLoginUser=async(iduser)=>
+         //NOTIFICATIONS
+        static getPendingFriendsbyUserLoginUser=async(iduserlogin)=>
         {
             let arrayuser=[];
                 let querysearch=`
  
+              declare @iduserlogin int=${iduserlogin}
+
                 SELECT u.*
                 FROM Userr u
                 INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
-                LEFT JOIN LoginUser lu ON u.IdUser = lu.IdUser
-                WHERE ur.IdUser = @IdUser
+                WHERE ur.IdUser = @iduserlogin
                 AND ur.Statee = 'Pending'
-                ORDER BY lu.IdLoginUser DESC
+                AND  u.Active = 1 
+               
  
               
                   `;
                 let pool = await Conection.conection();
            
                     const result = await pool.request()
-                    .input('IdUser', Int, iduser)
+                  
                     .query(querysearch)
                     for (var recorduser of result.recordset) {
                         let user = new DTOUser();   
@@ -400,7 +403,7 @@ let resultquery;
                return arrayuser;
           
          }
-         //NOTIFICATIONS
+        
       static getSentPendingUsersbyUser=async(iduser)=>
       {
           let arrayuser=[];

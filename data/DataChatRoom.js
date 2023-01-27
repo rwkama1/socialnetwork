@@ -186,10 +186,6 @@ class DataChatRoom
      return array;
     }
 
-    
-
-
-
     //#endregion
     //#region GETINFORMATION
 

@@ -97,13 +97,15 @@ class DataNotification {
 
      //#region  GETS
 
-     static getNotificationCommentsByUser=async(IdUser)=>
+     static getNotificationCommentsByUser=async(iduserlogin,IdUser)=>
      {
          
          let arrayn=[];
          let querysearch=
          `        
        
+         declare @iduserlogin int = ${iduserlogin};
+
         SELECT 
         nsc.IdNotiSubComment as IdNotification, 
         u.IdUser as IdUserSender, 
@@ -131,7 +133,9 @@ class DataNotification {
         LEFT JOIN UserVideos uv ON ucv.IdUserVideos = uv.IdUserVideos
         WHERE 
         nsc.IdUserReceived = @IdUser 
-
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+          WHERE IdUserBlocker = @iduserlogin 
+          AND IdUserBlocked = u.IdUser)
 
         UNION 
 
@@ -150,6 +154,9 @@ class DataNotification {
         JOIN UserImages ui ON nci.IdUserImages = ui.IdUserImages 
         WHERE 
         nci.IdUserReceived = @IdUser
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+          WHERE IdUserBlocker = @iduserlogin 
+          AND IdUserBlocked = u.IdUser)
 
         UNION 
 
@@ -168,6 +175,9 @@ class DataNotification {
         JOIN UserPost up ON ncp.IdPost = up.IdPost 
         WHERE 
         ncp.IdUserReceived = @IdUser 
+    AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+          WHERE IdUserBlocker = @iduserlogin 
+          AND IdUserBlocked = u.IdUser)
 
       UNION 
 
@@ -186,6 +196,9 @@ class DataNotification {
         JOIN UserVideos uv ON ncv.IdUserVideos = uv.IdUserVideos 
       WHERE 
         ncv.IdUserReceived = @IdUser 
+         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+          WHERE IdUserBlocker = @iduserlogin 
+          AND IdUserBlocked = u.IdUser)
       ORDER BY 
         DateeTime DESC
 
@@ -206,12 +219,15 @@ class DataNotification {
      }
  
  
-     static getNotificationMessagesByUser=async(IdUser)=>
+     static getNotificationMessagesByUser=async(iduserlogin,IdUser)=>
     {
         
         let arrayn=[];
         let querysearch=
         `
+
+      declare @iduserlogin int = ${iduserlogin}
+
         SELECT 
         NM.IdNotiUser as IdNotification, 
         U1.IdUser as IdUserSender,
@@ -239,6 +255,10 @@ class DataNotification {
        JOIN UserrMessage UM ON UM.IdUserMessages = NM.IdUserMessages
      WHERE 
        NM.IdUserReceived = @iduser
+       AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+        WHERE IdUserBlocker = @iduserlogin 
+        AND IdUserBlocked = U1.IdUser)
+      
      ORDER BY NM.DateeTime desc
  
  

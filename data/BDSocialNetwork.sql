@@ -326,7 +326,7 @@ select * from NotificationMessage
 
 select * from AlbumUserImages
 select * from AlbumUserVideos
-select * from UserImages order by datepublish asc
+select * from UserImages 
 select * from UserVideos
 select * from UserPost
 select * from UserrRelations

@@ -845,12 +845,13 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
         return resultquery;
  }//TIMELINE USER 
 
- static getPhotoPostVideoUserLikes=async(iduser)=>
+ static getPhotoPostVideoUserLikes=async(iduserlogin,iduser)=>
  {
          
          let array=[];
          let querysearch = 
 		 ` 
+		 declare @iduserlogin int= ${iduserlogin};
 		declare @iduser int= ${iduser};
 
 		 SELECT 
@@ -877,6 +878,9 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		 WHERE Userr.Active = 1 
 		 AND UserPost.Active = 1 
 		 AND LikePost.IdUser = @iduser
+		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+			WHERE IdUserBlocker = @iduserlogin 
+			AND IdUserBlocked = Userr.IdUser)
 		 
 		 UNION
 
@@ -908,6 +912,10 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		 AND AlbumUserImages.Active = 1 
 		 AND UserImages.Active = 1 
 		 AND LikeImage.IdUser = @iduser
+		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+			WHERE IdUserBlocker = @iduserlogin 
+			AND IdUserBlocked = Userr.IdUser)
+
 		 UNION
    					SELECT 
 					UserVideos.iduservideos as id, 
@@ -936,6 +944,10 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 					AND AlbumUserVideos.Active = 1 
 					AND UserVideos.Active = 1 
 					AND LikeVideo.IdUser = @iduser
+					AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+						WHERE IdUserBlocker = @iduserlogin 
+						AND IdUserBlocked = Userr.IdUser)
+						
 					order by datepublish desc
 
          `  

@@ -275,6 +275,7 @@ let usermaintenance=async()=>
 // let getusers = await DataUser.getUsers();
 // console.log(getusers);
 
+
 //   let getUsersSearchs = await DataUser.getUsersSearchs("70");
 // console.log(getUsersSearchs);
 
@@ -333,6 +334,7 @@ loginuser().then()
 // //#region UserRelation
  let userrelation=async()=>
  {
+    
 //   async function addUserRelation() {
 //         for (let index = 1; index < 100; index++) {
 //             let dtour = new DTOUserRelation();
@@ -422,7 +424,8 @@ loginuser().then()
 // }
 // console.log(getConfirmedFriendsbyUserLoginUser);
 
-// let getPendingFriendsbyUserLoginUser = await DataUserRelation.getPendingFriendsbyUserLoginUser(2);
+// let getPendingFriendsbyUserLoginUser =
+//  await DataUserRelation.getPendingFriendsbyUserLoginUser(1,1);
 // console.log(getPendingFriendsbyUserLoginUser);
 
 
@@ -1466,7 +1469,7 @@ let postvideoimage=async()=>
 
         //  async function getPhotoPostVideoUserLikes() {
         //     let array=await DataPhotoPostVideo.
-        //     getPhotoPostVideoUserLikes(1)
+        //     getPhotoPostVideoUserLikes(2,1)
         //     for (const post of array) {
         //         post.DiffDatePublishDateNow()
         //         post.showDiffDatePublishDateNow()
@@ -2427,7 +2430,7 @@ let NotificationComents=async()=>
 
 
         // let getNotificationCommentsByUser =
-        // await DataNotification.getNotificationCommentsByUser(1);
+        // await DataNotification.getNotificationCommentsByUser(1,1);
         // for (const notification of getNotificationCommentsByUser) {
         //      notification.DiffDateNotificationDateNow();
         //      notification.showDiffDateNotificationDateNow();
@@ -2471,17 +2474,17 @@ let NotificationsMessages=async()=>
 
 
 
-        // let getNotificationMessagesByUser =
-        // await DataNotification.getNotificationMessagesByUser(1);
-        // for (const notification of getNotificationMessagesByUser) {
-        //      notification.DiffDateNotificationDateNow();
-        //      notification.showDiffDateNotificationDateNow();
-        //      console.log(notification);
-        // }
+//         let getNotificationMessagesByUser =
+//         await DataNotification.getNotificationMessagesByUser(1,1);
+//         for (const notification of getNotificationMessagesByUser) {
+//              notification.DiffDateNotificationDateNow();
+//              notification.showDiffDateNotificationDateNow();
+//              console.log(notification);
+//         }
 
 
-}
-NotificationsMessages().then()
+// }
+// NotificationsMessages().then()
 
 
 //#endregion

@@ -175,7 +175,7 @@ class DataPost {
     pool.close();
     return resultquery;
     
-}
+    }
      static deletePost=async(idpost)=>
     {
        let resultquery;
@@ -659,7 +659,7 @@ class DataPost {
                   and UserPost.Active = 1 
                   and  UserPost.Visibility='Public'
                   and UserPost.IdUser = @iduser
-                  END
+                END
              `  
                 let pool = await Conection.conection();
                 const result = await pool.request()      
