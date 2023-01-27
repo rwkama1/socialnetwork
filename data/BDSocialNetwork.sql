@@ -359,5 +359,3 @@ delete from BlockedUser
 delete from ChatRoom
 
 
-
-insert userimages values (iduser,ida)

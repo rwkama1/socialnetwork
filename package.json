@@ -1,6 +1,6 @@
 {
   "name": "socialnetworkk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This package contains a backend of what would be the logic of a social network software",
   "main": "app.js",
   "scripts": {

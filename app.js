@@ -1456,16 +1456,17 @@ let postvideoimage=async()=>
 
 
 
-        // async function getPhotoPostVideoSearch() {
-        //     let array=await DataPhotoPostVideo.getPhotoPostVideoSearch('1')
-        //     for (const post of array) {
-        //         post.DiffDatePublishDateNow()
-        //         post.showDiffDatePublishDateNow()
-        //         console.log(post);
-        //     }
+        async function getPhotoPostVideoSearch() {
+            let array=await 
+            DataPhotoPostVideo.getPhotoPostVideoSearch(2,'3')
+            for (const post of array) {
+                post.DiffDatePublishDateNow()
+                post.showDiffDatePublishDateNow()
+                console.log(post);
+            }
 
-        // }
-        // await getPhotoPostVideoSearch();
+        }
+        await getPhotoPostVideoSearch();
 
         //  async function getPhotoPostVideoUserLikes() {
         //     let array=await DataPhotoPostVideo.
@@ -2290,17 +2291,17 @@ let Messages=async()=>
 //         await deleteMessage();
 
 
- async function getMessagesChatRoom() {
-        let array=await DataMessage.getMessagesChatRoom(2,3);
-        if(array===-1)
-        {
-            throw new Error("The user is blocked")
-        }
-        for (const message of array) {
-            console.log(message);
-        }
-    }
-   await getMessagesChatRoom();
+//  async function getMessagesChatRoom() {
+//         let array=await DataMessage.getMessagesChatRoom(2,3);
+//         if(array===-1)
+//         {
+//             throw new Error("The user is blocked")
+//         }
+//         for (const message of array) {
+//             console.log(message);
+//         }
+//     }
+//    await getMessagesChatRoom();
 
 
 }

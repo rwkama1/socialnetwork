@@ -643,13 +643,15 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
         return array;
  }
 
- static getPhotoPostVideoSearch=async(searchtext="")=>
+ static getPhotoPostVideoSearch=async(iduserlogin,searchtext="")=>
  {
          
          let array=[];
          let querysearch = 
 		 	` 
 					 
+			declare @iduserlogin int = ${iduserlogin};
+
 			 SELECT 
 			 u.IdUser as id, 
 			 u.Name as nameortitle, 
@@ -660,7 +662,10 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			 u.Active=1	
 			 AND
 			 u.Name LIKE '%${searchtext}%'  
-			 
+			 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+			WHERE IdUserBlocker = @iduserlogin 
+			AND IdUserBlocked = u.IdUser)
+
 			 UNION
 			 
 			 SELECT
@@ -672,9 +677,14 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			 WHERE
 			 p.Active=1	
 			 AND
-			 (p.title LIKE '%${searchtext}%'  
-			 OR p.descriptionn LIKE '%${searchtext}%')  
 			 
+			 (p.title LIKE '%${searchtext}%'  
+			 OR p.descriptionn LIKE '%${searchtext}%')
+
+			 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+				WHERE IdUserBlocker = @iduserlogin 
+				AND IdUserBlocked = p.IdUser)
+
 			 UNION
 			 
 			 SELECT
@@ -686,9 +696,14 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			 WHERE
 			 v.Active=1	
 			 AND
+			 (
 			 v.title LIKE '%${searchtext}%'  
-			 OR v.descriptionn LIKE '%${searchtext}%' 
-			 
+			 OR v.descriptionn LIKE '%${searchtext}%' )
+
+			 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+				WHERE IdUserBlocker = @iduserlogin 
+				AND IdUserBlocked = v.IdUser)
+
 			 UNION
 			 
 			 SELECT 
@@ -700,8 +715,12 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			 WHERE
 			 i.Active=1	
 			 AND
+			 (
 			 i.title  LIKE '%${searchtext}%'
-			 OR i.descriptionn LIKE '%${searchtext}%'
+			 OR i.descriptionn LIKE '%${searchtext}%')
+			 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+			WHERE IdUserBlocker = @iduserlogin 
+			AND IdUserBlocked = i.IdUser)
 
          `  
          let pool = await Conection.conection();
