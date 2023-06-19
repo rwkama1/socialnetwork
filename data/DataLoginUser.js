@@ -10,14 +10,7 @@ class DataLoginUser {
         let resultquery=0;
         let queryinsert = `
         
-        IF EXISTS (SELECT IdUser FROM LoginUser WHERE 
-            IdUser = (SELECT IdUser FROM Userr WHERE
-                 UserrName = @UserrName AND Passwordd = HASHBYTES('SHA2_256',@Passwordd)))
-        BEGIN
-            SELECT -1 as existloginuser
-        END
-        ELSE
-        BEGIN
+   
         BEGIN TRANSACTION
 
         DECLARE @IdUser int
@@ -56,7 +49,7 @@ class DataLoginUser {
         BEGIN  
             COMMIT TRANSACTION  
         END
-        END
+      
         `
         let pool = await Conection.conection();
         const result = await pool.request()
@@ -66,9 +59,7 @@ class DataLoginUser {
            
 
             .query(queryinsert)
-            resultquery = result.recordset[0].existloginuser;
-            if(resultquery===undefined)
-            {
+        
                 resultquery = result.recordset[0].wrongdata;
                 if(resultquery===undefined)
                  {
@@ -77,8 +68,7 @@ class DataLoginUser {
                     resultquery=userr;
                   
                  }
-                
-            }
+        
             pool.close();
         return resultquery;
         
@@ -134,7 +124,7 @@ class DataLoginUser {
     }
   
 //#region  Exists
- static existLoginUser=async(iduser)=>
+ static existLoginUser=async(iduser,username)=>
  {
     
       let querysearch=`
@@ -142,12 +132,15 @@ class DataLoginUser {
       SELECT CASE WHEN COUNT(*) > 0 
       THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS Exist
       FROM LoginUser
-      WHERE IdUser = @IdUser
+      WHERE IdUser = @IdUser and IdUser IN (
+        SELECT IdUser FROM Userr WHERE UserrName = @UserrName
+      )
 
       `;
          let pool = await Conection.conection();   
         const result = await pool.request()
         .input('IdUser', Int, iduser)
+        .input('UserrName', VarChar, username)
         .query(querysearch)
       let exist = result.recordset[0].Exist;
         pool.close();

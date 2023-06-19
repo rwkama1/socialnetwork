@@ -23,57 +23,48 @@ const { DataLoginUser } = require("../data/DataLoginUser");
        
        
         let loginuser = await DataLoginUser.loginUser(username,password);
-        if (loginuser===-1)
+        
+       if (loginuser===-2)
             {
-                throw new Error("User is already logged in");
-                    
-             }
-        else  if (loginuser===-2)
-            {
-                    throw new Error("Incorrect username and/or password");
+            throw new Error("Incorrect username and/or password");
              }
         else
         {
 
-            this.userlogin=loginuser;
-            return this.userlogin;
+          
+            return loginuser;
         }
     
       
        
     }
     
-     static  getuserlogin()
+     static  async existLoginUser(iduser,username)
     {
-        let userlogin=this.userlogin;
-        if(userlogin!=null)
-        {
-            
-            return userlogin;
-             
-        }
-        else
-        {
-            throw new Error("There is no User logged in");
-        }
+
+          let existLoginUser = await DataLoginUser.existLoginUser
+          (iduser,username);
+            if(existLoginUser)
+            {         
+                return true;        
+            }
+            else
+            {
+                throw new Error("There is no User logged in");
+            }
     }
-     static async logoutUser()
+     static async logoutUser(iduser)
     {
-        if(this.userlogin!=null)
-        {
-            let logout=await DataLoginUser.logout(this.userlogin.iduser);
+       
+            let logout=await DataLoginUser.logout(iduser);
             if(logout===-1)
             {
-                throw new Error("There is no User logged in")
+                throw new Error("There is no User logged in");
             }
-            this.userlogin=null;
+            
             return true;
             
-        }
-        else
-        {
-            return false;
-        }
+       
     }
     //#endregion
 

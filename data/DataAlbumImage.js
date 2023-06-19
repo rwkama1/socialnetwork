@@ -172,6 +172,7 @@ const { VarChar,Int ,Date} = require("mssql");
        return resultquery;
   
  }
+ 
 
 //*********************************** */
   static getAlbumImagebyUser=async(iduser)=>
@@ -179,21 +180,26 @@ const { VarChar,Int ,Date} = require("mssql");
   
         let arrayalbumphoto=[];
           let querysearch=`
-          select 
+          
+        declare @iduser int= ${iduser}
+
+          SELECT 
           AlbumUserImages.*, 
           Userr.Name, 
           Userr.UserrName, 
           Userr.Imagee, 
           Userr.Email 
-        from 
+      FROM 
           AlbumUserImages 
-          inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
-        where 
-          Userr.IdUser = ${iduser} 
-          and Userr.Active = 1 
-          and AlbumUserImages.Active = 1 
-        order by 
-          IdAlbumImages      
+          INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser 
+      WHERE 
+          Userr.IdUser = @iduser 
+          AND Userr.Active = 1 
+          AND AlbumUserImages.Active = 1 
+          
+      ORDER BY 
+          IdAlbumImages
+      
           `;
    
         let pool = await Conection.conection();
@@ -209,6 +215,53 @@ const { VarChar,Int ,Date} = require("mssql");
        return arrayalbumphoto;
    
  }
+ static getAlbumImagebyUserWithImages=async(iduser)=>
+{
+  
+        let arrayalbumphoto=[];
+          let querysearch=`
+          
+        declare @iduser int= ${iduser}
+      
+        SELECT 
+        aui.*,
+        ui.IdUserImages as idimage,
+        ui.Title as titleimage,
+        ui.Urlimage as urlimage,
+        u.Name,
+        u.UserrName,
+        u.Imagee,
+        u.Email
+        FROM 
+        AlbumUserImages aui
+        INNER JOIN UserImages ui ON aui.idalbumimages = ui.idalbumimages
+        INNER JOIN Userr u ON aui.IdUser = u.IdUser
+        WHERE 
+            u.IdUser = @iduser 
+          AND  u.Active = 1
+            AND ui.Active = 1
+            AND aui.Active = 1
+            
+        ORDER BY 
+        aui.IdAlbumImages
+      
+          `;
+   
+        let pool = await Conection.conection();
+   
+            const result = await pool.request()
+            .query(querysearch)
+            for (var album of result.recordset) {
+                let albumphoto = new DTOAlbumPhoto();   
+                this.getinformationListwithImages(albumphoto,album);
+                arrayalbumphoto.push(albumphoto);
+             }
+       pool.close();
+       return arrayalbumphoto;
+   
+ }
+
+
   static getAlbumImageByTitleUser=async(title="",iduser)=>
  {
     
@@ -284,6 +337,7 @@ const { VarChar,Int ,Date} = require("mssql");
 
      
   }
+ 
 //#endregion
 //#region GetInformation
  static getinformation(albumphoto, result) {
@@ -309,6 +363,23 @@ const { VarChar,Int ,Date} = require("mssql");
     albumphoto.title = album.Title;
     albumphoto.active = album.Active;
    
+}
+static  getinformationListwithImages(albumphoto, album) {
+      
+  albumphoto.idalbumphoto = album.IdAlbumImages;
+  
+  albumphoto.idimage = album.idimage;
+  albumphoto.titleimage = album.titleimage;
+  albumphoto.urlimage = album.urlimage;
+  
+  albumphoto.user.iduser = album.IdUser;
+  albumphoto.user.name = album.Name;
+  albumphoto.user.userrname = album.UserrName;
+  albumphoto.user.email = album.Email;
+  albumphoto.user.image = album.Imagee;
+  albumphoto.title = album.Title;
+  albumphoto.active = album.Active;
+ 
 }
 
 static forAddImages(arrayurlimages)

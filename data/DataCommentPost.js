@@ -168,6 +168,8 @@ class DataCommentPost {
                             BEGIN
                                 delete from UserrSubComments where idusercomment=@idcomment
                             END
+                            delete from NotificationSubComment where IdUserComment=@idcomment
+                            delete from LikeComment where idusercomment=@idcomment
                             delete from UserrCommentsPost where idusercomment=@idcomment
                             delete from UserrComments where idusercomment=@idcomment and iduser=@iduser
                             select 1 as commentpostdeleted
@@ -219,15 +221,20 @@ class DataCommentPost {
 
     //#region Exists
 
-    static existCommentPost=async(iduser,idpost)=>
+    static existCommentPost=async(idcomment,iduser,idpost)=>
         {
            
              let querysearch=`
        
+             declare @idcomment int=${idcomment};
              IF NOT EXISTS ( 
-                SELECT IdUserComment FROM UserrCommentsPost 
-                WHERE IdUserComment = @IdUser AND IdPost = @IdPost
-                )
+                 SELECT IdUserComment FROM UserrCommentsPost 
+                 WHERE IdUserComment = 
+                 (SELECT idusercomment FROM UserrComments
+                      WHERE iduser=@iduser AND idusercomment=@idcomment )
+                
+                 AND idpost = @IdPost
+                 )
              BEGIN
                  select CAST(0 AS BIT) as Exist
              END
@@ -236,7 +243,6 @@ class DataCommentPost {
                  select CAST(1 AS BIT) as Exist
              END
          
-    
              `;
                 let pool = await Conection.conection();   
                const result = await pool.request()
@@ -262,34 +268,70 @@ class DataCommentPost {
               `        
             DECLARE @iduserlogin int = ${iduserlogin}
             DECLARE @idpost int = ${idpost}
- 
-            SELECT 
-			UserrComments.idusercomment,
-			UserrComments.textt as textcomment,
-			UserrComments.likes as likescomment,
-			UserrComments.datepublish as datepublishcomment,
 
-			UserrCommentsPost.idusercommentpost,
-		    UserrCommentsPost.idpost,
+           SELECT 
+            UC.idusercomment,
+            UC.Textt AS textcomment,
+            UC.Likes AS likescomment,
+            UC.DatePublish AS datepublishcomment,
+        
+            UCP.idusercommentpost,
+            UCP.idpost,
+        
+            U.IdUser AS idcommentuser,
+            U.Name AS namecommentuser,
+            U.Nick AS nickcommentuser,
+            U.UserrName AS usernamecommentuser,
+            U.Imagee AS imagecommentuser,
+			CASE
+				WHEN EXISTS (
 
-			Userr.iduser as idcommentuser,
-            Userr.name as namecommentuser,
-            Userr.nick as nickcommentuser,
-            Userr.userrname as usernamecommentuser,
-            Userr.imagee as imagecommentuser
-            FROM 
-            UserrComments
-            inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
-			inner join  UserPost on UserPost.idpost=UserrCommentsPost.idusercommentpost
-			inner join Userr on Userr.iduser=UserrComments.iduser
-            WHERE 
-			UserPost.Active = 1
-			AND Userr.Active=1
-            AND UserrCommentsPost.idpost=@idpost 
-            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
-                WHERE IdUserBlocker = @iduserlogin 
-                AND IdUserBlocked = Userr.IdUser)
+				 SELECT IdUser FROM LikeComment 
+				  WHERE LikeComment.IdUser = @iduserlogin AND LikeComment.IdUserComment = uc.idusercomment
+				
+				)
+				THEN CAST(1 AS BIT)
+				ELSE CAST(0 AS BIT)
+				END AS existlikeloginuser,
 
+                CASE
+				WHEN EXISTS (
+
+                    SELECT IdUserComment FROM UserrCommentsPost 
+                    WHERE UserrCommentsPost.IdUserComment = 
+                    (SELECT idusercomment FROM UserrComments
+                         WHERE UserrComments.iduser=@iduserlogin AND UserrComments.idusercomment=UC.idusercomment )
+                   
+                    AND UserrCommentsPost.idpost = UP.IdPost
+				
+				)
+				THEN CAST(1 AS BIT)
+				ELSE CAST(0 AS BIT)
+				END AS existcommentloginuser,
+
+				(
+					SELECT 
+					COUNT(*) as numbersubcomments
+					FROM 
+					UserrSubComments
+					WHERE 
+					UserrSubComments.idusercomment=uc.idusercomment
+				) as numbersubcomment
+        FROM 
+            UserrCommentsPost UCP
+            INNER JOIN UserrComments UC ON UCP.IdUserComment = UC.IdUserComment
+            INNER JOIN UserPost UP ON UCP.IdPost = UP.IdPost
+            INNER JOIN Userr U ON UC.IdUser = U.IdUser
+        WHERE 
+            U.Active = 1
+             AND 
+            UP.IdPost = @idpost
+            AND UP.Active = 1
+             AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+              WHERE IdUserBlocker = @iduserlogin 
+                 AND IdUserBlocked = U.IdUser)
+
+        
               `;
        
             let pool = await Conection.conection();
@@ -354,6 +396,13 @@ class DataCommentPost {
         postcomment.nickcommentuser = result.nickcommentuser; 
         postcomment.usernamecommentuser = result.usernamecommentuser; 
         postcomment.imagecommentuser = result.imagecommentuser;
+
+
+
+        postcomment.existlikeloginuser = result.existlikeloginuser;
+        postcomment.numbersubcomment = result.numbersubcomment;
+        postcomment.existcommentloginuser = result.existcommentloginuser;
+        
     
     
     

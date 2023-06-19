@@ -6,10 +6,10 @@ const sql  = require("mssql");
      static conection=async () => {
         let sqlconfig = {
          
-            user: 'rwkama63_SQLLogin_1',
-            password:'67bu3zb26y',
-            database: 'socialnetwork',
-           server: 'socialnetwork.mssql.somee.com',
+            user: 'rwkama64_SQLLogin_1',
+            password:'aeiszhzdoi',
+            database: 'socialnetworkkk',
+           server: 'socialnetworkkk.mssql.somee.com',
             options: {
                     trustedConnection: false,
                     enableArithAbort: true,

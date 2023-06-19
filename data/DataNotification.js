@@ -93,8 +93,74 @@ class DataNotification {
         
     }
 
-
-
+    static updateSeenNotificationSubComment=async(idnotisubcomment)=>
+    {
+        let resultquery;
+        let queryupdate = 
+        `
+        declare @idnotisubcomment int =${idnotisubcomment}
+        update NotificationSubComment set seen=1 where idnotisubcomment=@idnotisubcomment
+        select 1 as addnotisubcomment
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+       .query(queryupdate)
+       resultquery = result.recordset[0].addnotisubcomment;
+        pool.close();
+        return resultquery;
+        
+    }
+    static updateSeenNotificationCommentVideo=async(idnoticommentvideo)=>
+    {
+        let resultquery;
+        let queryupdate = 
+        `
+        declare @idnoticommentvideo int =${idnoticommentvideo}
+        update NotificationCommentVideo set seen=1 where idnoticovideo=@idnoticommentvideo
+        select 1 as addnoticommentvideo
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+       .query(queryupdate)
+       resultquery = result.recordset[0].addnoticommentvideo;
+        pool.close();
+        return resultquery;
+        
+    }
+    static updateSeenNotificationCommentImage=async(idnoticommentimage)=>
+    {
+        let resultquery;
+        let queryupdate = 
+        `
+        declare @idnoticommentimage int =${idnoticommentimage}
+        update NotificationCommentImage set seen=1 where idnoticoimage=@idnoticommentimage
+        select 1 as addnoticommentimage
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+       .query(queryupdate)
+       resultquery = result.recordset[0].addnoticommentimage;
+        pool.close();
+        return resultquery;
+        
+    }
+    static updateSeenNotificationCommentPost=async(idnoticommentpost)=>
+    {
+        let resultquery;
+        let queryupdate = 
+        `
+        declare @idnoticommentpost int =${idnoticommentpost}
+        update NotificationCommentPost set seen=1 where idnoticopost=@idnoticommentpost
+        select 1 as addnoticommentpost
+        `
+        let pool = await Conection.conection();
+        const result = await pool.request()
+       .query(queryupdate)
+       resultquery = result.recordset[0].addnoticommentpost;
+        pool.close();
+        return resultquery;
+        
+    }
      //#region  GETS
 
      static getNotificationCommentsByUser=async(iduserlogin,IdUser)=>
@@ -103,8 +169,8 @@ class DataNotification {
          let arrayn=[];
          let querysearch=
          `        
-       
          declare @iduserlogin int = ${iduserlogin};
+         declare @IdUser int= ${IdUser};
 
         SELECT 
         nsc.IdNotiSubComment as IdNotification, 
@@ -119,8 +185,8 @@ class DataNotification {
             WHEN uv.IdUserVideos IS NOT NULL THEN 'V' 
             ELSE 'Not Found'
         END as Typee,
+        1 as Subcomment,
         nsc.DateeTime
-
         FROM 
         NotificationSubComment nsc 
         JOIN Userr u ON nsc.IdUserSender = u.IdUser 
@@ -132,7 +198,9 @@ class DataNotification {
         LEFT JOIN UserrCommentsVideo ucv ON uc.IdUserComment = ucv.IdUserComment
         LEFT JOIN UserVideos uv ON ucv.IdUserVideos = uv.IdUserVideos
         WHERE 
-        nsc.IdUserReceived = @IdUser 
+        nsc.IdUserReceived = @IdUser
+		    AND nsc.seen=0 
+        AND u.IdUser != @iduserlogin
         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
           WHERE IdUserBlocker = @iduserlogin 
           AND IdUserBlocked = u.IdUser)
@@ -147,6 +215,7 @@ class DataNotification {
         ui.IdUserImages as IdImagePostVideo, 
         ui.title as TitleImagePostVideo, 
         'I' as Typee,
+        0 as Subcomment,
         nci.DateeTime 
         FROM 
         NotificationCommentImage nci 
@@ -154,6 +223,8 @@ class DataNotification {
         JOIN UserImages ui ON nci.IdUserImages = ui.IdUserImages 
         WHERE 
         nci.IdUserReceived = @IdUser
+	    	AND nci.seen=0 
+        AND u.IdUser != @iduserlogin
         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
           WHERE IdUserBlocker = @iduserlogin 
           AND IdUserBlocked = u.IdUser)
@@ -168,6 +239,7 @@ class DataNotification {
         up.IdPost as IdImagePostVideo, 
         up.title as TitleImagePostVideo, 
         'P' as Typee, 
+        0 as Subcomment,
         ncp.DateeTime
         FROM 
         NotificationCommentPost ncp 
@@ -175,6 +247,8 @@ class DataNotification {
         JOIN UserPost up ON ncp.IdPost = up.IdPost 
         WHERE 
         ncp.IdUserReceived = @IdUser 
+		AND ncp.seen=0 
+    AND u.IdUser != @iduserlogin
     AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
           WHERE IdUserBlocker = @iduserlogin 
           AND IdUserBlocked = u.IdUser)
@@ -189,6 +263,7 @@ class DataNotification {
         uv.IdUserVideos as IdImagePostVideo, 
         uv.title as TitleImagePostVideo, 
         'V' as Typee, 
+        0 as Subcomment,
         ncv.DateeTime
       FROM 
         NotificationCommentVideo ncv 
@@ -196,18 +271,17 @@ class DataNotification {
         JOIN UserVideos uv ON ncv.IdUserVideos = uv.IdUserVideos 
       WHERE 
         ncv.IdUserReceived = @IdUser 
+		AND ncv.seen=0 
+    AND u.IdUser != @iduserlogin
          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
           WHERE IdUserBlocker = @iduserlogin 
           AND IdUserBlocked = u.IdUser)
       ORDER BY 
         DateeTime DESC
-
-
          `;
   
        let pool = await Conection.conection();
        const result = await pool.request()
-         .input('IdUser', Int,IdUser)
          .query(querysearch)
        for (var re of result.recordset) {
          let notification = new DTONotification();   
@@ -288,6 +362,7 @@ class DataNotification {
       notification.IdImagePostVideo = result.IdImagePostVideo;
       notification.TitleImagePostVideo = result.TitleImagePostVideo;
       notification.Typee = result.Typee;
+      notification.Subcomment = result.Subcomment;
       notification.DateeTime = result.DateeTime;
       
      }

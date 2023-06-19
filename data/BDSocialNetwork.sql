@@ -37,6 +37,7 @@ CREATE TABLE UserrRelations(
 	IdUserRelation int NOT NULL PRIMARY KEY Identity(1,1) ,
 	IdUser int not null Foreign Key References Userr(IdUser),
 	IdFriend int not null Foreign Key References Userr(IdUser),
+	IdUserSender int not null Foreign Key References Userr(IdUser),
 	Statee varchar(20) not null 
 )
 go
@@ -351,11 +352,5 @@ select * from UserrSubComments
 select * from UserrMessage
 
 
-
-delete from LoginUser
-delete from Logs
-delete from UserImages
-delete from BlockedUser
-delete from ChatRoom
 
 

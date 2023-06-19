@@ -84,7 +84,7 @@ class DataUser {
 
         IF NOT EXISTS (SELECT iduser FROM Userr WHERE IdUser = @IdUser and Active=1 )
         BEGIN
-        select -1 as notexistuser  
+         select -1 as notexistuser  
         END
         else
         begin
@@ -97,8 +97,6 @@ class DataUser {
             GETUTCDATE(),'Delete user')
 
             update Userr set Active=0 where IdUser=@IdUser
-
-          
 
             select 1 as deleteusersuccess
             
@@ -527,64 +525,94 @@ class DataUser {
     {
       let resultquery;
         let query = `
-        IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduserlogin
-             and Active=1)
-        BEGIN
-         select -1 as notexistuserlogin
-        END
-        ELSE 
-        BEGIN 
-            IF  NOT EXISTS ( SELECT IdUser FROM
-              Userr WHERE IdUser=@iduser and Active=1 )
-            BEGIN
-              select -2 as noexistuser
-            END
-            ELSE
-            BEGIN
-                IF  EXISTS ( SELECT IdUserBlocker FROM
-                    BlockedUser WHERE IdUserBlocker=@iduserlogin and 
-                    IdUserBlocked=@iduser
-                     )
-                BEGIN
-                    select -3 as existblocked
-                END
-                ELSE
-                BEGIN
-                    BEGIN TRANSACTION 
-            
-                    DELETE from Followers where idfolloweruser=@iduserlogin and 
-                    idfolloweduser=@iduser
-
-                    DELETE from Followers where idfolloweruser=@iduser and 
-                    idfolloweduser=@iduserlogin
-
-                    DELETE from UserrRelations where
-                    iduser=@iduserlogin and idfriend=@iduser
-
-                    DELETE from UserrRelations where
-                    iduser=@iduser and idfriend=@iduserlogin
-
-                    INSERT INTO BlockedUser 
-                    VALUES (@iduserlogin, @iduser, @message)
-
-                    INSERT INTO BlockedUser 
-                    VALUES (@iduser, @iduserlogin, @message)
-
-
-                    select 1 as blockedsuccess
-                    
-                    IF(@@ERROR > 0)  
-                    BEGIN  
-                        ROLLBACK TRANSACTION  
-                    END  
-                    ELSE  
-                    BEGIN  
-                        COMMIT TRANSACTION  
-                    END 
-                 END 
-            END 
+      
         
-        END
+ IF NOT EXISTS ( SELECT IdUser FROM Userr WHERE IdUser=@iduserlogin
+    and Active=1)
+BEGIN
+select -1 as notexistuserlogin
+END
+ELSE 
+BEGIN 
+   IF  NOT EXISTS ( SELECT IdUser FROM
+     Userr WHERE IdUser=@iduser and Active=1 )
+   BEGIN
+     select -2 as noexistuser
+   END
+   ELSE
+   BEGIN
+       IF  EXISTS ( SELECT IdUserBlocker FROM
+           BlockedUser WHERE IdUserBlocker=@iduserlogin and 
+           IdUserBlocked=@iduser
+            )
+       BEGIN
+           select -3 as existblocked
+       END
+       ELSE
+       BEGIN
+           BEGIN TRANSACTION 
+
+           DELETE from NotificationMessage where iduserreceived=@iduserlogin and 
+           idusersender=@iduser
+
+           DELETE from NotificationMessage where iduserreceived=@iduser and 
+           idusersender=@iduserlogin
+
+
+           DELETE from UserrMessage where iduserreceived=@iduserlogin and 
+           idsender=@iduser
+
+           DELETE from UserrMessage where iduserreceived=@iduser and 
+           idsender=@iduserlogin
+
+           DELETE from UserrMessage where iduserreceived=@iduserlogin and 
+           idsender=@iduser
+
+           DELETE from UserrMessage where iduserreceived=@iduser and 
+           idsender=@iduserlogin
+
+           DELETE from ChatRoom where iduserreceived=@iduserlogin and 
+           idusersender=@iduser
+
+           DELETE from ChatRoom where iduserreceived=@iduser and 
+           idusersender=@iduserlogin
+
+
+           DELETE from Followers where idfolloweruser=@iduserlogin and 
+           idfolloweduser=@iduser
+
+           DELETE from Followers where idfolloweruser=@iduser and 
+           idfolloweduser=@iduserlogin
+
+           DELETE from UserrRelations where
+           iduser=@iduserlogin and idfriend=@iduser
+
+           DELETE from UserrRelations where
+           iduser=@iduser and idfriend=@iduserlogin
+
+           INSERT INTO BlockedUser 
+           VALUES (@iduserlogin, @iduser, @message)
+
+           INSERT INTO BlockedUser 
+           VALUES (@iduser, @iduserlogin, @message)
+
+
+           select 1 as blockedsuccess
+           
+           IF(@@ERROR > 0)  
+           BEGIN  
+               ROLLBACK TRANSACTION  
+           END  
+           ELSE  
+           BEGIN  
+               COMMIT TRANSACTION  
+           END 
+        END 
+   END 
+
+END
+
+     
         `
         let pool = await Conection.conection();
         const result = await pool.request()
@@ -1102,6 +1130,40 @@ static getLikesSubCommentUsers=async(idsubcomment)=>// get all users who liked t
    userr.dateentry= u.DateEntry;
    userr.coverphoto= u.Coverphoto;
 }
+static getinformationList2(userr,u) {
+
+    userr.iduser = u.IdUser;
+    userr.name = u.Name;
+    userr.nick = u.Nick;
+    userr.userrname = u.UserrName;
+    userr.password = u.Passwordd;
+    userr.hash = u.Hashh;
+    userr.datebirth = u.BirthDate;
+    userr.active = u.Active;
+    userr.email = u.Email;
+    userr.address = u.Addresss;
+    userr.ocupattion = u.Occupation;
+    userr.martialstatus = u.MartailStatus;
+    userr.website = u.WebSite;
+    userr.gender = u.Gender;
+    userr.city = u.City;
+    userr.province = u.Province;
+    userr.description = u.Descriptionn;
+    userr.country = u.Country;
+    userr.statee = u.Statee;
+    userr.image = u.Imagee;
+    userr.visibility = u.Visibility;
+    userr.urlfacebook= u.UrlFacebook;
+    userr.urlinstagram= u.UrlInstagram;
+    userr.urllinkedin= u.UrlLinkedin;
+    userr.urltwitter= u.UrlTwitter;
+    userr.dateentry= u.DateEntry;
+    userr.coverphoto= u.Coverphoto;
+    userr.numberfriends= u.numberfriends;
+    userr.existloginuserfriend= u.existloginuserfriend;
+    userr.numberfollowers= u.numberfollowers;
+    userr.existloginuser= u.existloginuser;
+ }
 //#endregion
 }
 module.exports = { DataUser };

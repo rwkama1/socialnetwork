@@ -191,7 +191,8 @@ static existAlbumById=async(idalbum)=>
          where 
            Userr.IdUser = ${iduser} 
            and Userr.Active = 1 
-           and AlbumUserVideos.Active = 1        
+           and AlbumUserVideos.Active = 1    
+        
            `;
     
          let pool = await Conection.conection();
@@ -207,6 +208,50 @@ static existAlbumById=async(idalbum)=>
         return arrayalbumvid;
     
   }
+  static getAlbumVideobyUserWithVideos=async(iduser)=>
+  {
+    
+          let arrayalbumvid=[];
+            let querysearch=`
+
+            declare @iduser int=${iduser}
+      
+            SELECT 
+            auv.*,
+            uv.IdUserVideos as idvideo,
+            uv.Title as titlevideo,
+            uv.urlvideos as urlvideo,
+            u.Name,
+            u.UserrName,
+            u.Imagee,
+            u.Email
+            FROM 
+            AlbumUserVideos auv
+            INNER JOIN uservideos uv ON auv.IdAlbumVideos = uv.IdAlbumVideos
+            INNER JOIN Userr u ON auv.IdUser = u.IdUser
+            WHERE 
+                u.IdUser = @iduser 
+              AND  u.Active = 1
+                AND uv.Active = 1
+                AND auv.Active = 1               
+            ORDER BY 
+            auv.IdAlbumVideos
+         
+            `;
+     
+          let pool = await Conection.conection();
+     
+              const result = await pool.request()
+              .query(querysearch)
+              for (var album of result.recordset) {
+                 let albumvideo = new DTOAlbumVideo(); 
+                  this.getinformationListwithVideos(albumvideo,album);
+                arrayalbumvid.push(albumvideo);
+               }
+         pool.close();
+         return arrayalbumvid;
+     
+   }
    static getAlbumVideoByTitleUser=async(title="",iduser)=>
   {
      
@@ -300,6 +345,25 @@ static getinformation(albumvideo, result) {
     albumvideo.title = album.Title;
     albumvideo.active = album.Active;
    
+}
+
+static  getinformationListwithVideos(albumvideo, album) {
+      
+  albumvideo.idalbumvideo = album.IdAlbumVideos;
+
+  albumvideo.idvideo = album.idvideo;
+  albumvideo.titlevideo = album.titlevideo;
+  albumvideo.urlvideo = album.urlvideo;
+
+  albumvideo.user.iduser = album.IdUser;
+  albumvideo.user.name = album.Name;
+  albumvideo.user.userrname = album.UserrName;
+  albumvideo.user.email = album.Email;
+  albumvideo.user.image = album.Imagee;
+
+  albumvideo.title = album.Title;
+  albumvideo.active = album.Active;
+ 
 }
 static forAddVideos(arrayurlvideos)
    {

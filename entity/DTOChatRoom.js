@@ -68,7 +68,7 @@
        }
        else if(this.diffsecond>=60&&this.diffminutes<60)
        {
-         this.stringmessagedagov= `${this.diffminutes} minutes ago`
+         this.stringmessagedago= `${this.diffminutes} minutes ago`
        }
        else if(this.diffminutes>=60&&this.diffhour<24)
        {

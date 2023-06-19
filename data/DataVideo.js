@@ -303,6 +303,68 @@ static getVideo=async(iduserlogin,idvideo)=>
        return resultquery;
  }
 
+ static getVideoPublic=async(iduserlogin,idvideo)=>
+ {
+         let resultquery;
+         let querysearch = `  
+ 
+         DECLARE @iduserlogin int= ${iduserlogin};
+ 
+         DECLARE @idvideo int= ${idvideo};
+ 
+           IF  EXISTS ( 
+          SELECT IdUserBlocker FROM BlockedUser WHERE
+          IdUserBlocker = @iduserlogin AND IdUserBlocked = 
+          (SELECT iduser FROM UserVideos where IdUserVideos=@idvideo)
+           )
+         BEGIN
+           select -1 as userblocked
+         END
+         ELSE
+         BEGIN
+         IF NOT EXISTS ( SELECT IdUserVideos FROM UserVideos WHERE IdUserVideos=${idvideo} and Active=1)
+          BEGIN
+          select -2 as noexistv
+          END
+          ELSE
+           BEGIN
+             select 
+             UserVideos.*, 
+             AlbumUserVideos.Title as AlbumTitle, 
+             Userr.Name, 
+             Userr.Nick, 
+             Userr.Email, 
+             Userr.Imagee 
+             from 
+             UserVideos 
+             inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
+             inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
+             where 
+             Userr.Active = 1 
+             and AlbumUserVideos.Active = 1 
+             and UserVideos.Active = 1 
+             and UserVideos.Visibility='Public'
+             and UserVideos.IdUserVideos = @idvideo
+          END
+         END
+         `  
+         let pool = await Conection.conection();
+         const result = await pool.request()
+         .query(querysearch)
+         resultquery = result.recordset[0].userblocked;
+         if (resultquery===undefined) {
+           resultquery = result.recordset[0].noexistv;
+           if (resultquery===undefined) {
+             let vide = new DTOVideo();
+             this.getinformation(vide, result);
+             resultquery=vide;
+            }     
+         }
+        
+       
+        pool.close();
+        return resultquery;
+  }
  static getSearchVideos=async(iduserlogin,nameuser="",description="",title="")=>
  {
          let arrav=[];
@@ -327,10 +389,11 @@ static getVideo=async(iduserlogin,idvideo)=>
          AND Userr.Name LIKE '%${nameuser}%' 
          AND UserVideos.Title LIKE '%${title}%'
          AND UserVideos.Descriptionn LIKE '%${description}%'
+         and UserVideos.Visibility='Public'
          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
           WHERE IdUserBlocker = @iduserlogin 
           AND IdUserBlocked = Userr.IdUser)
-       
+          ORDER BY datepublish desc
          `  
          let pool = await Conection.conection();
          const result = await pool.request()      
@@ -344,7 +407,50 @@ static getVideo=async(iduserlogin,idvideo)=>
         pool.close();
         return arrav;
   }
-
+  static getSearchVideosExpresion=async(iduserlogin,searchtext="")=>
+  {
+          let arrav=[];
+          let querysearch = `     
+ 
+          DECLARE @iduserlogin int= ${iduserlogin};
+ 
+          SELECT
+          UserVideos.*,
+          AlbumUserVideos.Title as AlbumTitle,
+          Userr.Name,
+          Userr.Nick,
+          Userr.Email,
+          Userr.Imagee
+           FROM UserVideos
+           INNER JOIN AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos
+           INNER JOIN Userr on Userr.IdUser = AlbumUserVideos.IdUser
+           WHERE
+          Userr.Active = 1
+          AND AlbumUserVideos.Active = 1
+          AND UserVideos.Active = 1
+          AND (
+           Userr.Name LIKE '%${searchtext}%' 
+          OR UserVideos.Title LIKE '%${searchtext}%'
+          OR UserVideos.Descriptionn LIKE '%${searchtext}%'
+          )
+          and UserVideos.Visibility='Public'
+          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+           WHERE IdUserBlocker = @iduserlogin 
+           AND IdUserBlocked = Userr.IdUser)
+           ORDER BY datepublish desc
+          `  
+          let pool = await Conection.conection();
+          const result = await pool.request()      
+          .query(querysearch)
+          for (var p of result.recordset) {
+             let vide = new DTOVideo();   
+             this.getinformationList(vide,p);
+             arrav.push(vide);
+          }
+       
+         pool.close();
+         return arrav;
+   }
  static getVideos=async(iduserlogin)=>
  {
          let arrav=[];
@@ -367,6 +473,7 @@ static getVideo=async(iduserlogin,idvideo)=>
          Userr.Active = 1 
          and AlbumUserVideos.Active = 1 
          and UserVideos.Active = 1
+         and UserVideos.Visibility='Public'
          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
           WHERE IdUserBlocker = @iduserlogin 
           AND IdUserBlocked = Userr.IdUser)
@@ -405,6 +512,7 @@ static getVideo=async(iduserlogin,idvideo)=>
           Userr.Active = 1 
           and AlbumUserVideos.Active = 1 
           and UserVideos.Active = 1
+          and UserVideos.Visibility='Public'
           order by datepublish desc
         
           `  
@@ -442,6 +550,7 @@ static getVideo=async(iduserlogin,idvideo)=>
            Userr.Active = 1 
            and AlbumUserVideos.Active = 1 
            and UserVideos.Active = 1
+           and UserVideos.Visibility='Public'
            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
             WHERE IdUserBlocker = @iduserlogin 
             AND IdUserBlocked = Userr.IdUser)
@@ -497,6 +606,7 @@ static getVideo=async(iduserlogin,idvideo)=>
         Userr.Active = 1 
         and AlbumUserVideos.Active = 1 
         and UserVideos.Active = 1 
+        and UserVideos.Visibility='Public'
         AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
          WHERE IdUserBlocker = @iduserlogin 
          AND IdUserBlocked = Userr.IdUser)
@@ -553,7 +663,7 @@ static getVideo=async(iduserlogin,idvideo)=>
              AND Userr.Active = 1 
              AND AlbumUserVideos.Active = 1 
              AND UserVideos.Active = 1 
-
+             and UserVideos.Visibility='Public'
             ORDER BY UserVideos.DatePublish DESC
            
              `  
@@ -592,6 +702,7 @@ static getVideo=async(iduserlogin,idvideo)=>
               AND Userr.Active = 1 
               AND AlbumUserVideos.Active = 1 
               AND UserVideos.Active = 1 
+              and UserVideos.Visibility='Public'
               AND Userr.IdUser != @IdUserLogin
               AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
                 WHERE IdUserBlocker = @IdUserLogin 
@@ -614,6 +725,7 @@ static getVideo=async(iduserlogin,idvideo)=>
              AND Userr.Active = 1 
              AND AlbumUserVideos.Active = 1 
              AND UserVideos.Active = 1 
+             and UserVideos.Visibility='Public'
              AND Userr.IdUser != @IdUserLogin
              AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
               WHERE IdUserBlocker = @IdUserLogin 
@@ -706,10 +818,13 @@ static getVideo=async(iduserlogin,idvideo)=>
           pool.close();
           return arrayv;
     }
+    //GET VIDEO LOGIN USER
  static getVideosbyIdUser=async(iduser)=>
   {
       let arrayv=[];
           let querysearch = `   
+
+          
             SELECT 
             UserVideos.*, 
             AlbumUserVideos.Title as AlbumTitle, 
@@ -726,6 +841,44 @@ static getVideo=async(iduserlogin,idvideo)=>
             and AlbumUserVideos.Active = 1 
             and UserVideos.Active = 1 
             and UserVideos.IdUser = ${iduser}
+            ORDER BY datepublish desc
+       `  
+          let pool = await Conection.conection();
+          const result = await pool.request()      
+          .query(querysearch)
+          for (var p of result.recordset) {
+             let vid = new DTOVideo();   
+              this.getinformationList(vid,p);
+              arrayv.push(vid);
+          }
+       
+         pool.close();
+         return arrayv;
+   }
+//GET VIDEO PUBLIC USER
+   static getVideosPublicbyIdUser=async(iduser)=>
+  {
+      let arrayv=[];
+          let querysearch = `   
+
+            SELECT 
+            UserVideos.*, 
+            AlbumUserVideos.Title as AlbumTitle, 
+            Userr.Name, 
+            Userr.Nick, 
+            Userr.Email, 
+            Userr.Imagee 
+            from 
+            UserVideos 
+            inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
+            inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
+            where 
+            Userr.Active = 1 
+            and AlbumUserVideos.Active = 1 
+            and UserVideos.Active = 1 
+            and UserVideos.Visibility='Public'
+            and UserVideos.IdUser = ${iduser}
+            ORDER BY datepublish desc
        `  
           let pool = await Conection.conection();
           const result = await pool.request()      
@@ -808,6 +961,7 @@ static getVideo=async(iduserlogin,idvideo)=>
               Userr.Active = 1 
               and AlbumUserVideos.Active = 1 
               and UserVideos.Active = 1 
+
               and UserVideos.Visibility='Public'
               and UserVideos.IdUser = @iduser
                 ORDER BY datepublish desc
@@ -1138,6 +1292,66 @@ static getVideo=async(iduserlogin,idvideo)=>
      pool.close();
      return array;
     } 
+
+//#endregion
+//#region  OTHERS
+
+
+static  NumberOfVideosLoginUser=async(iduserlogin)=>
+{
+
+        let query = `
+        declare @iduserlogin int =${iduserlogin}
+     
+        SELECT 
+        COUNT(*) as numbercomment
+        from 
+        UserVideos 
+        inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
+        inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
+        where 
+        Userr.Active = 1 
+        and AlbumUserVideos.Active = 1 
+        and UserVideos.Active = 1 
+        and UserVideos.IdUser = @iduserlogin
+
+        `;
+    let pool = await Conection.conection();
+    const result = await pool.request()
+   .query(query)
+   let numbercomment = result.recordset[0].numbercomment;
+    pool.close();
+    return numbercomment;
+    
+}
+static  NumberOfVideosIdUser=async(iduser)=>
+{
+
+        let query = `
+        declare @iduser int =${iduser}
+     
+        SELECT 
+        COUNT(*) as numbercomment
+        from 
+        UserVideos 
+        inner join AlbumUserVideos on AlbumUserVideos.IdAlbumVideos = UserVideos.IdAlbumVideos 
+        inner join Userr on Userr.IdUser = AlbumUserVideos.IdUser 
+        where 
+        Userr.Active = 1 
+        and AlbumUserVideos.Active = 1 
+        and UserVideos.Active = 1 
+        and UserVideos.Visibility='Public'
+        and UserVideos.IdUser = @iduser
+
+        `;
+    let pool = await Conection.conection();
+    const result = await pool.request()
+   .query(query)
+   let numbercomment = result.recordset[0].numbercomment;
+    pool.close();
+    return numbercomment;
+    
+}
 
 //#endregion
 //#region  GetInformation

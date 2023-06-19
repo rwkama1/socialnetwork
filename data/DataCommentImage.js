@@ -67,7 +67,7 @@ class DataCommentImage {
        let resultquery;
         let queryinsert = 
         `
-        IF NOT EXISTS ( SELECT idusercomment FROM UserrCommentsImage WHERE idusercomment=@idusercomment 
+        IF NOT EXISTS ( SELECT * FROM UserrCommentsImage WHERE idusercomment=@idusercomment 
             and iduserimages=@iduserimages)
         BEGIN
             select -1 as notexistcommentimage
@@ -86,7 +86,7 @@ class DataCommentImage {
                 END
                 ELSE
                 BEGIN
-                    IF NOT EXISTS ( SELECT IdUser FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
+                    IF NOT EXISTS ( SELECT * FROM UserrComments WHERE IdUser=@iduser and idusercomment=@idusercomment)
                     BEGIN
                         select -4 as notexistcomment
                     END
@@ -168,6 +168,8 @@ class DataCommentImage {
                             BEGIN
                                 delete from UserrSubComments where idusercomment=@idcomment
                             END
+                            delete from NotificationSubComment where IdUserComment=@idcomment
+                            delete from LikeComment where idusercomment=@idcomment
                             delete from UserrCommentsImage where idusercomment=@idcomment
                             delete from UserrComments where idusercomment=@idcomment and iduser=@iduser
                             select 1 as commentimagedeleted
@@ -219,14 +221,19 @@ class DataCommentImage {
 
     //#region Exists
 
-    static existCommentImage=async(iduser,idimage)=>
+    static existCommentImage=async(idcomment,iduser,idimage)=>
     {
         
         let querysearch=`
-    
+
+        declare @idcomment int=${idcomment};
         IF NOT EXISTS ( 
             SELECT IdUserComment FROM UserrCommentsImage 
-            WHERE IdUserComment = @IdUser AND IdUserImages = @idimage
+            WHERE IdUserComment = 
+            (SELECT idusercomment FROM UserrComments
+                 WHERE iduser=@iduser AND idusercomment=@idcomment )
+           
+            AND IdUserImages = @idimage
             )
         BEGIN
             select CAST(0 AS BIT) as Exist
@@ -261,40 +268,81 @@ class DataCommentImage {
             let arraycomment=[];
               let querysearch=
               `             
-            DECLARE @iduserlogin int = ${iduserlogin}
-            DECLARE @idimage int = ${idimage}
+                DECLARE @iduserlogin int = ${iduserlogin}
+                DECLARE @idimage int = ${idimage}
+     
+                SELECT 
+                uc.idusercomment,
+                uc.textt as textcomment,
+                uc.likes as likescomment,
+                uc.datepublish as datepublishcomment, 
 
-            SELECT 
-			UserrComments.idusercomment,
-			UserrComments.textt as textcomment,
-			UserrComments.likes as likescomment,
-			UserrComments.datepublish as datepublishcomment,
+                UserrCommentsImage.idusercommentimg,
+                UserrCommentsImage.iduserimages,
 
-			UserrCommentsImage.idusercommentimg,
-		    UserrCommentsImage.iduserimages,
+                Userr.iduser as idcommentuser,
+                Userr.name as namecommentuser,
+                Userr.nick as nickcommentuser,
+                Userr.userrname as usernamecommentuser,
+                Userr.imagee as imagecommentuser,
 
-            Userr.iduser as idcommentuser,
-            Userr.name as namecommentuser,
-            Userr.nick as nickcommentuser,
-            Userr.userrname as usernamecommentuser,
-            Userr.imagee as imagecommentuser
+					CASE
+				WHEN EXISTS (
 
-            FROM 
+				 SELECT IdUser FROM LikeComment 
+				  WHERE LikeComment.IdUser = @iduserlogin AND LikeComment.IdUserComment = uc.idusercomment
+				
+				)
+				THEN CAST(1 AS BIT)
+				ELSE CAST(0 AS BIT)
+				END AS existlikeloginuser,
 
-            UserrComments
 
-            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
-			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
-			inner join Userr on Userr.iduser=UserrComments.iduser
+                CASE
+				WHEN EXISTS (
 
-            WHERE 
+                    SELECT IdUserComment FROM UserrCommentsImage 
+                    WHERE UserrCommentsImage.IdUserComment = 
+                    (SELECT idusercomment FROM UserrComments
+                        WHERE UserrComments.iduser=@iduserlogin AND UserrComments.idusercomment=uc.idusercomment )
+                
+                    AND UserrCommentsImage.IdUserImages = ui.iduserimages
+                     
+				
+				)
+				THEN CAST(1 AS BIT)
+				ELSE CAST(0 AS BIT)
+				END AS existcommentloginuser,
 
-			UserImages.Active = 1
-			AND Userr.Active=1
-            AND UserrCommentsImage.iduserimages=@idimage
-            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
-                WHERE IdUserBlocker = @iduserlogin 
-                AND IdUserBlocked = Userr.IdUser)
+
+
+				(
+					SELECT 
+					COUNT(*) as numbersubcomments
+					FROM 
+					UserrSubComments
+					WHERE 
+					UserrSubComments.idusercomment=uc.idusercomment
+				) as numbersubcomment
+
+
+                FROM 
+                UserrComments AS uc
+                LEFT JOIN UserrCommentsImage ON uc.idusercomment = UserrCommentsImage.idusercomment
+                LEFT JOIN UserImages ui ON UserrCommentsImage.iduserimages = ui.iduserimages
+                INNER JOIN Userr ON uc.iduser = Userr.iduser
+                WHERE 
+                ui.Active = 1
+                AND Userr.Active = 1
+                AND ui.iduserimages = @idimage
+                AND NOT EXISTS (
+                    SELECT IdUserBlocker FROM BlockedUser
+                    WHERE IdUserBlocker = @iduserlogin 
+                    AND IdUserBlocked = Userr.iduser
+                )
+
+
+
               `;
        
             let pool = await Conection.conection();
@@ -355,7 +403,10 @@ class DataCommentImage {
         imagecomment.nickcommentuser = result.nickcommentuser; 
         imagecomment.usernamecommentuser = result.usernamecommentuser; 
         imagecomment.imagecommentuser = result.imagecommentuser;
-    
+
+        imagecomment.existlikeloginuser = result.existlikeloginuser;
+        imagecomment.numbersubcomment = result.numbersubcomment;
+        imagecomment.existcommentloginuser=result.existcommentloginuser;
     
     }
     //#endregion

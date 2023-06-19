@@ -114,14 +114,22 @@ This package contains a backend of what would be the logic of a social network s
 ## Usage
 
 
-### API
+### WEB
 
+https://socialnetwork-seven.vercel.app/
+
+### APK
+
+https://github.com/rwkama1/APKS/raw/master/Socialite_1_1.0.apk
+
+### REST API 
 
 https://apin-ext-socialnetworkk.vercel.app/
 
 
 ### Code
 
+https://github.com/rwkama1/HtmlCssJSSocialNetwork
 
 https://github.com/rwkama1/APINextSocialnetworkk
 

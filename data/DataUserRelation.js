@@ -29,23 +29,44 @@ BEGIN
   END
   ELSE
   BEGIN
-    IF  EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=@IdUser and IdFriend=@IdFriend)
+    IF  EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=@IdUser
+       and IdFriend=@IdFriend and UserrRelations.statee='Confirmed' )
     BEGIN
       select -3 as existduplicate
     END
     ELSE
     BEGIN
-      BEGIN TRANSACTION  
-      insert into UserrRelations values (@IdUser,@IdFriend,'Pending') 
-      insert into UserrRelations values (@IdFriend,@IdUser,'Pending') 
-      select 1 as insertsuccess
-      IF(@@ERROR > 0)  
-      BEGIN  
-          ROLLBACK TRANSACTION  
-        END  
-        ELSE  
-      BEGIN  
-      COMMIT TRANSACTION  
+        IF  EXISTS ( SELECT IdUser FROM UserrRelations WHERE IdUser=@IdUser
+              and IdFriend=@IdFriend and UserrRelations.statee='Pending' )
+          BEGIN
+            BEGIN TRANSACTION 
+            update UserrRelations set Statee='Confirmed' where IdUser=@IdUser and IdFriend=@IdFriend
+            update UserrRelations set Statee='Confirmed' where IdUser=@IdFriend and IdFriend=@IdUser
+            select 2 as confirmfriend
+            IF(@@ERROR > 0)  
+            BEGIN  
+                ROLLBACK TRANSACTION  
+            END  
+            ELSE  
+            BEGIN  
+              COMMIT TRANSACTION  
+            END 
+        
+           END
+      ELSE
+      BEGIN
+          BEGIN TRANSACTION  
+          insert into UserrRelations values (@IdUser,@IdFriend,'Pending',@IdUser) 
+          insert into UserrRelations values (@IdFriend,@IdUser,'Pending',@IdUser) 
+          select 1 as insertsuccess
+          IF(@@ERROR > 0)  
+          BEGIN  
+              ROLLBACK TRANSACTION  
+            END  
+            ELSE  
+          BEGIN  
+          COMMIT TRANSACTION  
+          END 
       END 
     END 
   END
@@ -65,7 +86,11 @@ BEGIN
           if (resultquery===undefined) {
                   resultquery = result.recordset[0].existduplicate;
                   if (resultquery===undefined) {
-                    resultquery = result.recordset[0].insertsuccess;
+                    resultquery = result.recordset[0].confirmfriend;
+                    if (resultquery===undefined) {
+                      resultquery = result.recordset[0].insertsuccess;
+                    }
+            
                   }
           }
        }   
@@ -210,7 +235,99 @@ let resultquery;
         WHERE 
           IdUser = ${iduser} 
           and IdFriend = ${idfriend}
+
       ) THEN CAST(1 as bit) ELSE CAST(0 AS BIT) END as Exist  
+      `;
+      let pool = await Conection.conection();
+      const result = await pool.request()
+    .query(query)
+    let exist = result.recordset[0].Exist;
+      pool.close();
+      return exist;
+      
+  }
+
+  // check if 2 users are friends and if the logged in user
+  // is the one who sent the friend request
+
+  static  Exist_ConfirmFriend_LoginUserSender=async(iduserlogin,idfriend)=>
+  {
+    let resultquery;
+      let query = `
+
+      declare @iduserlogin int =${iduserlogin};
+      declare @idfriend int =${idfriend};
+
+    	  IF  EXISTS (
+          SELECT 
+          IdUser
+          FROM 
+            UserrRelations 
+          WHERE 
+            IdUser =@iduserlogin 
+            and IdFriend = @idfriend
+            and statee='Confirmed'
+           )
+        BEGIN
+          select 1 as confirmedfriend
+        END
+        ELSE
+        BEGIN
+          IF EXISTS (
+              SELECT 
+              IdUser
+              FROM 
+                UserrRelations 
+              WHERE 
+                idusersender = @iduserlogin 
+                and IdFriend =@idfriend
+                AND statee='Pending'
+            )
+            BEGIN
+              select 2 as loginuserissender
+            END
+            ELSE
+            BEGIN
+               select 3 as nologinuserissender
+            END
+        END 
+     
+     
+      `;
+      let pool = await Conection.conection();
+      const result = await pool.request()
+    .query(query)
+    resultquery = result.recordset[0].confirmedfriend;
+    if(resultquery===undefined)
+    {
+     resultquery = result.recordset[0].loginuserissender;
+      if (resultquery===undefined) {
+          resultquery = result.recordset[0].nologinuserissender;            
+      }
+    }   
+      pool.close();
+      return resultquery;
+      
+  }
+
+  static  Exist_UserRelation_by_UserSender=async(idusersender,idfriend)=>
+  {
+
+      let query = `
+
+      declare @idusersender int =${idusersender};
+      declare @idfriend int =${idfriend};
+      SELECT 
+      CASE WHEN EXISTS (
+        SELECT 
+        IdUser
+        FROM 
+          UserrRelations 
+        WHERE 
+          idusersender = @idusersender 
+		      and IdFriend =@idfriend
+      ) THEN CAST(1 as bit) ELSE CAST(0 AS BIT) END as Exist  
+
       `;
       let pool = await Conection.conection();
       const result = await pool.request()
@@ -293,21 +410,50 @@ let resultquery;
      }
 
     
-      static getConfirmedFriendsbyUser=async(iduser)=>
+      static getConfirmedFriendsbyUser=async(iduserlogin,iduser)=>
       {
           let arrayuser=[];
               let querysearch=`
-              select 
-              Userr.* 
+        
+
+    declare @iduserlogin int= ${iduserlogin};
+    declare @iduser int =${iduser};
+
+	    select 
+              u.*,
+
+              (select 
+                Count(Userr.IdUser) as NumberFriend 
+              from 
+                UserrRelations 
+                inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+              where 
+                Userr.Active = 1 
+                and UserrRelations.IdUser = u.IdUser
+                and UserrRelations.Statee = 'Confirmed') as numberfriends,
+
+              (SELECT 
+                    CASE WHEN EXISTS (
+                      SELECT 
+                      IdUser
+                      FROM 
+                        UserrRelations 
+                      WHERE 
+                      UserrRelations.IdUser = @iduserlogin
+                        and UserrRelations.IdFriend = u.IdUser
+                        and UserrRelations.statee='Confirmed'
+                        
+                  ) THEN CAST(1 as bit) ELSE CAST(0 AS BIT) END) as existloginuserfriend  
+
             from 
-              UserrRelations 
-              inner join Userr on Userr.IdUser = UserrRelations.IdFriend 
+              UserrRelations as ur
+              inner join Userr as u on u.IdUser = ur.IdFriend 
             where 
-              Userr.Active = 1 
-              and UserrRelations.IdUser = ${iduser} 
-              and UserrRelations.Statee = 'Confirmed' 
+            u.Active = 1 
+              and ur.IdUser = @iduser 
+              and ur.Statee = 'Confirmed' 
             order by 
-              UserrRelations.IdUserRelation desc
+            ur.IdUserRelation desc
             
                 `;
               let pool = await Conection.conection();
@@ -316,7 +462,7 @@ let resultquery;
                   .query(querysearch)
                   for (var recorduser of result.recordset) {
                       let user = new DTOUser();   
-                    DataUser.getinformationList(user, recorduser);
+                    DataUser.getinformationList2(user, recorduser);
                     arrayuser.push(user);
                    }
              pool.close();
@@ -324,51 +470,47 @@ let resultquery;
         
        }
         //PROFILE USER
-       static getConfirmedFriendsbyUserLoginUser=async(iduserlogin,iduser)=>
+       static getConfirmedFriendsbyUserLoginUser=async(iduserlogin)=>
        {
            let arrayuser=[];
-           let resultquery;
+         
            let querysearch=`
 
-               DECLARE @iduserlogin int= ${iduserlogin};
-
-               DECLARE @iduser int= ${iduser};
-
-            	 IF  EXISTS ( 
-                SELECT IdUserBlocker FROM BlockedUser WHERE
-                IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
-                 )
-               BEGIN
-                 select -1 as userblocked
-               END
           
-               ELSE
-               BEGIN
-                  SELECT u.*
-                  FROM Userr u
-                  INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
-                  LEFT JOIN LoginUser lu ON u.IdUser = lu.IdUser
-                  WHERE ur.IdUser = @iduser
-                  AND ur.Statee = 'Confirmed'
-                  ORDER BY lu.IdLoginUser DESC
-               END
+            DECLARE @iduserlogin int = ${iduserlogin};
+
+            SELECT 
+              u.IdUser,
+              u.Name,
+              u.Imagee,
+              u.Descriptionn,
+              CASE WHEN lu.IdLoginUser IS NOT NULL THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS existloginuser
+            FROM Userr u
+            INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
+            LEFT JOIN (
+              SELECT IdUser, IdLoginUser, ROW_NUMBER() OVER (PARTITION BY IdUser ORDER BY IdLoginUser DESC) AS RowNum
+              FROM LoginUser
+            ) lu ON u.IdUser = lu.IdUser AND lu.RowNum = 1
+            WHERE ur.IdUser = @iduserlogin
+              AND ur.Statee = 'Confirmed'
+            ORDER BY lu.IdLoginUser DESC
+
+             
              
                  `;
               let pool = await Conection.conection();
               const result = await pool.request()
               .query(querysearch)
-               resultquery = result.recordset[0].userblocked;
-               if(resultquery===undefined)
-               {
+            
                    for (var recorduser of result.recordset) {
                        let user = new DTOUser();   
-                     DataUser.getinformationList(user, recorduser);
+                     DataUser.getinformationList2(user, recorduser);
                      arrayuser.push(user);
                     }
-                    resultquery=arrayuser;
-                }
+                 
+    
               pool.close();
-              return resultquery;
+              return arrayuser;
          
         }
          //NOTIFICATIONS
@@ -384,9 +526,9 @@ let resultquery;
                 INNER JOIN UserrRelations ur ON u.IdUser = ur.IdFriend
                 WHERE ur.IdUser = @iduserlogin
                 AND ur.Statee = 'Pending'
-                AND  u.Active = 1 
+                AND  u.Active = 1
+                AND ur.IdUserSender != @iduserlogin 
                
- 
               
                   `;
                 let pool = await Conection.conection();

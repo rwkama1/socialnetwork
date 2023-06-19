@@ -81,17 +81,18 @@ class DataSubComment {
             END
             ELSE
             BEGIN
-                IF NOT EXISTS ( SELECT idsubusercomment FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
+                IF NOT EXISTS ( SELECT idsubusercomment FROM UserrSubComments WHERE 
+                     idsubusercomment=@idsubusercomment AND iduser=@iduser)
                 BEGIN
                     select -3 as notexistsubcomment
                 END 
                 ELSE
                 BEGIN
-                    UPDATE UserrSubComments set Textt=@text  where idsubusercomment=@idsubusercomment
+                    UPDATE UserrSubComments set Textt=@text 
+                     where idsubusercomment=@idsubusercomment
                     select 1 as commentupdated   
                 END
-            END
-          
+            END          
         END
      
         `
@@ -132,12 +133,14 @@ class DataSubComment {
                 END
             ELSE
             BEGIN
-                IF NOT EXISTS ( SELECT idsubusercomment FROM UserrSubComments WHERE  idsubusercomment=@idsubusercomment)
+                IF NOT EXISTS ( SELECT idsubusercomment FROM UserrSubComments WHERE 
+                     idsubusercomment=@idsubusercomment and IdUser=@iduser)
                 BEGIN
                     select -2 as notexistsubcomment
                 END 
                 ELSE
                 BEGIN
+                    DELETE  FROM  LikeSubComment where idsubusercomment=@idsubusercomment    
                     DELETE  FROM  UserrSubComments where IdUser=@iduser and idsubusercomment=@idsubusercomment
                     select 1 as deletesubcomment               
                 END 
@@ -225,11 +228,13 @@ class DataSubComment {
 
     //***************************************************************** */
     
-     static getIfExistsSubComentsOfCommentsImage=async(idimage)=>
+     static getIfExistsSubComentsOfCommentsImage=async(iduserlogin,idimage)=>
      {
         let array=[];
         let query=
         `
+        declare @iduserlogin int=${iduserlogin}
+        declare @idimage int= ${idimage}
 		IF NOT EXISTS (SELECT idusercomment  from --I check if the image has comments with subcomments
             (
                 SELECT 
@@ -243,7 +248,10 @@ class DataSubComment {
                 WHERE 
                 UserImages.Active = 1
                 AND Userr.Active=1
-                AND UserrCommentsImage.iduserimages=${idimage}
+                AND UserImages.iduserimages=@idimage
+				 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin
+            AND IdUserBlocked = Userr.IdUser)
 
             ) AS commentsubcomentimg
 
@@ -285,7 +293,10 @@ class DataSubComment {
           WHERE 
         UserImages.Active = 1
         AND Userr.Active=1
-        AND UserrCommentsImage.iduserimages=${idimage}
+        AND UserImages.iduserimages=@idimage
+		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin
+            AND IdUserBlocked = Userr.IdUser)
     END  
     ELSE 
     BEGIN --if there are subcomments then query all comments with subcomments
@@ -328,7 +339,10 @@ class DataSubComment {
         UserImages.Active = 1
         AND Usercomment.Active=1
         AND Usersubcomment.Active=1
-        AND UserrCommentsImage.iduserimages=${idimage}
+        AND UserImages.iduserimages=@idimage
+		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin
+            AND IdUserBlocked = Usercomment.IdUser)
 
         union all
 
@@ -367,12 +381,15 @@ class DataSubComment {
         WHERE 
         UserImages.Active = 1
         AND Userr.Active=1
-        AND UserrCommentsImage.iduserimages=${idimage}
+        AND UserImages.iduserimages=@idimage
         AND NOT EXISTS
         (
             SELECT idsubusercomment,idusercomment FROM UserrSubComments
             WHERE UserrComments.idusercomment=UserrSubComments.idusercomment
         ) 
+		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin
+            AND IdUserBlocked = Userr.IdUser)
         END
 
         `
@@ -388,12 +405,14 @@ class DataSubComment {
          pool.close();
          return array;
      }
-     static getIfExistsSubComentsOfCommentsPost=async(idpost)=>
+     static getIfExistsSubComentsOfCommentsPost=async(iduserlogin,idpost)=>
      {
         let array=[];
         let query=
         `
-        IF NOT EXISTS (SELECT idusercomment  from --I check if the image has comments with subcomments
+        declare @iduserlogin int= ${iduserlogin}
+        declare @idpost int= ${idpost}
+        IF NOT EXISTS (SELECT idusercomment  from --I check if the post has comments with subcomments
             (
                 SELECT 
                 UserrComments.idusercomment
@@ -406,7 +425,7 @@ class DataSubComment {
                 WHERE 
                 UserPost.Active = 1
                 AND Userr.Active=1
-                AND UserrCommentsPost.idpost=${idpost}
+                AND UserPost.idpost=@idpost
 
             ) AS commentsubcomentpost
 
@@ -448,7 +467,10 @@ class DataSubComment {
           WHERE 
         UserPost.Active = 1
         AND Userr.Active=1
-        AND UserrCommentsPost.idpost=${idpost}
+        AND UserPost.idpost=@idpost
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin
+            AND IdUserBlocked = Userr.IdUser)
     END  
     ELSE 
     BEGIN --if there are subcomments then query all comments with subcomments
@@ -490,7 +512,10 @@ class DataSubComment {
         UserPost.Active = 1
         AND Usercomment.Active=1
         AND Usersubcomment.Active=1
-        AND UserrCommentsPost.idpost=${idpost}
+        AND UserPost.idpost=@idpost
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin
+            AND IdUserBlocked = Usercomment.IdUser)
 
         union all
 
@@ -529,12 +554,15 @@ class DataSubComment {
         WHERE 
         UserPost.Active = 1
         AND Userr.Active=1
-        AND UserrCommentsPost.idpost=${idpost}
+        AND UserPost.idpost=@idpost
         AND NOT EXISTS
         (
             SELECT idsubusercomment,idusercomment FROM UserrSubComments
             WHERE UserrComments.idusercomment=UserrSubComments.idusercomment
         ) 
+        AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+            WHERE IdUserBlocker = @iduserlogin
+            AND IdUserBlocked = Userr.IdUser)
     END
 
         `
@@ -550,12 +578,16 @@ class DataSubComment {
          pool.close();
          return array;
      }
-     static getIfExistsSubComentsOfCommentsVideo=async(idvideo)=>
+     static getIfExistsSubComentsOfCommentsVideo=async(iduserlogin,idvideo)=>
      {
         let array=[];
         let query=
         `
-        IF NOT EXISTS (SELECT idusercomment  from --I check if the video has comments with subcomments
+    
+DECLARE @iduserlogin int = ${iduserlogin}
+DECLARE @idvideo int = ${idvideo}
+
+ IF NOT EXISTS (SELECT idusercomment  from --I check if the video has comments with subcomments
             (
                 SELECT 
                 UserrComments.idusercomment
@@ -568,7 +600,10 @@ class DataSubComment {
                 WHERE 
                 UserVideos.Active = 1
                 AND Userr.Active=1
-                AND UserrCommentsVideo.iduservideos=${idvideo}
+                AND UserrCommentsVideo.iduservideos=@idvideo
+				AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+				 WHERE IdUserBlocker = @iduserlogin 
+                 AND IdUserBlocked = Userr.IdUser)
 
             ) AS commentsubcomentvideo
 
@@ -610,7 +645,10 @@ class DataSubComment {
         WHERE 
         UserVideos.Active = 1
         AND Userr.Active=1
-        AND UserrCommentsVideo.iduservideos=${idvideo}
+        AND UserVideos.iduservideos=@idvideo
+		AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+              WHERE IdUserBlocker = @iduserlogin 
+                 AND IdUserBlocked = Userr.IdUser)
     END  
     ELSE 
     BEGIN --if there are subcomments then query all comments with subcomments
@@ -652,8 +690,10 @@ class DataSubComment {
         UserVideos.Active = 1
         AND Usercomment.Active=1
         AND Usersubcomment.Active=1
-        AND UserrCommentsVideo.iduservideos=${idvideo}
-
+        AND UserVideos.iduservideos=@idvideo
+		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+              WHERE IdUserBlocker = @iduserlogin 
+                 AND IdUserBlocked = Usercomment.IdUser)
         union all
 
         SELECT 
@@ -691,13 +731,17 @@ class DataSubComment {
         WHERE 
         UserVideos.Active = 1
         AND Userr.Active=1
-        AND UserrCommentsVideo.iduservideos=${idvideo}
+        AND UserVideos.iduservideos=@idvideo
         AND NOT EXISTS
         (
             SELECT idsubusercomment,idusercomment FROM UserrSubComments
             WHERE UserrComments.idusercomment=UserrSubComments.idusercomment
         ) 
+		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+              WHERE IdUserBlocker = @iduserlogin 
+                 AND IdUserBlocked = Userr.IdUser)
     END
+
 
         `
         let pool = await Conection.conection();
@@ -713,27 +757,56 @@ class DataSubComment {
          return array;
      }
 
-     static getSubCommentsByComment=async(idcomment)=>
+     static getSubCommentsByComment=async(iduserlogin,idcomment)=>
      {
         let array=[];
         let query=
            `
+           declare @iduserlogin int= ${iduserlogin}
            SELECT
-           UserrSubComments.idsubusercomment ,
-           UserrSubComments.likes ,
-           UserrSubComments.textt ,
-           UserrSubComments.datepublish ,
+           usc.idsubusercomment ,
+           usc.likes ,
+           usc.textt ,
+           usc.datepublish ,
            Userr.iduser ,
            Userr.name ,
            Userr.nick ,
            Userr.userrname ,
-           Userr.imagee
+           Userr.imagee,
+           CASE
+           WHEN EXISTS (
+
+            SELECT IdUser FROM LikeSubComment 
+            WHERE IdUser = @iduserlogin AND idsubusercomment = usc.idsubusercomment
+           
+           )
+           THEN CAST(1 AS BIT)
+           ELSE CAST(0 AS BIT)
+           END AS existlikeloginuser,
+
+
+           CASE
+           WHEN EXISTS (
+
+            SELECT IdUser FROM UserrSubComments 
+            WHERE IdUser = @iduserlogin AND UserrSubComments.IdSubUserComment = usc.IdSubUserComment
+                
+           
+           )
+           THEN CAST(1 AS BIT)
+           ELSE CAST(0 AS BIT)
+           END AS existsubcommentloginuser
+
+
            FROM 
-           UserrSubComments
-           inner join Userr on UserrSubComments.iduser=Userr.iduser
+           UserrSubComments as usc
+           inner join Userr on usc.iduser=Userr.iduser
            WHERE 
-           UserrSubComments.idusercomment=@idcomment
+           usc.idusercomment=@idcomment
            AND Userr.active = 1
+           AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+           WHERE IdUserBlocker = @iduserlogin
+           AND IdUserBlocked = Userr.IdUser)
  
            `
         let pool = await Conection.conection();
@@ -824,7 +897,10 @@ class DataSubComment {
     subcomment.namesubcommentuser = result.name; 
     subcomment.nicksubcommentuser = result.nick; 
     subcomment.usernamesubcommentuser = result.userrname;
-    subcomment.imagesubcommentuser = result.imagee;  
+    subcomment.imagesubcommentuser = result.imagee; 
+    
+    subcomment.existlikeloginuser = result.existlikeloginuser; 
+    subcomment.existsubcommentloginuser = result.existsubcommentloginuser; 
 
 }
 

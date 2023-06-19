@@ -169,7 +169,30 @@ class DataLikeSubComment {
         
          }
         //#endregion
-
-  
+        //#region  OTHER
+        static  NumberOfLikesSubComment=async(idcomment)=>
+        {
+        
+                let query = `
+    
+               SELECT 
+                COUNT(*) as numberlikes
+                FROM 
+                LikeSubComment
+                inner join UserrSubComments on
+                UserrSubComments.IdSubUserComment = LikeSubComment.IdSubUserComment
+                WHERE 
+                LikeSubComment.IdSubUserComment=${idcomment} 
+    
+                `;
+            let pool = await Conection.conection();
+            const result = await pool.request()
+           .query(query)
+           let numberlikes = result.recordset[0].numberlikes;
+            pool.close();
+            return numberlikes;
+            
+        }
+  //#endregion
 }
 module.exports = { DataLikeSubComment };

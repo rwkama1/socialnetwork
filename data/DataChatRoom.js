@@ -86,37 +86,45 @@ class DataChatRoom
         let resultquery;
         let queryupdate = 
         `
-        
-        IF NOT EXISTS (SELECT IdUserSender FROM ChatRoom WHERE
+        declare @idusersender int = ${idusersender}
+        declare @iduserreceived int = ${iduserreceived}
+
+    IF NOT EXISTS (SELECT IdUserSender FROM ChatRoom WHERE
             IdUserSender=@idusersender and IdUserReceived=@iduserreceived)
-         BEGIN
-           select -1 as notexistchatroom 
+        BEGIN
+        select -1 as notexistchatroom 
+        END
+        ELSE
+        BEGIN
+        BEGIN TRANSACTION  
+
+         DELETE FROM NotificationMessage WHERE IdUserSender=@idusersender and IdUserReceived=@iduserreceived
+
+          DELETE FROM NotificationMessage WHERE IdUserSender=@iduserreceived and IdUserReceived=@idusersender
+
+         DELETE FROM userrmessage WHERE IdSender=@idusersender and IdUserReceived=@iduserreceived
+
+         DELETE FROM userrmessage WHERE IdSender=@iduserreceived and IdUserReceived=@idusersender
+
+         DELETE FROM ChatRoom WHERE IdUserSender=@idusersender and IdUserReceived=@iduserreceived
+         
+         DELETE FROM ChatRoom WHERE IdUserSender=@iduserreceived and IdUserReceived=@idusersender 
+
+         select 1 deletechatroom
+
+         IF(@@ERROR > 0)  
+         BEGIN  
+             ROLLBACK TRANSACTION  
+         END  
+         ELSE  
+         BEGIN  
+         COMMIT TRANSACTION  
          END
-         ELSE
-         BEGIN
-            BEGIN TRANSACTION  
+     END
 
-             DELETE FROM ChatRoom WHERE IdUserSender=@idusersender and IdUserReceived=@iduserreceived
-             
-             DELETE FROM ChatRoom WHERE IdUserSender=@iduserreceived and IdUserReceived=@idusersender 
-
-             select 1 deletechatroom
-
-             IF(@@ERROR > 0)  
-             BEGIN  
-                 ROLLBACK TRANSACTION  
-             END  
-             ELSE  
-             BEGIN  
-             COMMIT TRANSACTION  
-             END
-         END
         `
         let pool = await Conection.conection();
         const result = await pool.request()
-       .input('iduserreceived', Int,iduserreceived)
-       .input('idusersender', Int, idusersender) 
-      
        .query(queryupdate)
        resultquery = result.recordset[0].notexistchatroom;
        if(resultquery===undefined)
@@ -131,77 +139,108 @@ class DataChatRoom
 
     //#region GETS
 
-    static getChatRoomsByUser=async(iduserlogin,iduser)=>
+    static getChatRoomsByUser=async(iduserlogin)=>
     {
         
         let array=[];
-        let resultquery;
+      
        let querysearch2=`
 
-       declare @iduserlogin int = ${iduserlogin}
+       DECLARE @iduserlogin INT = ${iduserlogin};
 
-        IF EXISTS ( 
-          SELECT IdUserBlocker FROM BlockedUser WHERE
-          IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
-           )
-         BEGIN
-           select -1 as userblocked
-         END
-         ELSE
-         BEGIN
        SELECT 
-       CR.IdRoom, 
-       U1.IdUser as iduser1,
-       U1.Name as nameuser1 , 
-       U1.Imagee as imageuser1 , 
-       U2.IdUser as iduser2,
-       U2.Name as nameuser2 , 
-       U2.Imagee as imageuser2 , 
-       M.IdUserMessages,
-       M.Textt AS LastMessage, 
-       M.DateeTime AS LastMessageDate
-      FROM 
-       userr U1 
-       JOIN chatroom CR ON CR.idusersender = U1.iduser 
-       OR CR.iduserreceived = U1.iduser 
-       JOIN userr U2 ON U2.iduser = CR.idusersender 
-       OR U2.iduser = CR.iduserreceived 
-       AND U2.iduser != U1.iduser 
-       JOIN (
-         SELECT 
-           idroom, 
-           Max(dateetime) AS max_date 
-         FROM 
-           userrmessage 
-         GROUP BY 
-           idroom
-       ) T ON T.idroom = CR.idroom 
-       JOIN userrmessage M ON M.idroom = T.idroom 
-       AND M.dateetime = T.max_date 
-     WHERE 
-       U1.iduser = @iduser
-       
-    ORDER BY M.DateeTime desc
-     END
+          CR.IdRoom, 
+          U1.IdUser AS iduser1,
+          U1.Name AS nameuser1, 
+          U1.Imagee AS imageuser1, 
+          U2.IdUser AS iduser2,
+          U2.Name AS nameuser2, 
+          U2.Imagee AS imageuser2, 
+          M.IdUserMessages,
+          M.Textt AS LastMessage, 
+          M.DateeTime AS LastMessageDate
+       FROM 
+          chatroom CR
+          JOIN userr U1 ON CR.idusersender = U1.iduser
+          JOIN userr U2 ON CR.iduserreceived = U2.iduser
+          JOIN (
+              SELECT idroom, MAX(dateetime) AS max_date 
+              FROM userrmessage 
+              GROUP BY idroom
+          ) T ON T.idroom = CR.idroom 
+          JOIN userrmessage M ON M.idroom = T.idroom AND M.dateetime = T.max_date 
+       WHERE 
+          U1.iduser = @iduserlogin OR U2.iduser = @iduserlogin
+          AND NOT EXISTS (
+              SELECT IdUserBlocker FROM BlockedUser
+              WHERE IdUserBlocker = @iduserlogin AND IdUserBlocked = U2.IdUser
+          )
+       ORDER BY M.DateeTime DESC
+     
        `
      
       let pool = await Conection.conection();
       const result = await pool.request()
-
-      .input('iduser', Int,iduser)
       .query(querysearch2)
-      resultquery = result.recordset[0].userblocked;
-      if (resultquery===undefined)
-      {
+     
       for (var r of result.recordset) {
         let chatroom = new DTOChatRoom(); 
-       this.getinformationList(chatroom,r);
+        this.getinformationList(chatroom,r);
          array.push(chatroom);
-         resultquery=array;
+        
       }
-    } 
+   
      pool.close();
-     return resultquery;
+     return array;
+    }
+
+    static getUsersChatRoomsByUser=async(iduserlogin)=>
+    {
+        
+        let array=[];
+      
+       let querysearch2=`
+
+       declare @iduserlogin int = ${iduserlogin};
+
+       SELECT 
+       CR.idroom, 
+       U1.iduser AS iduser1, 
+       U1.name AS nameuser1, 
+       U1.imagee AS imageuser1,
+       U2.iduser AS iduser2, 
+       U2.name AS nameuser2, 
+       U2.imagee AS imageuser2
+      FROM 
+       chatroom CR 
+       JOIN userr U1 ON CR.iduserreceived = U1.iduser 
+       JOIN userr U2 ON CR.idusersender = U2.iduser 
+      WHERE 
+       U1.iduser = @iduserlogin 
+       AND NOT EXISTS (SELECT idroom FROM userrmessage 
+        WHERE idroom = CR.idroom)
+       AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+        WHERE IdUserBlocker = @iduserlogin 
+        AND IdUserBlocked = U2.IdUser)
+      GROUP BY 
+       CR.idroom, U1.iduser, U1.name, U1.imagee, 
+       U2.iduser, U2.name, U2.imagee
+    
+       `
+     
+      let pool = await Conection.conection();
+      const result = await pool.request()
+      .query(querysearch2)
+     
+      for (var r of result.recordset) {
+        let chatroom = new DTOChatRoom(); 
+        this.getinformationListUsers(chatroom,r);
+         array.push(chatroom);
+        
+      }
+   
+     pool.close();
+     return array;
     }
 
     //#endregion
@@ -225,6 +264,23 @@ class DataChatRoom
 
     
     }
+
+    static  getinformationListUsers(chatroom, result) {
+  
+        chatroom.idchatroom = result.IdRoom;
+
+        chatroom.iduser1=result.iduser1;
+        chatroom.nameuser1=result.nameuser1;
+        chatroom.profileimage1=result.imageuser1;
+
+        chatroom.iduser2=result.iduser2;
+        chatroom.nameuser2=result.nameuser2;
+        chatroom.profileimage2=result.imageuser2;
+
+        
+    
+    }
+
 
     //#endregion
 }

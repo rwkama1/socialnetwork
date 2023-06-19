@@ -1,6 +1,6 @@
 {
   "name": "socialnetworkk",
-  "version": "1.0.2",
+  "version": "1.0.38",
   "description": "This package contains a backend of what would be the logic of a social network software",
   "main": "app.js",
   "scripts": {
@@ -19,8 +19,9 @@
     "javascript",
     "user",
     "socialnetwork",
+    "web-social-share",
     "social-network",
-    "social-netowrking",
+    "social-networking",
     "create-social-network",
     "social-links",
     "social media",

@@ -189,13 +189,33 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		u.Email as emailuser,
 		u.Imagee as imageuser,
 		u.Country as countryuser,
-		'P' as typee
+		'P' as typee,
+		CASE
+		WHEN EXISTS (
+			SELECT IdUser FROM LikePost
+			WHERE LikePost.IdUser = @iduserlogin AND LikePost.idpost = p.idpost
+		)
+		THEN CAST(1 AS BIT)
+		ELSE CAST(0 AS BIT)
+		END AS existlikeloginuser,
+
+		(
+			SELECT COUNT(*) as numbercomment
+			FROM UserrComments
+			INNER JOIN UserrCommentsPost ON UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			INNER JOIN UserPost ON UserPost.idpost = UserrCommentsPost.idpost
+			WHERE UserPost.Active = 1 
+			AND UserrCommentsPost.idpost = p.idpost
+		) AS numbercomments
+
+
 		FROM UserPost p
 		JOIN UserrRelations r ON p.IdUser = r.IdFriend
 		JOIN Userr u on p.IdUser = u.IdUser
 		WHERE 
 		u.Active = 1
 		AND p.Active = 1
+		and  p.Visibility='Public'
 		AND r.IdUser = @iduserlogin
 		AND r.Statee = 'Confirmed'
 
@@ -233,7 +253,29 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		u.Email as emailuser,
 		u.Imagee as imageuser,
 		u.Country as countryuser,
-		'I' as typee	
+		'I' as typee,
+		CASE
+		WHEN EXISTS (
+			SELECT IdUser FROM LikeImage
+			WHERE LikeImage.IdUser = @iduserlogin AND IdUserImages = i.iduserimages
+		)
+		THEN CAST(1 AS BIT)
+		ELSE CAST(0 AS BIT)
+		END AS existlikeloginuser,
+
+		(
+		SELECT 
+		COUNT(*) as numbercomment
+		FROM 
+		UserrComments
+		inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+		inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+		WHERE 
+		UserImages.Active = 1
+		AND UserrCommentsImage.iduserimages=i.iduserimages
+		) AS numbercomments
+
+
 		FROM UserImages i
 		JOIN UserrRelations r ON i.IdUser = r.IdFriend
 		JOIN Userr u on i.IdUser = u.IdUser
@@ -242,6 +284,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		 u.Active = 1
 		 AND ai.Active=1
 		 AND i.Active = 1
+		 and  i.Visibility='Public'
 		 AND r.IdUser = @iduserlogin
 		 AND r.Statee = 'Confirmed'
 
@@ -284,7 +327,30 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		u.Email as emailuser,
 		u.Imagee as imageuser,
 		u.Country as countryuser,
-		'V' as typee
+		'V' as typee,
+
+		CASE
+		WHEN EXISTS (
+			SELECT IdUser FROM LikeVideo
+			WHERE LikeVideo.IdUser = @iduserlogin AND iduservideos = v.iduservideos
+		)
+		THEN CAST(1 AS BIT)
+		ELSE CAST(0 AS BIT)
+		END AS existlikeloginuser,
+
+		(
+			SELECT 
+			COUNT(*) as numbercomment
+			FROM 
+			UserrComments
+			inner join UserrCommentsVideo on UserrCommentsVideo.idusercomment = UserrComments.idusercomment
+			inner join  UserVideos on UserVideos.iduservideos=UserrCommentsVideo.iduservideos
+			WHERE 
+			UserVideos.Active = 1
+			AND UserrCommentsVideo.iduservideos=v.iduservideos
+		) AS numbercomments
+
+
 		FROM UserVideos v
 		JOIN UserrRelations r ON v.IdUser = r.IdFriend
 		JOIN Userr u on v.IdUser = u.IdUser
@@ -293,6 +359,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		u.Active = 1
 		AND av.Active=1
 		AND v.Active = 1	
+		and  v.Visibility='Public'
 		AND r.IdUser = @iduserlogin 
 		AND r.Statee = 'Confirmed'
 			
@@ -343,13 +410,35 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		u.Email as emailuser,
 		u.Imagee as imageuser,
 		u.Country as countryuser,
-		'P' as typee
+		'P' as typee,
+
+		CASE
+		WHEN EXISTS (
+			SELECT IdUser FROM LikePost
+			WHERE LikePost.IdUser = @iduserlogin AND LikePost.idpost = p.idpost
+		)
+		THEN CAST(1 AS BIT)
+		ELSE CAST(0 AS BIT)
+		END AS existlikeloginuser,
+
+		(
+			SELECT COUNT(*) as numbercomment
+			FROM UserrComments
+			INNER JOIN UserrCommentsPost ON UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			INNER JOIN UserPost ON UserPost.idpost = UserrCommentsPost.idpost
+			WHERE UserPost.Active = 1 
+			AND UserrCommentsPost.idpost = p.idpost
+		) AS numbercomments
+
+
+
 		FROM UserPost p
 		JOIN Followers f ON p.IdUser = f.IdFollowedUser
 		JOIN Userr u on p.IdUser = u.IdUser
 		WHERE
 		u.Active = 1
 		AND p.Active = 1
+		and  p.Visibility='Public'
 		AND f.IdFollowerUser = @iduserlogin 
 		GROUP BY 
 		p.idpost ,	
@@ -386,7 +475,28 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		u.Email as emailuser,
 		u.Imagee as imageuser,
 		u.Country as countryuser,
-		'I' as typee	
+		'I' as typee,
+		CASE
+		WHEN EXISTS (
+			SELECT IdUser FROM LikeImage
+			WHERE LikeImage.IdUser = @iduserlogin AND IdUserImages = i.iduserimages
+		)
+		THEN CAST(1 AS BIT)
+		ELSE CAST(0 AS BIT)
+		END AS existlikeloginuser,
+
+		(
+		SELECT 
+		COUNT(*) as numbercomment
+		FROM 
+		UserrComments
+		inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+		inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+		WHERE 
+		UserImages.Active = 1
+		AND UserrCommentsImage.iduserimages=i.iduserimages
+		) AS numbercomments
+
 		FROM UserImages i
 		JOIN Followers f ON i.IdUser = f.IdFollowedUser
 		JOIN Userr u on i.IdUser = u.IdUser
@@ -394,6 +504,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		WHERE 
 		u.Active = 1
 		AND i.Active = 1
+		and  i.Visibility='Public'
 		AND ai.Active = 1
 		AND f.IdFollowerUser = @iduserlogin
 		
@@ -436,7 +547,29 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		u.Email as emailuser,
 		u.Imagee as imageuser,
 		u.Country as countryuser,
-		'V' as typee
+		'V' as typee,
+		CASE
+		WHEN EXISTS (
+			SELECT IdUser FROM LikeVideo
+			WHERE LikeVideo.IdUser = @iduserlogin AND iduservideos = v.iduservideos
+		)
+		THEN CAST(1 AS BIT)
+		ELSE CAST(0 AS BIT)
+		END AS existlikeloginuser,
+
+		(
+			SELECT 
+			COUNT(*) as numbercomment
+			FROM 
+			UserrComments
+			inner join UserrCommentsVideo on UserrCommentsVideo.idusercomment = UserrComments.idusercomment
+			inner join  UserVideos on UserVideos.iduservideos=UserrCommentsVideo.iduservideos
+			WHERE 
+			UserVideos.Active = 1
+			AND UserrCommentsVideo.iduservideos=v.iduservideos
+		) AS numbercomments
+
+
 		FROM UserVideos v
 		JOIN Followers f ON v.IdUser = f.IdFollowedUser
 		JOIN Userr u on v.IdUser = u.IdUser
@@ -444,6 +577,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		WHERE
 		u.Active = 1
 		AND v.Active = 1
+		and  v.Visibility='Public'
 		AND av.Active = 1
 		AND f.IdFollowerUser = @iduserlogin 
 			
@@ -502,10 +636,31 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 	u.Email as emailuser,
 	u.Imagee as imageuser,
 	u.Country as countryuser,
-	'P' as typee
+	'P' as typee,
+	CASE
+		WHEN EXISTS (
+			SELECT IdUser FROM LikePost
+			WHERE LikePost.IdUser = @iduserlogin AND LikePost.idpost = p.idpost
+		)
+		THEN CAST(1 AS BIT)
+		ELSE CAST(0 AS BIT)
+		END AS existlikeloginuser,
+
+		(
+			SELECT COUNT(*) as numbercomment
+			FROM UserrComments
+			INNER JOIN UserrCommentsPost ON UserrCommentsPost.idusercomment = UserrComments.idusercomment
+			INNER JOIN UserPost ON UserPost.idpost = UserrCommentsPost.idpost
+			WHERE UserPost.Active = 1 
+			AND UserrCommentsPost.idpost = p.idpost
+		) AS numbercomments
+
+
+
 	FROM UserPost p
 	JOIN Userr u on p.IdUser = u.IdUser
 	WHERE p.iduser <> @iduserlogin
+	and  p.Visibility='Public'
 	AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
 	WHERE IdUserBlocker = @iduserlogin 
 	AND IdUserBlocked = u.IdUser)
@@ -546,11 +701,35 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 	u.Email as emailuser,
 	u.Imagee as imageuser,
 	u.Country as countryuser,
-	'I' as typee	
+	'I' as typee,
+	CASE
+	WHEN EXISTS (
+		SELECT IdUser FROM LikeImage
+		WHERE LikeImage.IdUser = @iduserlogin AND IdUserImages = i.iduserimages
+	)
+	THEN CAST(1 AS BIT)
+	ELSE CAST(0 AS BIT)
+	END AS existlikeloginuser,
+
+	(
+	SELECT 
+	COUNT(*) as numbercomment
+	FROM 
+	UserrComments
+	inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+	inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+	WHERE 
+	UserImages.Active = 1
+	AND UserrCommentsImage.iduserimages=i.iduserimages
+	) AS numbercomments
+	
+
+
 	FROM UserImages i
 	JOIN Userr u on i.IdUser = u.IdUser
 	JOIN AlbumUserImages ai on i.idalbumimages = ai.idalbumimages
 	WHERE i.iduser <> @iduserlogin
+	and  i.Visibility='Public'
 	AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
 	WHERE IdUserBlocker = @iduserlogin 
 	AND IdUserBlocked = u.IdUser)
@@ -595,11 +774,33 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 	u.Email as emailuser,
 	u.Imagee as imageuser,
 	u.Country as countryuser,
-	'V' as typee
+	'V' as typee,
+	CASE
+	WHEN EXISTS (
+		SELECT IdUser FROM LikeVideo
+		WHERE LikeVideo.IdUser = @iduserlogin AND iduservideos = v.iduservideos
+	)
+	THEN CAST(1 AS BIT)
+	ELSE CAST(0 AS BIT)
+	END AS existlikeloginuser,
+
+	(
+		SELECT 
+		COUNT(*) as numbercomment
+		FROM 
+		UserrComments
+		inner join UserrCommentsVideo on UserrCommentsVideo.idusercomment = UserrComments.idusercomment
+		inner join  UserVideos on UserVideos.iduservideos=UserrCommentsVideo.iduservideos
+		WHERE 
+		UserVideos.Active = 1
+		AND UserrCommentsVideo.iduservideos=v.iduservideos
+	) AS numbercomments
+
 	FROM UserVideos v
 	JOIN Userr u on v.IdUser = u.IdUser
 	JOIN AlbumUserVideos av on v.idalbumvideos = av.idalbumvideos
 	WHERE v.iduser <> @iduserlogin
+	and  v.Visibility='Public'
 	AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
 	WHERE IdUserBlocker = @iduserlogin 
 	AND IdUserBlocked = u.IdUser)
@@ -676,6 +877,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			 FROM UserPost p
 			 WHERE
 			 p.Active=1	
+			 and  p.Visibility='Public'
 			 AND
 			 
 			 (p.title LIKE '%${searchtext}%'  
@@ -694,7 +896,8 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			 'V' as typee
 			 FROM UserVideos v
 			 WHERE
-			 v.Active=1	
+			 v.Active=1
+			 and  v.Visibility='Public'	
 			 AND
 			 (
 			 v.title LIKE '%${searchtext}%'  
@@ -714,6 +917,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			 FROM UserImages i
 			 WHERE
 			 i.Active=1	
+			 and  i.Visibility='Public'
 			 AND
 			 (
 			 i.title  LIKE '%${searchtext}%'
@@ -737,25 +941,15 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
         return array;
  }
 
-
- static getPhotoPostVideoByUser=async(iduserlogin,iduser)=>
+ static getPhotoPostVideoByUser=async(iduser)=>
  {
          
          let array=[];
-		 let resultquery;
+		
          let querysearch = 
 		 ` 
 
-		 IF  EXISTS ( 
-			SELECT IdUserBlocker FROM BlockedUser WHERE
-			IdUserBlocker = @iduserlogin AND IdUserBlocked = @iduser
-			 )
-		 BEGIN
-		   select -1 as userblocked
-		 END
-
-		 ELSE
-		 BEGIN
+		 
 			SELECT
 			UserPost.idpost as id,
 			0 as idalbum,
@@ -778,6 +972,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
 			WHERE Userr.Active = 1
 			AND UserPost.Active = 1
+			and UserPost.Visibility='Public'
 			AND UserPost.IdUser = @iduser
 			
 			
@@ -809,6 +1004,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			WHERE Userr.Active = 1
 			AND AlbumUserImages.Active = 1
 			AND UserImages.Active = 1
+			and UserImages.Visibility='Public'
 			AND UserImages.IdUser = @iduser
 			
 			
@@ -839,30 +1035,211 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 			WHERE Userr.Active = 1
 			AND AlbumUserVideos.Active = 1
 			AND UserVideos.Active = 1
+			and UserVideos.Visibility='Public'
 			AND UserVideos.IdUser = @iduser
 			ORDER BY datepublish desc
-		 END 
+	
 
          `  
          let pool = await Conection.conection();
          const result = await pool.request()
 		 .input('iduser', Int, iduser)  
-		 .input('iduserlogin', Int, iduserlogin)   
+		 
          .query(querysearch)
-		 resultquery = result.recordset[0].userblocked;
-		 if(resultquery===undefined)
-		 {
+		
 			for (var resu of result.recordset) {
 				let photopostvideo = new DTOPhotoPostVideo();   
 				this.getinformationList(photopostvideo,resu);
 				array.push(photopostvideo);
 				
 			}
-			resultquery=array;
-		 }
+			
+		
         pool.close();
-        return resultquery;
- }//TIMELINE USER 
+        return array;
+ }
+ static getPhotoPostVideoByLoginUser=async(iduser,iduserlogin)=>
+ {
+         
+         let array=[];
+		
+         let querysearch = 
+		 ` 
+		SELECT
+			up.idpost as id,
+			0 as idalbum,
+			'' as albumtitle,
+			up.iduser,
+			up.title,
+			up.descriptionn,
+			up.likes,
+			'' as url,
+			up.visibility,
+			up.datepublish,
+			up.active,
+			Userr.Name as nameuser ,
+			Userr.Nick as nickuser ,
+			Userr.Email as emailuser,
+			Userr.Imagee as imageuser,
+			Userr.Country as countryuser,
+			'P' as typee,
+
+			CASE
+			WHEN EXISTS (
+				SELECT IdUser FROM LikePost
+				WHERE LikePost.IdUser = @iduserlogin AND LikePost.idpost = up.idpost
+			)
+			THEN CAST(1 AS BIT)
+			ELSE CAST(0 AS BIT)
+			END AS existlikeloginuser,
+
+			(
+				SELECT COUNT(*) as numbercomment
+				FROM UserrComments
+				INNER JOIN UserrCommentsPost ON UserrCommentsPost.idusercomment = UserrComments.idusercomment
+				INNER JOIN UserPost ON UserPost.idpost = UserrCommentsPost.idpost
+				WHERE UserPost.Active = 1 AND UserrCommentsPost.idpost = up.idpost
+			) AS numbercomments
+
+
+
+			FROM UserPost as up
+			INNER JOIN Userr ON Userr.IdUser = up.IdUser
+			WHERE Userr.Active = 1
+			AND up.Active = 1
+			
+			AND up.IdUser = @iduser
+			
+			
+			UNION
+			
+			SELECT
+			ui.iduserimages as id,
+			ui.idalbumimages as idalbum,
+			AlbumUserImages.title as albumtitle,
+			ui.iduser,
+			ui.title,
+			ui.descriptionn,
+			ui.likes,
+			ui.urlimage as url,
+			ui.visibility,
+			ui.datepublish,
+			ui.active,
+			Userr.Name as nameuser,
+			Userr.Nick as nickuser,
+			Userr.Email as emailuser,
+			Userr.Imagee as imageuser,
+			Userr.Country as countryuser,
+			'I' as typee,
+
+			CASE
+			WHEN EXISTS (
+				SELECT IdUser FROM LikeImage
+				WHERE IdUser = @iduserlogin AND IdUserImages = ui.iduserimages
+			)
+			THEN CAST(1 AS BIT)
+			ELSE CAST(0 AS BIT)
+			END AS existlikeloginuser,
+
+			(
+			SELECT 
+            COUNT(*) as numbercomment
+            FROM 
+            UserrComments
+            inner join UserrCommentsImage on UserrCommentsImage.idusercomment = UserrComments.idusercomment
+			inner join  UserImages on UserImages.iduserimages=UserrCommentsImage.iduserimages
+            WHERE 
+            UserImages.Active = 1
+            AND UserrCommentsImage.iduserimages=ui.iduserimages
+			) AS numbercomments
+
+			
+			FROM UserImages as ui
+			INNER JOIN AlbumUserImages ON AlbumUserImages.IdAlbumImages = ui.IdAlbumImages
+			INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+			WHERE Userr.Active = 1
+			AND AlbumUserImages.Active = 1
+			AND ui.Active = 1
+			
+			AND ui.IdUser = @iduser
+			
+			
+			UNION
+			
+			SELECT
+			uv.iduservideos as id,
+			uv.idalbumvideos as idalbum ,
+			AlbumUserVideos.title as albumtitle,
+			uv.iduser,
+			uv.title,
+			uv.descriptionn,
+			uv.likes,
+			uv.urlvideos as url,
+			uv.visibility,
+			uv.datepublish,
+			uv.active,
+			
+			Userr.Name as nameuser,
+			Userr.Nick as nickuser,
+			Userr.Email as emailuser,
+			Userr.Imagee as imageuser,
+			Userr.Country as countryuser,
+			'V' as typee,
+
+			CASE
+			WHEN EXISTS (
+				SELECT IdUser FROM LikeVideo
+				WHERE IdUser = @iduserlogin AND iduservideos = uv.iduservideos
+			)
+			THEN CAST(1 AS BIT)
+			ELSE CAST(0 AS BIT)
+			END AS existlikeloginuser,
+
+			(
+				SELECT 
+				COUNT(*) as numbercomment
+				FROM 
+				UserrComments
+				inner join UserrCommentsVideo on UserrCommentsVideo.idusercomment = UserrComments.idusercomment
+				inner join  UserVideos on UserVideos.iduservideos=UserrCommentsVideo.iduservideos
+				WHERE 
+				UserVideos.Active = 1
+				AND UserrCommentsVideo.iduservideos=uv.iduservideos
+			) AS numbercomments
+
+
+
+			FROM UserVideos as uv
+			INNER JOIN AlbumUserVideos ON AlbumUserVideos.IdAlbumVideos = uv.IdAlbumVideos
+			INNER JOIN Userr ON Userr.IdUser = AlbumUserVideos.IdUser
+			WHERE Userr.Active = 1
+			AND AlbumUserVideos.Active = 1
+			AND uv.Active = 1
+			
+			AND uv.IdUser = @iduser
+			ORDER BY datepublish desc
+	
+	
+
+         `  
+         let pool = await Conection.conection();
+         const result = await pool.request()
+		 .input('iduser', Int, iduser)   
+		 .input('iduserlogin', Int, iduserlogin)   
+         .query(querysearch)
+		
+			for (var resu of result.recordset) {
+				let photopostvideo = new DTOPhotoPostVideo();   
+				this.getinformationList(photopostvideo,resu);
+				array.push(photopostvideo);
+				
+			}
+			
+		 
+        pool.close();
+        return array;
+ }
+ //TIMELINE USER 
 
  static getPhotoPostVideoUserLikes=async(iduserlogin,iduser)=>
  {
@@ -896,6 +1273,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		 INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
 		 WHERE Userr.Active = 1 
 		 AND UserPost.Active = 1 
+		 and UserPost.Visibility='Public'
 		 AND LikePost.IdUser = @iduser
 		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
 			WHERE IdUserBlocker = @iduserlogin 
@@ -930,6 +1308,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 		 WHERE Userr.Active = 1 
 		 AND AlbumUserImages.Active = 1 
 		 AND UserImages.Active = 1 
+		 and UserImages.Visibility='Public'
 		 AND LikeImage.IdUser = @iduser
 		 AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
 			WHERE IdUserBlocker = @iduserlogin 
@@ -962,6 +1341,7 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
 					WHERE Userr.Active = 1 
 					AND AlbumUserVideos.Active = 1 
 					AND UserVideos.Active = 1 
+					and UserVideos.Visibility='Public'
 					AND LikeVideo.IdUser = @iduser
 					AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
 						WHERE IdUserBlocker = @iduserlogin 
@@ -1364,8 +1744,8 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
     photopostvideo.user.email = result.recordset[0].emailuser;
     photopostvideo.user.image = result.recordset[0].imageuser;
     photopostvideo.user.country = result.recordset[0].countryuser;
+	
 
-  
   
   }
   static  getinformationList(photopostvideo,result) {
@@ -1387,7 +1767,8 @@ static getPhotoPostVideoMainPage=async(iduserlogin)=>
     photopostvideo.user.email = result.emailuser;
     photopostvideo.user.image = result.imageuser;
     photopostvideo.user.country = result.countryuser;
-   
+	photopostvideo.numbercomments = result.numbercomments;
+	photopostvideo.existlikeloginuser = result.existlikeloginuser;
   
   }
   static  getinformationSearch(photopostvideo,result) {

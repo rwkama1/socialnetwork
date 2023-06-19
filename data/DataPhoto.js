@@ -308,7 +308,68 @@ END
        pool.close();
        return resultquery;
  }
+ static getImagePublic=async(iduserlogin,idimage)=>
+{
+        let resultquery;
+        let querysearch = `  
 
+        DECLARE @iduserlogin int= ${iduserlogin};
+
+        DECLARE @idimage int= ${idimage};
+
+          IF  EXISTS ( 
+         SELECT IdUserBlocker FROM BlockedUser WHERE
+         IdUserBlocker = @iduserlogin AND IdUserBlocked = 
+         (SELECT iduser FROM UserImages where IdUserImages=@idimage)
+          )
+        BEGIN
+          select -1 as userblocked
+        END
+        ELSE
+        BEGIN
+        IF NOT EXISTS ( SELECT IdUserImages FROM UserImages WHERE IdUserImages=${idimage} and Active=1)
+         BEGIN
+          select -2 as notexistimage
+         END
+         ELSE
+         BEGIN
+            SELECT 
+            UserImages.*, 
+            AlbumUserImages.Title as AlbumTitle, 
+            Userr.Name, 
+            Userr.Nick, 
+            Userr.Email, 
+            Userr.Imagee 
+            from 
+            UserImages 
+            inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+            inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+            where 
+            Userr.Active = 1 
+            and AlbumUserImages.Active = 1 
+            and UserImages.Active = 1
+            and  UserImages.Visibility='Public' 
+            and UserImages.IdUserImages = @idimage
+         END
+        END
+        `  
+        let pool = await Conection.conection();
+        const result = await pool.request()
+        .query(querysearch)
+        resultquery = result.recordset[0].userblocked;
+        if (resultquery===undefined) {
+         resultquery = result.recordset[0].notexistimage;
+         if (resultquery===undefined) {
+            let image = new DTOPhoto();
+            DataPhoto.getinformation(image, result);
+            resultquery=image;
+           }     
+        }
+        
+      
+       pool.close();
+       return resultquery;
+ }
 //*********************************** */
 
   static getImages=async(iduserlogin)=>
@@ -333,6 +394,7 @@ END
          Userr.Active = 1 
          and AlbumUserImages.Active = 1 
          and UserImages.Active = 1
+         and  UserImages.Visibility='Public'
          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
          WHERE IdUserBlocker = @iduserlogin 
          AND IdUserBlocked = Userr.IdUser)
@@ -357,7 +419,6 @@ END
          let querysearch = ` 
 
         DECLARE @iduserlogin int= ${iduserlogin};
-       
 
          SELECT
             UserImages.*,
@@ -376,10 +437,11 @@ END
          AND Userr.Name LIKE '%${nameuser}%'
          AND UserImages.Title LIKE '%${description}%'
          AND UserImages.Descriptionn LIKE '%${title}%'
+         and  UserImages.Visibility='Public'
          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
          WHERE IdUserBlocker = @iduserlogin 
          AND IdUserBlocked = Userr.IdUser)
-  
+            ORDER BY datepublish desc
          `  
          let pool = await Conection.conection();
          const result = await pool.request()      
@@ -393,6 +455,50 @@ END
         pool.close();
         return arrav;
   }
+  static getSearchImagesExpresion=async(iduserlogin,searchtext="")=>
+  {
+          let arrav=[];
+          let querysearch = ` 
+ 
+         DECLARE @iduserlogin int= ${iduserlogin};
+ 
+          SELECT
+             UserImages.*,
+             AlbumUserImages.Title AS AlbumTitle,
+             Userr.Name,
+             Userr.Nick,
+             Userr.Email,
+             Userr.Imagee
+          FROM UserImages
+          INNER JOIN AlbumUserImages ON AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages
+          INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+          WHERE
+          Userr.Active = 1
+          AND AlbumUserImages.Active = 1
+          AND UserImages.Active = 1
+          AND
+           (Userr.Name LIKE '%${searchtext}%'
+          OR UserImages.Title LIKE '%${searchtext}%'
+          OR UserImages.Descriptionn LIKE '%${searchtext}%')
+
+          and  UserImages.Visibility='Public'
+          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+          WHERE IdUserBlocker = @iduserlogin 
+          AND IdUserBlocked = Userr.IdUser)
+             ORDER BY datepublish desc
+          `  
+          let pool = await Conection.conection();
+          const result = await pool.request()      
+          .query(querysearch)
+          for (var p of result.recordset) {
+             let img = new DTOPhoto();   
+             this.getinformationList(img,p);
+             arrav.push(img);
+          }
+       
+         pool.close();
+         return arrav;
+   }
   static getImagesbyAlbum=async(idalbum)=>
   {
      let arrayphoto=[];
@@ -462,11 +568,13 @@ END
           pool.close();
           return arrayphoto;
     }
-   static getImagesbyIdUser=async(iduser)=>
+    //GET IMAGES LOGIN USER
+   static getImagesbyIdUser=async(iduserlogin,iduser)=>
   {
      let arrayphoto=[];
           let querysearch = `
-             
+            declare @iduser int =${iduser}
+            declare @iduserlogin int =${iduserlogin}
             SELECT 
             UserImages.*, 
             AlbumUserImages.Title as AlbumTitle, 
@@ -482,7 +590,11 @@ END
             Userr.Active = 1 
             and AlbumUserImages.Active = 1 
             and UserImages.Active = 1 
-            and UserImages.IdUser = ${iduser}
+            and UserImages.IdUser = @iduser 
+            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+               WHERE IdUserBlocker = @iduserlogin 
+               AND IdUserBlocked = Userr.IdUser)
+            ORDER BY UserImages.datepublish desc
        `  
           let pool = await Conection.conection();
           const result = await pool.request()      
@@ -496,6 +608,47 @@ END
          pool.close();
          return arrayphoto;
    }
+   //GET IMAGES BY SELECTED USER
+   static getImagesPublicbyIdUser=async(iduserlogin,iduser)=>
+   {
+      let arrayphoto=[];
+           let querysearch = `
+             declare @iduser int =${iduser}
+             declare @iduserlogin int =${iduserlogin}
+             SELECT 
+             UserImages.*, 
+             AlbumUserImages.Title as AlbumTitle, 
+             Userr.Name, 
+             Userr.Nick, 
+             Userr.Email, 
+             Userr.Imagee 
+             from 
+             UserImages 
+             inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+             inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+             where 
+             Userr.Active = 1 
+             and AlbumUserImages.Active = 1 
+             and UserImages.Active = 1 
+             and  UserImages.Visibility='Public'
+             and UserImages.IdUser = @iduser 
+             AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+                WHERE IdUserBlocker = @iduserlogin 
+                AND IdUserBlocked = Userr.IdUser)
+             ORDER BY UserImages.datepublish desc
+        `  
+           let pool = await Conection.conection();
+           const result = await pool.request()      
+           .query(querysearch)
+           for (var p of result.recordset) {
+              let photo = new DTOPhoto();   
+               this.getinformationList(photo,p);
+            arrayphoto.push(photo);
+           }
+        
+          pool.close();
+          return arrayphoto;
+    }
    static getImagesVisibilityFriendUser=async(iduser)=>
    {
       let arrayphoto=[];
@@ -530,7 +683,7 @@ END
           pool.close();
           return arrayphoto;
     }   
-    //PROFILE USER
+   
    static getImagesVisibilityPublicUser=async(iduserlogin,iduser)=>
     {
        let arrayphoto=[];
@@ -610,6 +763,7 @@ END
              Userr.Active = 1 
              and AlbumUserImages.Active = 1 
              and UserImages.Active = 1
+             and  UserImages.Visibility='Public'
               AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
          WHERE IdUserBlocker = @iduserlogin 
          AND IdUserBlocked = Userr.IdUser)
@@ -641,7 +795,7 @@ END
              UserImages.IdAlbumImages,
              UserImages.Title,
              UserImages.Likes,
-             UserImages.UrlImage,
+             UserImages.Urlimage,
              UserImages.Visibility,
              UserImages.DatePublish,
              UserImages.Active,
@@ -664,6 +818,7 @@ END
          Userr.Active = 1 
          and AlbumUserImages.Active = 1 
          and UserImages.Active = 1 
+         and  UserImages.Visibility='Public'
          AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
             WHERE IdUserBlocker = @iduserlogin 
             AND IdUserBlocked = Userr.IdUser)
@@ -716,15 +871,16 @@ END
               Userr.Nick,
               Userr.Email,
               Userr.Imagee
-          FROM UserImages
-          INNER JOIN AlbumUserImages ON UserImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
-          INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
-          INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
-          WHERE Followers.IdFollowerUser = @IdUser
-          AND Userr.Active = 1 
-          AND AlbumUserImages.Active = 1 
-          AND UserImages.Active = 1 
-          ORDER BY UserImages.DatePublish DESC
+            FROM UserImages
+            INNER JOIN AlbumUserImages ON UserImages.IdAlbumImages = AlbumUserImages.IdAlbumImages
+            INNER JOIN Userr ON Userr.IdUser = AlbumUserImages.IdUser
+            INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
+            WHERE Followers.IdFollowerUser = @IdUser
+            AND Userr.Active = 1 
+            AND AlbumUserImages.Active = 1 
+            AND UserImages.Active = 1 
+            and  UserImages.Visibility='Public'
+            ORDER BY UserImages.DatePublish DESC
           
             
               `  
@@ -763,6 +919,7 @@ END
                AND Userr.Active = 1 
                AND AlbumUserImages.Active = 1 
                AND UserImages.Active = 1 
+               and  UserImages.Visibility='Public'
                AND Userr.IdUser != @IdUserLogin
                AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
                   WHERE IdUserBlocker = @IdUserLogin
@@ -786,6 +943,7 @@ END
            AND Userr.Active = 1 
            AND AlbumUserImages.Active = 1 
            AND UserImages.Active = 1 
+           and  UserImages.Visibility='Public'
            AND Userr.IdUser != @IdUserLogin
            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
             WHERE IdUserBlocker = @IdUserLogin
@@ -1085,7 +1243,6 @@ END
           pool.close();
           return arrayphoto;
     }
-
     static getImagesByLikeUser=async(iduserlogin)=>//Get all the images that the user gave like
     {
       let arrayphoto=[];
@@ -1126,7 +1283,59 @@ END
     } 
 //#endregion
 //#region Others
+static  NumberOfImagesLoginUser=async(iduserlogin)=>
+{
 
+        let query = `
+        declare @iduserlogin int =${iduserlogin}
+        SELECT 
+        COUNT(*) as numbercomment
+        from 
+        UserImages 
+        inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+        inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+        where 
+        Userr.Active = 1 
+        and AlbumUserImages.Active = 1 
+        and UserImages.Active = 1 
+        and UserImages.IdUser = @iduserlogin 
+
+        `;
+    let pool = await Conection.conection();
+    const result = await pool.request()
+   .query(query)
+   let numbercomment = result.recordset[0].numbercomment;
+    pool.close();
+    return numbercomment;
+    
+}
+static  NumberOfImagesIdUser=async(iduser)=>
+{
+
+        let query = `
+        declare @iduser int =${iduser}
+        SELECT 
+        COUNT(*) as numbercomment
+        from 
+        UserImages 
+        inner join AlbumUserImages on AlbumUserImages.IdAlbumImages = UserImages.IdAlbumImages 
+        inner join Userr on Userr.IdUser = AlbumUserImages.IdUser 
+        where 
+        Userr.Active = 1 
+        and AlbumUserImages.Active = 1 
+        and  UserImages.Visibility='Public' 
+        and UserImages.Active = 1 
+        and UserImages.IdUser = @iduser 
+
+        `;
+    let pool = await Conection.conection();
+    const result = await pool.request()
+   .query(query)
+   let numbercomment = result.recordset[0].numbercomment;
+    pool.close();
+    return numbercomment;
+    
+}
 
 //#endregion
 

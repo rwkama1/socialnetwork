@@ -252,7 +252,7 @@ class DataPost {
              IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE
                IdPost=@idpost and Active=1)
               BEGIN
-                    select -1 as notexistpost
+                    select -2 as notexistpost
               END
               ELSE
               BEGIN
@@ -287,6 +287,64 @@ class DataPost {
             pool.close();
             return resultquery;
       }
+      static getPostPublic=async(iduserlogin,idpost)=>
+      {
+              let resultquery;
+              let querysearch = `  
+ 
+              DECLARE @iduserlogin int= ${iduserlogin};
+ 
+              DECLARE @idpost int= ${idpost};
+      
+                IF  EXISTS ( 
+               SELECT IdUserBlocker FROM BlockedUser WHERE
+               IdUserBlocker = @iduserlogin AND IdUserBlocked = 
+               (SELECT iduser FROM UserPost where IdPost=@idpost)
+                )
+              BEGIN
+                select -1 as userblocked
+              END
+              ELSE
+              BEGIN
+              IF NOT EXISTS ( SELECT IdPost FROM UserPost WHERE
+                IdPost=@idpost and Active=1)
+               BEGIN
+                     select -2 as notexistpost
+               END
+               ELSE
+               BEGIN
+                 SELECT 
+                 UserPost.*,
+                 Userr.Name, 
+                 Userr.Nick, 
+                 Userr.Email, 
+                 Userr.Imagee 
+                 FROM 
+                 UserPost 
+                 INNER JOIN  Userr on Userr.IdUser = UserPost.IdUser 
+                 WHERE 
+                 Userr.Active = 1 
+                 AND UserPost.Active = 1 
+                 and  UserPost.Visibility='Public'
+                 AND UserPost.IdPost = @idpost
+               END
+              END
+              `  
+              let pool = await Conection.conection();
+              const result = await pool.request()
+              .query(querysearch)
+              resultquery = result.recordset[0].userblocked;
+              if (resultquery===undefined) {
+                 resultquery = result.recordset[0].notexistpost;
+                 if (resultquery===undefined) {
+                     let post = new DTOPost();
+                     this.getinformation(post, result);
+                     resultquery=post;
+                 }     
+             } 
+             pool.close();
+             return resultquery;
+       }
      //********************************************************* */
 
      static getPosts=async(iduserlogin)=>
@@ -308,6 +366,7 @@ class DataPost {
            where 
              Userr.Active = 1 
              and UserPost.Active = 1
+             and  UserPost.Visibility='Public'
              AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
               WHERE IdUserBlocker = @iduserlogin 
               AND IdUserBlocked = Userr.IdUser)
@@ -346,6 +405,7 @@ class DataPost {
             AND Userr.Name LIKE '%${nameuser}%'
             AND UserPost.Title LIKE '%${title}%'
             AND UserPost.Descriptionn LIKE '%${description}%'
+            and  UserPost.Visibility='Public'
             AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
               WHERE IdUserBlocker = @iduserlogin 
               AND IdUserBlocked = Userr.IdUser)
@@ -363,6 +423,50 @@ class DataPost {
             pool.close();
             return arrayp;
       }
+      static getSearchPostExpresion=async(iduserlogin,searchtext="")=>
+      {
+         let arrayp=[];
+              let querysearch = `
+              
+              DECLARE @iduserlogin int= ${iduserlogin};
+ 
+              SELECT
+              UserPost.*,
+              Userr.Name,
+              Userr.Nick,
+              Userr.Email,
+              Userr.Imagee
+             FROM UserPost
+             INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
+             WHERE
+             Userr.Active = 1
+             AND UserPost.Active = 1
+             AND 
+             (
+              Userr.Name LIKE '%${searchtext}%'
+             OR UserPost.Title LIKE '%${searchtext}%'
+             OR UserPost.Descriptionn LIKE '%${searchtext}%'
+             
+             )
+
+             and  UserPost.Visibility='Public'
+             AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
+               WHERE IdUserBlocker = @iduserlogin 
+               AND IdUserBlocked = Userr.IdUser)
+             order by datepublish desc
+              `  
+              let pool = await Conection.conection();
+              const result = await pool.request()      
+              .query(querysearch)
+              for (var p of result.recordset) {
+                 let post = new DTOPost();   
+                 this.getinformationList(post,p);
+                 arrayp.push(post);
+              }
+           
+             pool.close();
+             return arrayp;
+       }
       static getUserFollowerPost=async(iduser)=>
       {
               let arrayp=[];
@@ -374,12 +478,13 @@ class DataPost {
              Userr.Nick,
              Userr.Email,
              Userr.Imagee
-            FROM UserPost
-         
+
+            FROM UserPost     
           INNER JOIN Userr ON Userr.IdUser = UserPost.IdUser
           INNER JOIN Followers ON Followers.IdFollowedUser = Userr.IdUser
           WHERE Followers.IdFollowerUser = @IdUser
           AND Userr.Active = 1 
+          and  UserPost.Visibility='Public'
           AND UserPost.Active = 1 
           ORDER BY UserPost.DatePublish DESC
           
@@ -418,6 +523,7 @@ class DataPost {
             WHERE Followers.IdFollowerUser = @IdUser
             AND Userr.Active = 1 
             AND UserPost.Active = 1 
+            and  UserPost.Visibility='Public'
             AND Userr.IdUser != @IdUserLogin  
             AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
               WHERE IdUserBlocker = @IdUserLogin 
@@ -439,6 +545,7 @@ class DataPost {
           AND Userr.Active = 1 
           AND UserPost.Active = 1 
            AND Userr.IdUser != @IdUserLogin
+           and  UserPost.Visibility='Public'
            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
             WHERE IdUserBlocker = @IdUserLogin 
             AND IdUserBlocked = Userr.IdUser)
@@ -479,6 +586,7 @@ class DataPost {
            where 
              Userr.Active = 1 
              and UserPost.Active = 1
+             and  UserPost.Visibility='Public'
              AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
               WHERE IdUserBlocker = @iduserlogin 
               AND IdUserBlocked = Userr.IdUser)
@@ -528,6 +636,7 @@ class DataPost {
           WHERE
           Userr.Active = 1 
           and UserPost.Active = 1 
+          and  UserPost.Visibility='Public'
           AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
             WHERE IdUserBlocker = @iduserlogin 
             AND IdUserBlocked = Userr.IdUser)
@@ -565,24 +674,35 @@ class DataPost {
        }
 
 
-
-      static getPostbyIdUser=async(iduser)=>
+//GET POSTS USER LOGIN
+  static getPostbyIdUser=async(iduser)=>
   {
      let arrayp=[];
           let querysearch = `   
             SELECT 
-            UserPost.*,  
+            up.*,  
             Userr.Name, 
             Userr.Nick, 
             Userr.Email, 
-            Userr.Imagee 
+            Userr.Imagee,
+              ( SELECT 
+                COUNT(*) as numbercomment
+                FROM 
+                UserrComments
+                inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+                inner join  UserPost on UserPost.idpost=UserrCommentsPost.idpost
+                WHERE 
+                UserPost.Active = 1
+                AND UserrCommentsPost.idpost=up.idpost) as numbercomments
+
             from 
-            UserPost
-            inner join Userr on Userr.IdUser = UserPost.IdUser 
+            UserPost as up
+            inner join Userr on Userr.IdUser = up.IdUser 
             where 
             Userr.Active = 1 
-            and UserPost.Active = 1 
-            and UserPost.IdUser = ${iduser}
+            and up.Active = 1 
+            and up.IdUser = ${iduser}
+            ORDER BY datepublish desc
        `  
           let pool = await Conection.conection();
           const result = await pool.request()      
@@ -596,6 +716,53 @@ class DataPost {
          pool.close();
          return arrayp;
    }
+
+   //GET POSTS USER SELECTED
+  static getPostPublicbyIdUser=async(iduser)=>
+  {
+     let arrayp=[];
+          let querysearch = `   
+            SELECT 
+            up.*,  
+            Userr.Name, 
+            Userr.Nick, 
+            Userr.Email, 
+            Userr.Imagee,
+            ( SELECT 
+              COUNT(*) as numbercomment
+              FROM 
+              UserrComments
+              inner join UserrCommentsPost on UserrCommentsPost.idusercomment = UserrComments.idusercomment
+              inner join  UserPost on UserPost.idpost=UserrCommentsPost.idpost
+              WHERE 
+              UserPost.Active = 1
+              AND UserrCommentsPost.idpost=up.idpost )as numbercomments
+            from 
+            UserPost as up
+            inner join Userr on Userr.IdUser = up.IdUser 
+            where 
+            Userr.Active = 1 
+            and up.Active = 1 
+            and  up.Visibility='Public'
+            and up.IdUser = ${iduser}
+            ORDER BY datepublish desc
+       `  
+          let pool = await Conection.conection();
+          const result = await pool.request()      
+          .query(querysearch)
+          for (var p of result.recordset) {
+             let post = new DTOPost();   
+              this.getinformationList(post,p);
+              arrayp.push(post);
+          }
+       
+         pool.close();
+         return arrayp;
+   }
+
+   
+
+
 
    static getPostVisibilityFriendUser=async(iduser)=>
        {
@@ -659,6 +826,7 @@ class DataPost {
                   and UserPost.Active = 1 
                   and  UserPost.Visibility='Public'
                   and UserPost.IdUser = @iduser
+                  ORDER BY datepublish desc
                 END
              `  
                 let pool = await Conection.conection();
@@ -955,6 +1123,60 @@ class DataPost {
          return array;
         } 
      //#endregion
+     //#endregion OTHERS
+
+     static  NumberOfPostLoginUser=async(iduserlogin)=>
+     {
+     
+             let query = `
+             declare @iduserlogin int =${iduserlogin}
+             SELECT 
+             COUNT(*) as numbercomment
+             from 
+             UserPost
+             inner join Userr on Userr.IdUser = UserPost.IdUser 
+             where 
+             Userr.Active = 1 
+             and UserPost.Active = 1 
+             and  UserPost.Visibility='Public'
+             and UserPost.IdUser = @iduserlogin
+     
+             `;
+         let pool = await Conection.conection();
+         const result = await pool.request()
+        .query(query)
+        let numbercomment = result.recordset[0].numbercomment;
+         pool.close();
+         return numbercomment;
+         
+     }
+     static  NumberOfPostIdUser=async(iduser)=>
+     {
+     
+             let query = `
+             declare @iduser int =${iduser}
+             SELECT 
+             COUNT(*) as numbercomment
+             from 
+             UserPost
+             inner join Userr on Userr.IdUser = UserPost.IdUser 
+             where 
+             Userr.Active = 1 
+             and UserPost.Active = 1 
+             and  UserPost.Visibility='Public'
+             and UserPost.IdUser = @iduser
+     
+             `;
+         let pool = await Conection.conection();
+         const result = await pool.request()
+        .query(query)
+        let numbercomment = result.recordset[0].numbercomment;
+         pool.close();
+         return numbercomment;
+         
+     }
+
+     //#endregion
       //#region  GetInformation
   static  getinformation(post, result) {
     
@@ -986,7 +1208,7 @@ static  getinformationList(post, p) {
   post.visibility = p.Visibility;
   post.active = p.Active;
   post.DateTimePublish =p.DatePublish;
- 
+  post.numbercomments =p.numbercomments;
 
 
  

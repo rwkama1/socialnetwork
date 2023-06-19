@@ -167,6 +167,8 @@ class DataCommentVideo {
                             BEGIN
                                 delete from UserrSubComments where idusercomment=@idcomment
                             END
+                            delete from NotificationSubComment where IdUserComment=@idcomment
+                                 delete from LikeComment where idusercomment=@idcomment
                                 delete from UserrCommentsVideo where idusercomment=@idcomment
                                 delete from UserrComments where idusercomment=@idcomment and iduser=@iduser
                                 select 1 as commentvideodeleted
@@ -218,14 +220,19 @@ class DataCommentVideo {
 
    //#region Exists
 
-   static existCommentVideo=async(iduser,idvideo)=>
+   static existCommentVideo=async(idcomment,iduser,idvideo)=>
    {
        
        let querysearch=`
    
+       declare @idcomment int=${idcomment};
        IF NOT EXISTS ( 
            SELECT IdUserComment FROM UserrCommentsVideo 
-           WHERE IdUserComment = @IdUser AND iduservideos = @idvideo
+           WHERE IdUserComment = 
+           (SELECT idusercomment FROM UserrComments
+                WHERE iduser=@iduser AND idusercomment=@idcomment )
+          
+           AND iduservideos = @idvideo
            )
        BEGIN
            select CAST(0 AS BIT) as Exist
@@ -265,33 +272,73 @@ class DataCommentVideo {
              DECLARE @idvideo int = ${idvideo}  
               
             SELECT 
-			UserrComments.idusercomment,
-			UserrComments.textt as textcomment,
-			UserrComments.likes as likescomment,
-			UserrComments.datepublish as datepublishcomment,
+			uc.idusercomment,
+			uc.textt as textcomment,
+			uc.likes as likescomment,
+			uc.datepublish as datepublishcomment,
 
-			UserrCommentsVideo.idusercommentvideo,
-		    UserrCommentsVideo.iduservideos,
+			ucv.idusercommentvideo,
+		    ucv.iduservideos,
 
 		
 			Userr.iduser as idcommentuser,
             Userr.name as namecommentuser,
             Userr.nick as nickcommentuser,
             Userr.userrname as usernamecommentuser,
-            Userr.imagee as imagecommentuser
+            Userr.imagee as imagecommentuser,
+                CASE
+				WHEN EXISTS (
+
+				 SELECT IdUser FROM LikeComment 
+				  WHERE LikeComment.IdUser = @iduserlogin AND LikeComment.IdUserComment = uc.idusercomment
+				
+				)
+				THEN CAST(1 AS BIT)
+				ELSE CAST(0 AS BIT)
+				END AS existlikeloginuser,
+
+                CASE
+				WHEN EXISTS (
+
+                    SELECT IdUserComment FROM UserrCommentsVideo 
+                    WHERE UserrCommentsVideo.IdUserComment = 
+                    (SELECT idusercomment FROM UserrComments
+                         WHERE UserrComments.iduser=@iduserlogin AND UserrComments.idusercomment=uc.idusercomment )
+                   
+                    AND UserrCommentsVideo.iduservideos = ucv.iduservideos
+				
+				)
+				THEN CAST(1 AS BIT)
+				ELSE CAST(0 AS BIT)
+				END AS existcommentloginuser,
+
+				(
+					SELECT 
+					COUNT(*) as numbersubcomments
+					FROM 
+					UserrSubComments
+					WHERE 
+					UserrSubComments.idusercomment=uc.idusercomment
+				) as numbersubcomment
+
+                
+
 
             FROM 
-            UserrComments
-            inner join UserrCommentsVideo on UserrCommentsVideo.idusercomment = UserrComments.idusercomment
-			inner join  UserVideos on UserVideos.iduservideos=UserrCommentsVideo.idusercommentvideo
-			inner join Userr on Userr.iduser=UserrComments.iduser
-            WHERE 
-			UserVideos.Active = 1
-			AND Userr.Active=1
-            AND UserrCommentsVideo.iduservideos=@idvideo
-            AND NOT EXISTS (SELECT IdUserBlocker FROM BlockedUser
-            WHERE IdUserBlocker = @iduserlogin 
-            AND IdUserBlocked = Userr.IdUser)
+            UserrComments as uc
+            INNER JOIN UserrCommentsVideo as ucv ON ucv.IdUserComment = uc.IdUserComment
+            INNER JOIN UserVideos ON UserVideos.IdUserVideos = ucv.IdUserVideos
+            INNER JOIN Userr ON Userr.IdUser = uc.IdUser
+        
+              WHERE 
+            UserVideos.Active = 1
+            AND Userr.Active = 1
+            AND UserVideos.IdUserVideos = @idvideo
+            AND NOT EXISTS (
+                SELECT IdUserBlocker FROM BlockedUser
+                WHERE IdUserBlocker = @iduserlogin 
+                AND IdUserBlocked = Userr.IdUser
+            )
               `;
        
             let pool = await Conection.conection();
@@ -354,6 +401,10 @@ class DataCommentVideo {
         commentvideo.nickcommentuser = result.nickcommentuser; 
         commentvideo.usernamecommentuser = result.usernamecommentuser; 
         commentvideo.imagecommentuser = result.imagecommentuser;
+
+        commentvideo.existlikeloginuser = result.existlikeloginuser; 
+        commentvideo.numbersubcomment = result.numbersubcomment;
+        commentvideo.existcommentloginuser = result.existcommentloginuser; 
     }
     //#endregion
 }

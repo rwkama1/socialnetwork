@@ -143,19 +143,23 @@ let resultquery;
         let arrayuser=[];
             let querysearch=`
 
-            SELECT u.* FROM Followers f
-            INNER JOIN Userr u ON u.IdUser = f.IdFollowerUser
-            WHERE f.IdFollowedUser = @IdUser
+            declare @iduser int=${iduser}
+
+              SELECT u.*,   
+                (SELECT COUNT(*) FROM Followers 
+                WHERE IdFollowedUser = u.IdUser) 
+                AS numberfollowers
+              FROM Followers f
+              INNER JOIN Userr u ON u.IdUser = f.IdFollowerUser
+              WHERE f.IdFollowedUser = @iduser
           
               `;
             let pool = await Conection.conection();
-       
                 const result = await pool.request()
-                .input('IdUser', Int, iduser)
                 .query(querysearch)
                 for (var recorduser of result.recordset) {
                     let user = new DTOUser();   
-                  DataUser.getinformationList(user, recorduser);
+                  DataUser.getinformationList2(user, recorduser);
                   arrayuser.push(user);
                  }
            pool.close();
